@@ -71,7 +71,7 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry-> authorizationRegistry
-                        .requestMatchers(HttpMethod.GET,"/","/*.html").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/","/*.html","/swagger-ui/*.html").permitAll()
                         .requestMatchers("/api/user/login","/api/user/register","/test/**","/test2").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())

@@ -1,5 +1,9 @@
 server:
   port: 6771
+# 配置swagger文档的访问路径
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 spring:
   profiles:
     active: test

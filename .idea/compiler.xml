@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Ter-common" />
+        <module name="Ter-oss-start" />
+        <module name="Ter-server-chat" />
+        <module name="Ter-server-video" />
+        <module name="Ter-server" />
+        <module name="Ter-tools" />
+        <module name="Ter-mapper" />
+        <module name="Ter-server-admin" />
+        <module name="Ter-security" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Ter-common" options="-parameters" />
+      <module name="Ter-mapper" options="-parameters" />
+      <module name="Ter-oss-start" options="-parameters" />
+      <module name="Ter-security" options="-parameters" />
+      <module name="Ter-server" options="-parameters" />
+      <module name="Ter-server-admin" options="-parameters" />
+      <module name="Ter-server-chat" options="-parameters" />
+      <module name="Ter-server-video" options="-parameters" />
+      <module name="Ter-tools" options="-parameters" />
+    </option>
+  </component>
+</project>

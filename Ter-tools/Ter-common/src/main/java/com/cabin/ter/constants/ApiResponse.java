@@ -2,12 +2,15 @@ package com.cabin.ter.constants;
 
 
 import com.cabin.ter.exception.BaseException;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.validation.BindingResult;
+import lombok.NoArgsConstructor;
+
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * <p>
@@ -18,6 +21,9 @@ import java.util.stream.Collectors;
  * @date Created in 2024-04-19 16:18
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApiResponse implements Serializable {
     private static final long serialVersionUID = 8993485788201922830L;
 
@@ -35,26 +41,6 @@ public class ApiResponse implements Serializable {
      * 返回数据
      */
     private Object data;
-
-    /**
-     * 无参构造函数
-     */
-    private ApiResponse() {
-
-    }
-
-    /**
-     * 全参构造函数
-     *
-     * @param code    状态码
-     * @param message 返回内容
-     * @param data    返回数据
-     */
-    private ApiResponse(Integer code, String message, Object data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
 
     /**
      * 构造一个自定义的API返回
