@@ -59,7 +59,7 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 因为还在开发过程当中，所以使用application-test.properties配置文件 \
 当部署的时候将使用application-pro.properties配置文件,修改application.yml中 active: test 为 active: pro
 ### 注意
-在生成环境下应关闭p6spy sql打印 、swagger生成文档
+在生产环境下应关闭p6spy sql打印 、swagger生成文档
 ## 项目功能
 * 用户模块
   * 用户注册，登录认证
