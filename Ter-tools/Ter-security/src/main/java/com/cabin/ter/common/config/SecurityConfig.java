@@ -71,8 +71,8 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry-> authorizationRegistry
-                        .requestMatchers(HttpMethod.GET,"/","/*.html","/swagger-ui/*.html").permitAll()
-                        .requestMatchers("/api/user/login","/api/user/register","/test/**","/test2").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/","/*.html").permitAll()
+                        .requestMatchers("/api/user/login","/v3/**","/api/user/register","/test/**","/test2","/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())
                 // 禁用缓存

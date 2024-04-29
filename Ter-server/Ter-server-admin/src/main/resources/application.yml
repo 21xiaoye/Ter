@@ -1,9 +1,6 @@
 server:
   port: 6771
-# 配置swagger文档的访问路径
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+
 spring:
   profiles:
     active: test
@@ -77,5 +74,8 @@ logging:
   level:
     org.apache.rocketmq: error
     RocketmqClient: error
-
-
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
