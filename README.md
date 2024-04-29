@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://www.manim.community/">
+    <a href="https://github.com/21xiaoye/Ter.git">
         <img src="./assets/Java.png" width="500">
     </a>
     <br />
@@ -47,10 +47,8 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 * 后端代码：https://github.com/xunlu129/teriteri-client.git
 
 ## 项目 API
-项目启动后访问:http://ip:port/swagger-ui/index.html
-
+本地项目启动后访问:http://localhost:6771/swagger-ui/index.html 
 ## 项目功能描述
-
 * 用户模块
   * 用户注册，登录认证
 * 视频模块
@@ -61,8 +59,8 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 
 ## 联系方式
 如果对你有帮助的话，可以Star一下吗？\
-欢迎添加微信进行交流
-![p9211Ag.png](./assets/wx.jpg)
+欢迎添加微信进行交流 \
+<img src="./assets/wx.jpg" width="280">
 
 
 ## 开源协议
