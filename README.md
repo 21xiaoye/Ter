@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/21xiaoye/Ter.git">
+    <a href="https://github.com/SAWARATSUKI/ServiceLogos.git">
         <img src="./assets/Java.png" width="500">
     </a>
     <br />
