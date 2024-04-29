@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.ter.admin.mapper.PermissionMapper">
+    <!--查询权限Id列表-->
+    <select id="selectPermissionIdsByRoleIds" resultType="java.util.List">
+        SELECT
+            permissionId
+        FROM
+            ter_role_permission
+        <where>
+            <if test="roleIds != null and roleIds.size > 0">
+                roleId IN
+                <foreach item="roleId" collection="roleIds" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 查询权限信息列表 -->
+    <select id="selectPermissionsByPermissionIds" resultType="com.cabin.ter.admin.domain.Permission">
+        SELECT
+            permissionId,
+            name,
+            url,
+            type,
+            permission,
+            method,
+            sort,
+            parentId
+        FROM
+            ter_permission
+        <where>
+            <if test="permissionIds != null and permissionIds.size() > 0">
+                permissionId IN
+                <foreach item="permissionId" collection="permissionIds" open="(" separator="," close=")">
+                    #{permissionId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

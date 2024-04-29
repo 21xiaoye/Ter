@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.ter.admin.mapper.RoleMapper">
+    <!-- 查询角色详情，基于角色ID列表 -->
+    <select id="findRolesByRoleIds" resultType="com.cabin.ter.admin.domain.Role">
+        SELECT roleId, roleName, description
+        FROM ter_role
+        <where>
+            <if test="roleIds != null and roleIds.size > 0">
+                roleId IN
+                <foreach item="roleId" collection="roleIds" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
