@@ -14,6 +14,7 @@
 
 - [项目介绍](#项目介绍)
 - [后端技术](#后端技术)
+- [项目启动](#项目启动)
 - [项目地址](#项目地址)
 - [项目 API](#项目-api)
 - [项目功能](#项目功能)
@@ -47,7 +48,18 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 * 后端代码：https://github.com/xunlu129/teriteri-client.git
 
 ## 项目 API
-本地项目启动后访问:http://localhost:6771/swagger-ui/index.html 
+本地项目启动后访问:http://localhost:6771/swagger-ui/index.html
+## 项目启动
+将代码克隆到本地
+```text
+  git clone https://github.com/21xiaoye/Ter.git
+```
+
+修改Ter-server\Ter-admin下的application-test.properties文件 \
+因为还在开发过程当中，所以使用application-test.properties配置文件 \
+当部署的时候将使用application-pro.properties配置文件,修改application.yml中 active: test 为 active: pro
+### 注意
+在生成环境下应关闭p6spy sql打印 、swagger生成文档
 ## 项目功能
 * 用户模块
   * 用户注册，登录认证
