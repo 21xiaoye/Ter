@@ -63,6 +63,6 @@ public class GlobalException {
         }
 
         log.error("【全局异常拦截】: 异常信息 {} ", e.getMessage());
-        return ApiResponse.ofStatus(Status.ERROR);
+        return ApiResponse.ofMessage(e.getMessage());
     }
 }

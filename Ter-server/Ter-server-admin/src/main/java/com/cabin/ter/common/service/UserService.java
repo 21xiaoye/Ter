@@ -10,6 +10,6 @@ import com.cabin.ter.constants.ApiResponse;
  * @date Created in 2024-04-23 14:46
  */
 public interface UserService {
-    ApiResponse userLogin(LoginRequest user);
-    ApiResponse userRegister(User user);
+    ApiResponse userLogin(LoginRequest loginRequest);
+    ApiResponse userRegister(LoginRequest loginRequest);
 }

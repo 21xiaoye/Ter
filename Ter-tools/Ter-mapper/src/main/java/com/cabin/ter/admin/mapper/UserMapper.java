@@ -1,6 +1,7 @@
 package com.cabin.ter.admin.mapper;
 
 import com.cabin.ter.admin.domain.User;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.Optional;
@@ -30,4 +31,7 @@ public interface UserMapper{
      */
     @Select("select userId,userName, userEmail,userPasswd,userAvatar,salt,userStatus from ter_user where userEmail=#{userEmail}")
     Optional<User> findByUsernameOrEmailOrPhone(String email);
+
+//    @Insert("INSERT INTO ter_user VALUES ")
+    Integer InsertTerUser();
 }

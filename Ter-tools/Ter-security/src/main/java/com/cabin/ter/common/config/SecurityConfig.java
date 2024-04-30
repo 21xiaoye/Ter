@@ -4,7 +4,6 @@ import com.cabin.ter.common.handler.*;
 import com.cabin.ter.common.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,9 +19,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Collections;
 
 
 /**
@@ -37,7 +41,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties(CustomConfig.class)
 public class SecurityConfig {
     @Autowired
     private MyUnauthorizedHandler unauthorizedHandler;
@@ -62,8 +65,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new com.cabin.ter.common.security.PasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 
 
     @Bean

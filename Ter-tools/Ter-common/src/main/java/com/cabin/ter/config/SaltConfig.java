@@ -86,9 +86,9 @@ public class SaltConfig{
     }
 
 
-    public SaltConfig passwdEncryption(String passwd){
+    public String passwdEncryption(String passwd){
         String salt = generateSalt();
-        return new SaltConfig(SHA256(generateStrText(passwd,salt)), salt);
+        return SHA256(generateStrText(passwd,salt));
     }
     public SaltConfig passwdDecryption(String passwd, String salt){
         return new SaltConfig(SHA256(generateStrText(passwd,salt)), salt);
