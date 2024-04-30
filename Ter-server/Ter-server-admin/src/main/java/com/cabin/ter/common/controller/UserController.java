@@ -8,6 +8,9 @@ import com.cabin.ter.common.util.JwtUtil;
 import com.cabin.ter.common.vo.JwtResponse;
 import com.cabin.ter.constants.ApiResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,24 +33,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/user",consumes  = "application/x-www-form-urlencoded")
+@Tag(name = "用户管理模块")
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtil jwtUtil;
 
+    @Operation(summary = "用户登录接口")
     @PostMapping("/login")
     public ApiResponse userLogin(@Valid @ModelAttribute LoginRequest loginRequest){
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getUserPasswd()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String jwt = jwtUtil.createJWT(authenticate, loginRequest.getRememberMe());
-        return ApiResponse.ofSuccess(new JwtResponse(jwt));
+        return userService.userLogin(loginRequest);
     }
 
     @PostMapping("/register")
-    public ApiResponse userRegister(@RequestBody User user){
-        return ApiResponse.ofSuccess(user);
+    public ApiResponse userRegister(@Valid @ModelAttribute LoginRequest loginRequest){
+        return userService.userRegister(loginRequest);
     }
 }

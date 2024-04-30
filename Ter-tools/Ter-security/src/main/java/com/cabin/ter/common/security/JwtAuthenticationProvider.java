@@ -1,5 +1,8 @@
-package com.cabin.ter.common.handler;
+package com.cabin.ter.common.security;
 
+import com.cabin.ter.common.service.CustomUserDetailService;
+import com.cabin.ter.common.security.MyPasswordEncoder;
+import com.cabin.ter.common.vo.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -7,23 +10,25 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Slf4j
 public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MyPasswordEncoder myPasswordEncoder;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userEmail = String.valueOf(authentication.getPrincipal());
         String userPasswd = String.valueOf(authentication.getCredentials());
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(userEmail);
+        String salt = userDetails.getSalt();
+        userPasswd = myPasswordEncoder.passwdEncryption(userPasswd, salt);
 
         if(passwordEncoder.matches(userPasswd,userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, userPasswd, userDetails.getAuthorities());

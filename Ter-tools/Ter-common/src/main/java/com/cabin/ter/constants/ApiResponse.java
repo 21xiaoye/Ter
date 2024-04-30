@@ -3,6 +3,7 @@ package com.cabin.ter.constants;
 
 import com.cabin.ter.exception.BaseException;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,22 +25,26 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(name = "通用Api状态返回",description = "Common Api Response")
 public class ApiResponse implements Serializable {
     private static final long serialVersionUID = 8993485788201922830L;
 
     /**
      * 状态码
      */
+    @Schema(name = "code",description = "通用返回状态码")
     private Integer code;
 
     /**
      * 返回内容
      */
+    @Schema(name = "message",description = "通用返回信息")
     private String message;
 
     /**
      * 返回数据
      */
+    @Schema(name = "data",description = "通用返回数据")
     private Object data;
 
     /**
@@ -115,15 +120,5 @@ public class ApiResponse implements Serializable {
     public static <T extends BaseException> ApiResponse ofException(T t) {
         return of(t.getCode(), t.getMessage(), t.getData());
     }
-
-//    /**
-//     * 处理 @Validated 的错误信息
-//     */
-//    public static ApiResponse createErrorResponse(BindingResult bindingResult) {
-//        List<String> errors = bindingResult.getFieldErrors().stream()
-//                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-//                .collect(Collectors.toList());
-//        return ApiResponse.ofStatus(Status.PARAM_NOT_MATCH, errors);
-//    }
 }
 
