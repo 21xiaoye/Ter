@@ -45,7 +45,7 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 |        minio        | 自建对象存储                               | https://github.com/minio/minio                               |
 
 ## 项目地址
-* 后端代码：https://github.com/xunlu129/teriteri-client.git
+* 后端代码：https://github.com/21xiaoye/Ter.git
 
 ## 项目 API
 本地项目启动后访问:http://localhost:6771/swagger-ui/index.html
@@ -62,7 +62,7 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 在生产环境下应关闭p6spy sql打印 、swagger生成文档
 ## 项目功能
 * 用户模块
-  * 用户注册，登录认证
+  * 用户注册、用户登录(验证码、密码、微信扫码登录),服务端二次加密(随机生成盐值哈希加密，MD5二次加密)
 * 视频模块
 * 聊天模块
 
