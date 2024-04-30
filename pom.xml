@@ -24,6 +24,7 @@
         <module>Ter-server/Ter-server-admin</module>
         <module>Ter-tools/Ter-security</module>
         <module>Ter-tools/Ter-common</module>
+        <module>Ter-tools/Ter-mq</module>
     </modules>
     <properties>
         <java.version>17</java.version>
@@ -34,6 +35,7 @@
         <druid.version>1.2.5</druid.version>
         <security.version>3.2.4</security.version>
         <jjwt.veersion>0.9.1</jjwt.veersion>
+        <jasypt.version></jasypt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -145,7 +147,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-
+        <!--open api-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -155,6 +157,37 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
             <version>2.5.0</version>
+        </dependency>
+        <!-- Spring Boot 邮件依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!-- Spring Boot 模板依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!--rocketmq 消息队列-->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

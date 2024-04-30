@@ -11,6 +11,7 @@
         <module name="Ter-server-chat" />
         <module name="Ter-server-video" />
         <module name="Ter-server" />
+        <module name="Ter-mq" />
         <module name="Ter-tools" />
         <module name="Ter-mapper" />
         <module name="Ter-server-admin" />
@@ -22,6 +23,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Ter-common" options="-parameters" />
       <module name="Ter-mapper" options="-parameters" />
+      <module name="Ter-mq" options="-parameters" />
       <module name="Ter-oss-start" options="-parameters" />
       <module name="Ter-security" options="-parameters" />
       <module name="Ter-server" options="-parameters" />
