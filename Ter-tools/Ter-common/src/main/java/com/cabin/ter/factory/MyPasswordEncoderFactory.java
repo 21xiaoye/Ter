@@ -28,8 +28,7 @@ public class MyPasswordEncoderFactory {
     public  String encode(EncryptionEnum encryptionEnum,CharSequence charSequence) {
         this.encryptionEnum = encryptionEnum;
         DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(this.encryptionEnum.getMessage(), idToPasswordEncoder);
-        String encode = delegatingPasswordEncoder.encode(charSequence);
-        return encode;
+        return delegatingPasswordEncoder.encode(charSequence);
     }
     public static PasswordEncoder createDelegatingPasswordEncoder() {
         idToPasswordEncoder.put(EncryptionEnum.MD5.getMessage(), new MessageDigestPasswordEncoder(EncryptionEnum.MD5.getMessage()));
