@@ -3,8 +3,13 @@ package com.cabin.ter.admin.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -15,8 +20,11 @@ import lombok.Data;
  * @author xiaoye
  * @date Created in 2024-04-27 15:44
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
-public class User {
+public class User implements Serializable {
     /**
      * 主键
      */
@@ -39,6 +47,10 @@ public class User {
      */
     private String userEmail;
     /**
+     * 角色列表
+     */
+    private List<Integer> roleIdList;
+    /**
      * 盐值
      */
     @JsonIgnore
@@ -56,5 +68,6 @@ public class User {
      * 更新时间
      */
     private Long updateTime;
+
 }
 

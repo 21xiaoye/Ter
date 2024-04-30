@@ -38,12 +38,11 @@ public class CustomUserDetailService implements UserDetailsService {
         User user = userMapper.findByUsernameOrEmailOrPhone(userEmail).orElseThrow(() -> new UsernameNotFoundException("未找到用户信息:" + userEmail));
 
         // 查询用户角色Id
-        List<Long> roleIdsByUserId = roleMapper.findRoleIdsByUserId(user.getUserId());
+        List<Integer> roleIdsByUserId = roleMapper.findRoleIdsByUserId(user.getUserId());
         List<Role> roles = roleMapper.findRolesByRoleIds(roleIdsByUserId);
 
-
         // 根据角色Id查询用户权限
-        List<Long> rolesIds = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
+        List<Integer> rolesIds = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
         List<Long> permissionIds = permissionMapper.selectPermissionIdsByRoleIds(rolesIds);
 
         List<Permission> permissions = permissionMapper.selectPermissionsByPermissionIds(permissionIds);

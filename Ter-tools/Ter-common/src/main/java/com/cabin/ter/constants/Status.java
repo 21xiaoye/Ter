@@ -87,7 +87,11 @@ public enum Status implements IStatus{
     /**
      * 无法手动踢出自己，请尝试退出登录操作！
      */
-    KNOCKOUT_SELF(5004, "无法手动踢出自己，请尝试退出登录操作！");
+    KNOCKOUT_SELF(5004, "无法手动踢出自己，请尝试退出登录操作！"),
+    /**
+     * 用户已被占用
+     */
+    USER_OCCUPY(5005,"用户已存在");
     /**
      * 状态码
      */

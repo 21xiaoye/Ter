@@ -2,6 +2,7 @@ package com.cabin.ter.admin.mapper;
 
 
 import com.cabin.ter.admin.domain.Role;
+import com.cabin.ter.admin.domain.User;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface RoleMapper {
      * @return  角色Id列表
      */
     @Select("SELECT roleId FROM ter_user_role WHERE userId = #{userId}")
-    List<Long> findRoleIdsByUserId(Long userId);
+    List<Integer> findRoleIdsByUserId(Long userId);
 
     /**
      * 根据角色Id查询角色信息
@@ -31,7 +32,7 @@ public interface RoleMapper {
      * @return  Role
      */
     @Select("SELECT roleId, roleName, description FROM ter_role WHERE roleId=#{roleId}")
-    Optional<Role> findRoleByRoleId(Long roleId);
+    Optional<Role> findRoleByRoleId(Integer roleId);
 
     /**
      * 根据角色Id列表查询角色信息列表
@@ -39,5 +40,13 @@ public interface RoleMapper {
      * @param roleIds
      * @return  角色信息列表
      */
-    List<Role> findRolesByRoleIds(List<Long> roleIds);
+    List<Role> findRolesByRoleIds(List<Integer> roleIds);
+
+    /**
+     * 为用户分配角色
+     *
+     * @param user
+     * @return  Integer
+     */
+    Integer insertUserRole(User user);
 }

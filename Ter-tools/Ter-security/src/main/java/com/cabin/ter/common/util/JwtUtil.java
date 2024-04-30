@@ -54,7 +54,7 @@ public class JwtUtil {
      * @param authorities   用户权限
      * @return  JWT
      */
-    public String createJWT(Boolean rememberMe, Long id, String subject, List<String> roles, Collection<? extends GrantedAuthority> authorities){
+    public String createJWT(Boolean rememberMe, Long id, String subject, List<Integer> roles, Collection<? extends GrantedAuthority> authorities){
         Date nowTime = new Date();
         JwtBuilder jwtBuilder = Jwts.builder().setId(id.toString()).setSubject(subject).setIssuedAt(nowTime)
                 .signWith(SignatureAlgorithm.HS256, jwtConfig.getKey())

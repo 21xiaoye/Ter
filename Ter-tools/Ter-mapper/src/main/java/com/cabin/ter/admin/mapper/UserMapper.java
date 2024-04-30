@@ -18,6 +18,7 @@ import java.util.Optional;
 public interface UserMapper{
     /**
      * 根据Id查询用户信息
+     *
      * @param userId    用户Id
      * @return  User
      */
@@ -26,12 +27,19 @@ public interface UserMapper{
 
     /**
      * 根据邮箱查询用户信息
+     *
      * @param email     用户邮箱
      * @return  User
      */
     @Select("select userId,userName, userEmail,userPasswd,userAvatar,salt,userStatus from ter_user where userEmail=#{userEmail}")
     Optional<User> findByUsernameOrEmailOrPhone(String email);
 
-//    @Insert("INSERT INTO ter_user VALUES ")
-    Integer InsertTerUser();
+    /**
+     * 插入用户
+     *
+     * @param user  用户对象
+     * @return  Integer
+     */
+    @Insert("INSERT INTO ter_user (userId, userName,userPasswd, salt,userEmail,createTime) VALUES (#{userId},#{userName}, #{userPasswd},#{salt},#{userEmail},#{createTime})")
+    Integer insertTerUser(User user);
 }

@@ -66,19 +66,19 @@ public class UserPrincipal implements UserDetails {
     /**
      * 用户角色列表
      */
-    private List<String> roles;
+    private List<Integer> roles;
     /**
      * 用户权限列表
      */
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user, List<Role> roles, List<Permission> permissions){
-        List<String> roleNames = roles.stream().map(Role::getRoleName).collect(Collectors.toList());
+        List<Integer> roleIdsList = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
 
         List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
 
-        return new UserPrincipal(user.getUserId(), user.getUserName(),user.getUserAvatar(), user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleNames, authorities);
+        return new UserPrincipal(user.getUserId(), user.getUserName(),user.getUserAvatar(), user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
     }
 
     @Override

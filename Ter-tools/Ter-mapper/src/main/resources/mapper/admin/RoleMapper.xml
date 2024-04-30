@@ -16,4 +16,13 @@
             </if>
         </where>
     </select>
+
+    <!-- 插入用户角色关联信息 -->
+    <insert id="insertUserRole" parameterType="com.cabin.ter.admin.domain.User">
+        INSERT INTO ter_user_role (userId, roleId)
+        VALUES
+        <foreach collection="roleIdList" item="roleId" index="index" separator=",">
+            (#{userId}, #{roleId})
+        </foreach>
+    </insert>
 </mapper>

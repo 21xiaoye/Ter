@@ -18,7 +18,7 @@ public interface PermissionMapper {
      * @param roleIds   角色Id列表
      * @return  权限Id列表
      */
-    List<Long> selectPermissionIdsByRoleIds(List<Long> roleIds);
+    List<Long> selectPermissionIdsByRoleIds(List<Integer> roleIds);
 
     /**
      * 根据权限Id列表查询权限列表

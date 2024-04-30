@@ -14,7 +14,7 @@ public class Role {
     /**
      * 主键
      */
-    private Long roleId;
+    private Integer roleId;
 
     /**
      * 角色名
