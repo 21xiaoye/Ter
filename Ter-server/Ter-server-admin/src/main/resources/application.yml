@@ -49,6 +49,15 @@ spring:
       port: ${Ter.redis.port}
       database: 0
       timeout: 20000
+  mail:
+    test-connection: true
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.ssl.enable: true
+      mail.display.sendmail: Ter
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.cabin.ter.**.domain

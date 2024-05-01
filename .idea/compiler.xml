@@ -14,6 +14,7 @@
         <module name="Ter-mq" />
         <module name="Ter-tools" />
         <module name="Ter-mapper" />
+        <module name="Ter-test" />
         <module name="Ter-server-admin" />
         <module name="Ter-security" />
       </profile>
@@ -30,6 +31,7 @@
       <module name="Ter-server-admin" options="-parameters" />
       <module name="Ter-server-chat" options="-parameters" />
       <module name="Ter-server-video" options="-parameters" />
+      <module name="Ter-test" options="-parameters" />
       <module name="Ter-tools" options="-parameters" />
     </option>
   </component>

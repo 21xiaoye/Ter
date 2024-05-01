@@ -25,6 +25,7 @@
         <module>Ter-tools/Ter-security</module>
         <module>Ter-tools/Ter-common</module>
         <module>Ter-tools/Ter-mq</module>
+        <module>Ter-test</module>
     </modules>
     <properties>
         <java.version>17</java.version>
@@ -35,7 +36,8 @@
         <druid.version>1.2.5</druid.version>
         <security.version>3.2.4</security.version>
         <jjwt.veersion>0.9.1</jjwt.veersion>
-        <jasypt.version></jasypt.version>
+        <jasypt.version>2.1.1</jasypt.version>
+        <rocketmq.version>2.2.2</rocketmq.version>
     </properties>
     <dependencies>
         <dependency>
@@ -173,7 +175,7 @@
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
-            <version>2.2.2</version>
+            <version>${rocketmq.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -189,6 +191,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--jasypt配置文件加解密-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
