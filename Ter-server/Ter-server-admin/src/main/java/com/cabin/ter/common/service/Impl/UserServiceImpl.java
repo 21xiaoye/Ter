@@ -63,47 +63,59 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtil.createJWT(authenticate, loginRequest.getRememberMe());
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
-
     @Override
     public ApiResponse userRegister(LoginRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
-        Optional<User> byUsernameOrEmailOrPhone = userMapper.findByUsernameOrEmailOrPhone(loginRequest.getUserEmail());
-        byUsernameOrEmailOrPhone.ifPresent(user -> {
+        checkUserExistence(loginRequest.getUserEmail());
+
+        String salt = myPasswordEncoder.generateSalt();
+        String encryptedPassword = encryptPassword(loginRequest.getUserPasswd(), salt);
+
+        User user = buildUser(loginRequest, salt, encryptedPassword);
+        validateAndSetRoles(user, loginRequest.getRoleId());
+
+        userMapper.insertTerUser(user);
+        roleMapper.insertUserRole(user);
+        return ApiResponse.ofSuccess();
+    }
+
+    private void checkUserExistence(String userEmail) {
+        userMapper.findByUserEmail(userEmail).ifPresent(u -> {
             throw new BaseException(Status.USER_OCCUPY);
         });
+    }
 
-        // 第一次 加盐 哈希加密
-        String salt = myPasswordEncoder.generateSalt();
-        String saltEncode = myPasswordEncoder.passwdEncryption(loginRequest.getUserPasswd(), salt);
+    private String encryptPassword(String password, String salt) {
+        String saltEncode = myPasswordEncoder.passwdEncryption(password, salt);
+        return MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
+    }
 
-        // 第二次加密
-        String encode = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5,saltEncode);
-        User userBuilder = User.builder().userId(snowflake.nextId())
-                .userEmail(loginRequest.getUserEmail())
-                .userPasswd(encode)
-                .userName(loginRequest.getUserEmail())
+    private User buildUser(LoginRequest request, String salt, String password) {
+        return User.builder()
+                .userId(snowflake.nextId())
+                .userEmail(request.getUserEmail())
+                .userPasswd(password)
+                .userName(request.getUserEmail())
                 .salt(salt)
                 .createTime(System.currentTimeMillis())
                 .build();
+    }
 
-        RoleEnum status = RoleEnum.of(loginRequest.getRoleId());
-        if(Objects.isNull(status)){
+    private void validateAndSetRoles(User user, Integer roleId) {
+        RoleEnum role = RoleEnum.of(roleId);
+        if (Objects.isNull(role)) {
             throw new BaseException(Status.PARAM_NOT_MATCH);
         }
-
-        switch (status){
+        switch (role){
             case ADMIN :
-                userBuilder.setRoleIdList(Arrays.asList(RoleEnum.ADMIN.getCode(),RoleEnum.ORDINARY.getCode()));
+                user.setRoleIdList(Arrays.asList(RoleEnum.ADMIN.getCode(),RoleEnum.ORDINARY.getCode()));
                 break;
             case ORDINARY:
-                userBuilder.setRoleIdList(Arrays.asList(RoleEnum.ORDINARY.getCode()));
+                user.setRoleIdList(Arrays.asList(RoleEnum.ORDINARY.getCode()));
                 break;
             default:
                 log.error("未知角色");
                 throw new BaseException(Status.PARAM_NOT_MATCH);
         }
-        roleMapper.insertUserRole(userBuilder);
-        userMapper.insertTerUser(userBuilder);
-        return ApiResponse.ofSuccess();
     }
 }

@@ -2,6 +2,8 @@ package com.cabin.ter.admin.domain;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * <p>
  *     角色
@@ -10,7 +12,7 @@ import lombok.Data;
  * @date Created in 2024-04-27 15:46
  */
 @Data
-public class Role {
+public class Role implements Serializable {
     /**
      * 主键
      */

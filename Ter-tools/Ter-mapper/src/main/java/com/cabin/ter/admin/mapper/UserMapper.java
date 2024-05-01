@@ -22,18 +22,26 @@ public interface UserMapper{
      * @param userId    用户Id
      * @return  User
      */
-    @Select("select userId, userEmail,userPasswd from ter_user where userId = #{userId}")
+    @Select("SELECT userId, userEmail,userPasswd FROM ter_user WHERE userId = #{userId}")
     User getUserId(Long userId);
 
     /**
      * 根据邮箱查询用户信息
      *
-     * @param email     用户邮箱
+     * @param userEmail     用户邮箱
      * @return  User
      */
-    @Select("select userId,userName, userEmail,userPasswd,userAvatar,salt,userStatus from ter_user where userEmail=#{userEmail}")
-    Optional<User> findByUsernameOrEmailOrPhone(String email);
+    @Select("SELECT userId,userName, userEmail,userPasswd,userAvatar,salt,userStatus FROM ter_user WHERE userEmail=#{userEmail}")
+    Optional<User> findByUsernameOrEmailOrPhone(String userEmail);
 
+    /**
+     * 查询用户是否存在
+     *
+     * @param userEmail 用户邮箱
+     * @return  User
+     */
+    @Select("SELECT userEmail FROM ter_user WHERE userEmail=#{userEmail}")
+    Optional<User> findByUserEmail(String userEmail);
     /**
      * 插入用户
      *

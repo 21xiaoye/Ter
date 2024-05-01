@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.admin.mapper.PermissionMapper">
+    <cache></cache>
     <!--查询权限Id列表-->
     <select id="selectPermissionIdsByRoleIds" resultType="java.util.List">
         SELECT
