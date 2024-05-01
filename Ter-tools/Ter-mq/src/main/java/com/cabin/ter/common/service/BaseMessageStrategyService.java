@@ -1,6 +1,7 @@
 package com.cabin.ter.common.service;
 
 import com.cabin.ter.common.constants.entity.MessageParticipant;
+import com.cabin.ter.common.constants.enums.MessageEnum;
 
 /**
  * <p>
@@ -11,5 +12,6 @@ import com.cabin.ter.common.constants.entity.MessageParticipant;
  * @date Created in 2024-05-01 12:55
  */
 public interface BaseMessageStrategyService {
-    <T extends MessageParticipant> void awardStrategy(MessageParticipant message);
+    <T extends MessageParticipant> Boolean messageStrategy(MessageParticipant message);
+    MessageEnum getSource();
 }

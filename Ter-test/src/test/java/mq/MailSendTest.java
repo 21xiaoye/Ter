@@ -1,5 +1,9 @@
+package mq;
+
 import com.cabin.ter.TerApplication;
 import com.cabin.ter.common.constants.entity.EmailParticipant;
+import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.service.MessageStrategyServiceFactory;
 import com.cabin.ter.common.service.impl.EmailStrategyServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +46,7 @@ public class MailSendTest {
                 .subject("测试")
                 .content(emailTemplate)
                 .build();
-
-        emailStrategyService.awardStrategy(message);
+        MessageStrategyServiceFactory.getInstance().getAwardResult(message, MessageEnum.EMAIL_MESSAGE);
     }
+
 }

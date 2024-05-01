@@ -3,6 +3,7 @@ package com.cabin.ter.common.service.impl;
 import com.cabin.ter.common.config.MailSenderConfig;
 import com.cabin.ter.common.constants.entity.EmailParticipant;
 import com.cabin.ter.common.constants.entity.MessageParticipant;
+import com.cabin.ter.common.constants.enums.MessageEnum;
 import com.cabin.ter.common.service.BaseMessageStrategyService;
 import com.cabin.ter.common.template.MessageTemplate;
 import jakarta.mail.MessagingException;
@@ -31,7 +32,8 @@ public class EmailStrategyServiceImpl extends MessageTemplate
     private MailSenderConfig mailSenderConfig;
 
     @Override
-    protected <T extends MessageParticipant> void messageSend(MessageParticipant message) {
+    protected <T extends MessageParticipant> Boolean messageSend(MessageParticipant message) {
+
         JavaMailSenderImpl sender = mailSenderConfig.getSender();
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
@@ -44,14 +46,19 @@ public class EmailStrategyServiceImpl extends MessageTemplate
 
             helper.setFrom(Objects.requireNonNull(sender.getUsername()));
         }catch (MessagingException exception){
-            throw new RuntimeException();
+            throw new RuntimeException("邮件发送失败"+exception);
         }
-         sender.send(mimeMessage);
+        sender.send(mimeMessage);
+        return Boolean.TRUE;
     }
 
+    @Override
+    public MessageEnum getSource() {
+        return MessageEnum.EMAIL_MESSAGE;
+    }
 
     @Override
-    public <T extends MessageParticipant> void awardStrategy(MessageParticipant message)  {
-        this.messageSend(message);
+    public <T extends MessageParticipant> Boolean messageStrategy(MessageParticipant message)  {
+        return this.messageSend(message);
     }
 }

@@ -67,6 +67,6 @@ public abstract class MessageTemplate {
      *
      * @return
      */
-    protected abstract <T extends MessageParticipant> void messageSend(MessageParticipant message);
+    protected abstract <T extends MessageParticipant> Boolean messageSend(MessageParticipant message);
 
 }

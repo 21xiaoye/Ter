@@ -4,11 +4,13 @@ import com.cabin.ter.sys.domain.MailProperties;
 import com.cabin.ter.sys.mapper.MailPropertiesMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,9 +25,11 @@ import java.util.Random;
 @Slf4j
 @Component
 @AllArgsConstructor
+
 public class MailSenderConfig {
     @Autowired
     private MailPropertiesMapper mailPropertiesMapper;
+
     private final List<JavaMailSenderImpl> javaMailSenderList;
 
     /**
@@ -34,23 +38,27 @@ public class MailSenderConfig {
     @PostConstruct
     public void buildMailSender(){
         List<MailProperties> mailList = mailPropertiesMapper.findMailList();
+        mailList.forEach(item -> {
+            try {
+                JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+                javaMailSender.setDefaultEncoding(item.getEncoding());
+                javaMailSender.setHost(item.getMailHost());
+                javaMailSender.setPort(item.getPort());
+                javaMailSender.setProtocol(item.getProtocol());
+                javaMailSender.setUsername(item.getMailName());
+                javaMailSender.setPassword(item.getMailPasswd());
 
-        mailList.forEach(item->{
-            JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-            javaMailSender.setDefaultEncoding(item.getEncoding());
-            javaMailSender.setHost(item.getMailHost());
-            javaMailSender.setPort(item.getPort());
-            javaMailSender.setProtocol(item.getProtocol());
-            javaMailSender.setUsername(item.getMailName());
-            javaMailSender.setPassword(item.getMailPasswd());
-
-            javaMailSenderList.add(javaMailSender);
+                javaMailSenderList.add(javaMailSender);
+            } catch (Exception e) {
+                log.error("Error creating JavaMailSenderImpl", e);
+                throw new RuntimeException(e);
+            }
         });
     }
     /**
      * 获取MailSender
      *
-     * @return CustomMailSender
+     * @return JavaMailSenderImpl
      */
     public JavaMailSenderImpl getSender(){
         if(javaMailSenderList.isEmpty()){
