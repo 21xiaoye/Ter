@@ -1,6 +1,5 @@
 package com.cabin.ter.constants.enums;
 
-import com.cabin.ter.constants.IStatus;
 import lombok.Getter;
 
 /**

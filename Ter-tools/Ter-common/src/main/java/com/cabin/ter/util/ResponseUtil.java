@@ -2,9 +2,9 @@ package com.cabin.ter.util;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.constants.ApiResponse;
-import com.cabin.ter.constants.IStatus;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.enums.IStatus;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
 
 import jakarta.servlet.http.HttpServletResponse;

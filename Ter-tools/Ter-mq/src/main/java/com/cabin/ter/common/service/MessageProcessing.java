@@ -1,6 +1,6 @@
 package com.cabin.ter.common.service;
 
-import com.cabin.ter.common.constants.entity.MessageParticipant;
+import com.cabin.ter.common.constants.entity.msg.MessageParticipant;
 
 /**
  * 这个类是一些公共处理，暂未想好怎么使用

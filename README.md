@@ -43,6 +43,7 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 |     Swagger-UI      | API文档生成工具                            | https://github.com/swagger-api/swagger-ui                    |
 | Hibernate-validator | 接口校验框架                               | [hibernate.org/validator/](hibernate.org/validator/)         |
 |        minio        | 自建对象存储                               | https://github.com/minio/minio                               |
+|        Netty        | 高性能网络应用框架                               | https://github.com/netty/netty.git                               |
 
 ## 项目地址
 * 后端代码：https://github.com/21xiaoye/Ter.git
@@ -54,17 +55,33 @@ Ter 是一个练习项目，将目前主流的java开发技术进行整合，开
 ```text
   git clone https://github.com/21xiaoye/Ter.git
 ```
-
-修改Ter-server\Ter-admin下的application-test.properties文件 \
-因为还在开发过程当中，所以使用application-test.properties配置文件 \
+* 配置文件部分
+```text
+修改Ter-server\Ter-admin下的application-test.properties文件 
+因为还在开发过程当中，所以使用application-test.properties配置文件 
 当部署的时候将使用application-pro.properties配置文件,修改application.yml中 active: test 为 active: pro
+```
+* 数据库部分
+```text
+目前还没有写软件系统接口，所以出现邮箱发送消息失败，往数据库ter_mail_origin表添加相应邮箱源
+```
 ### 注意
 在生产环境下应关闭p6spy sql打印 、swagger生成文档
 ## 项目功能
-* 用户模块
-  * 用户注册、用户登录(验证码、密码、微信扫码登录),服务端二次加密(随机生成盐值哈希加密，MD5二次加密)
-* 视频模块
-* 聊天模块
+* 用户模块(ter-admin)
+  * 用户注册、用户登录
+```text
+支持邮箱验证码、微信扫码、密码三种登录方式，实现对用户的认证授权操作
+```
+* 视频模块(ter-video)
+* 聊天模块(ter-chat)
+* 消息推送模块(ter-mq)
+  * 邮箱推送
+  * websocket推送
+```text
+采用工厂模式+策略模式+模板模式，实现多种消息推送方法。
+可以对所推送消息可以根据不同的推送方法，制定不同的初始化、风控等操作。
+```
 
 ## 更新链接
 [Github](https://github.com/21xiaoye/Ter.git)

@@ -1,10 +1,8 @@
-package com.cabin.ter.common.constants.entity;
-
-
+package com.cabin.ter.common.constants.entity.msg;
 
 /**
  * <p>
- *     消息基类
+ *     推送消息基类
  * </p>
  *
  * @author xiaoye

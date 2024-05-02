@@ -1,6 +1,6 @@
 package com.cabin.ter.common.service;
 
-import com.cabin.ter.common.constants.entity.MessageParticipant;
+import com.cabin.ter.common.constants.entity.msg.MessageParticipant;
 import com.cabin.ter.common.constants.enums.MessageEnum;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;

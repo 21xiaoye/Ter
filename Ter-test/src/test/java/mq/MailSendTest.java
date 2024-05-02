@@ -1,7 +1,7 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
-import com.cabin.ter.common.constants.entity.EmailParticipant;
+import com.cabin.ter.common.constants.entity.msg.EmailParticipant;
 import com.cabin.ter.common.constants.enums.MessageEnum;
 import com.cabin.ter.common.service.MessageStrategyServiceFactory;
 import com.cabin.ter.common.service.impl.EmailStrategyServiceImpl;

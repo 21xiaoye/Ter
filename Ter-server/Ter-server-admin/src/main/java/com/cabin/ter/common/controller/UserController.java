@@ -1,24 +1,15 @@
 package com.cabin.ter.common.controller;
 
 
-import com.cabin.ter.admin.domain.User;
 import com.cabin.ter.common.payload.LoginRequest;
 import com.cabin.ter.common.service.UserService;
-import com.cabin.ter.common.util.JwtUtil;
-import com.cabin.ter.common.vo.JwtResponse;
-import com.cabin.ter.constants.ApiResponse;
+import com.cabin.ter.constants.vo.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 

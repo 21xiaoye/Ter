@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.admin.domain.Permission;
 import com.cabin.ter.admin.domain.Role;
 import com.cabin.ter.admin.domain.User;
-import com.cabin.ter.constants.ConstantPool;
+import com.cabin.ter.config.ConstantPool;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;

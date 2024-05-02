@@ -1,6 +1,6 @@
 package com.cabin.ter.common.exception;
 
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
 import lombok.EqualsAndHashCode;
 
