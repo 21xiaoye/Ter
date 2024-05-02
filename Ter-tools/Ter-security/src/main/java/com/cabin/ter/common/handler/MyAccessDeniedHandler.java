@@ -1,12 +1,10 @@
 package com.cabin.ter.common.handler;
 
-import com.cabin.ter.constants.IStatus;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.enums.Status;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

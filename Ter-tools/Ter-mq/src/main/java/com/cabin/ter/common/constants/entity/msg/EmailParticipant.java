@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.entity;
+package com.cabin.ter.common.constants.entity.msg;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- *     邮箱消息基类
+ *     邮箱推送消息
  * </p>
  *
  * @author xiaoye
@@ -20,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @Data
-public class EmailParticipant implements MessageParticipant {
+public class EmailParticipant implements MessageParticipant, Serializable {
     /**
      * 消息主题
      */

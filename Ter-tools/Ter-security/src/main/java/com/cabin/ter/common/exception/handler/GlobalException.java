@@ -2,8 +2,8 @@ package com.cabin.ter.common.exception.handler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.constants.ApiResponse;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

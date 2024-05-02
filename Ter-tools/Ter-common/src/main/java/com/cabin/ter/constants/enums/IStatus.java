@@ -1,4 +1,4 @@
-package com.cabin.ter.constants;
+package com.cabin.ter.constants.enums;
 
 public interface IStatus {
     /**

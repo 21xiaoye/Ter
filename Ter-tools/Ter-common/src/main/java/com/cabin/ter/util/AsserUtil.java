@@ -1,8 +1,8 @@
 package com.cabin.ter.util;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.cabin.ter.constants.IStatus;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.enums.IStatus;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

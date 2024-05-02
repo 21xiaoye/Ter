@@ -1,6 +1,6 @@
 package com.cabin.ter.common.template;
 
-import com.cabin.ter.common.constants.entity.MessageParticipant;
+import com.cabin.ter.common.constants.entity.msg.MessageParticipant;
 import com.cabin.ter.common.service.MessageProcessing;
 import lombok.extern.slf4j.Slf4j;
 

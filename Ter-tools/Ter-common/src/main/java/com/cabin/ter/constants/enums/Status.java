@@ -1,4 +1,4 @@
-package com.cabin.ter.constants;
+package com.cabin.ter.constants.enums;
 
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ import lombok.Getter;
  * @date Created in 2024-04-19 15:52
  */
 @Getter
-public enum Status implements IStatus{
+public enum Status implements IStatus {
     /**
      * 操作成功
      */

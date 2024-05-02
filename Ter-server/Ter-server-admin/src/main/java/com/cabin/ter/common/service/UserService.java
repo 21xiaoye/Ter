@@ -1,9 +1,7 @@
 package com.cabin.ter.common.service;
 
-import com.cabin.ter.admin.domain.User;
-
 import com.cabin.ter.common.payload.LoginRequest;
-import com.cabin.ter.constants.ApiResponse;
+import com.cabin.ter.constants.vo.response.ApiResponse;
 
 /**
  * @author xiaoye

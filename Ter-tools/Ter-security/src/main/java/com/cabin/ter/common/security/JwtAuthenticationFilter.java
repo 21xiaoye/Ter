@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.common.exception.SecurityException;
 import com.cabin.ter.common.service.CustomUserDetailService;
 import com.cabin.ter.common.util.JwtUtil;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

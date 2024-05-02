@@ -4,35 +4,28 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.User;
 import com.cabin.ter.admin.mapper.RoleMapper;
 import com.cabin.ter.admin.mapper.UserMapper;
-import com.cabin.ter.common.exception.SecurityException;
 import com.cabin.ter.common.payload.LoginRequest;
 import com.cabin.ter.common.security.MyPasswordEncoder;
-import com.cabin.ter.constants.IStatus;
-import com.cabin.ter.constants.Status;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.constants.enums.RoleEnum;
 import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.factory.MyPasswordEncoderFactory;
 import com.cabin.ter.common.service.UserService;
 import com.cabin.ter.common.util.JwtUtil;
 import com.cabin.ter.common.vo.JwtResponse;
-import com.cabin.ter.config.IdConfig;
-import com.cabin.ter.constants.ApiResponse;
+import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.constants.enums.EncryptionEnum;
 import com.cabin.ter.util.AsserUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.ISBN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author xiaoye

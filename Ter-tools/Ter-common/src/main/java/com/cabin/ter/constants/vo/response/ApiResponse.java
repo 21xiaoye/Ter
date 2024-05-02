@@ -1,6 +1,8 @@
-package com.cabin.ter.constants;
+package com.cabin.ter.constants.vo.response;
 
 
+import com.cabin.ter.constants.enums.IStatus;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
 
 import io.swagger.v3.oas.annotations.media.Schema;
