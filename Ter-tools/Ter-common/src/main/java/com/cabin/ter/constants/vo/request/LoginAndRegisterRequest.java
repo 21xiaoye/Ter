@@ -1,9 +1,8 @@
-package com.cabin.ter.common.payload;
+package com.cabin.ter.constants.vo.request;
 
 import com.cabin.ter.annotation.PasswordMatches;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -18,7 +17,7 @@ import lombok.Data;
  */
 @Schema(name = "登录-注册请求参数")
 @Data
-public class LoginRequest {
+public class LoginAndRegisterRequest {
     @Schema(name = "userEmail",description = "用户邮箱")
     @NotBlank(message = "邮箱不能为空")
     @Email

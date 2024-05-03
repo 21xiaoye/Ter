@@ -27,7 +27,7 @@ public class SysDomain {
     /**
      * 服务端口
      */
-    private String sysPort;
+    private Integer sysPort;
     /**
      * 服务类型
      */

@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 public class WebsocketServer implements Callable<Channel> {
 
 
-    @Value("${netty.port}")
     private int port;
 
     //配置服务端NIO线程组
@@ -42,7 +41,7 @@ public class WebsocketServer implements Callable<Channel> {
     private Channel channel;
     @Override
     public Channel call()  {
-        ChannelFuture channelFuture = null;
+        ChannelFuture channelFuture;
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         try {
             //boss辅助客户端的tcp连接请求  worker负责与客户端之前的读写操作

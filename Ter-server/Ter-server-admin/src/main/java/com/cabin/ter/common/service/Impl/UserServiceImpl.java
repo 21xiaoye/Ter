@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
-import com.cabin.ter.common.payload.LoginRequest;
+import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.common.security.MyPasswordEncoder;
 import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.constants.enums.RoleEnum;
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApiResponse userLogin(LoginRequest loginRequest) {
+    public ApiResponse userLogin(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getUserPasswd()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
     @Override
-    public ApiResponse userRegister(LoginRequest loginRequest) {
+    public ApiResponse userRegister(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
         checkUserExistence(loginRequest.getUserEmail());
 
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         return MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
     }
 
-    private UserDomain buildUser(LoginRequest request, String salt, String password) {
+    private UserDomain buildUser(LoginAndRegisterRequest request, String salt, String password) {
         return UserDomain.builder()
                 .userId(snowflake.nextId())
                 .userEmail(request.getUserEmail())
