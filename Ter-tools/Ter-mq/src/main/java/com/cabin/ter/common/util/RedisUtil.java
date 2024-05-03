@@ -56,9 +56,7 @@ public class RedisUtil {
 
     public void push(String channel, String message) {
         redisTemplate.convertAndSend(channel, message);
-
     }
-
 }
 
 

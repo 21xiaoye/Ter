@@ -1,8 +1,8 @@
 package com.cabin.ter.admin.mapper;
 
 
-import com.cabin.ter.admin.domain.Role;
-import com.cabin.ter.admin.domain.User;
+import com.cabin.ter.admin.domain.RoleDomain;
+import com.cabin.ter.admin.domain.UserDomain;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * @date Created in 2024-04-27 16:18
  */
 
-public interface RoleMapper {
+public interface RoleDomainMapper {
     /**
      * 根据用户Id查询角色Id列表
      * @param userId    用户Id
@@ -29,10 +29,10 @@ public interface RoleMapper {
      * 根据角色Id查询角色信息
      *
      * @param roleId    角色Id
-     * @return  Role
+     * @return  RoleDomain
      */
     @Select("SELECT roleId, roleName, description FROM ter_role WHERE roleId=#{roleId}")
-    Optional<Role> findRoleByRoleId(Integer roleId);
+    Optional<RoleDomain> findRoleByRoleId(Integer roleId);
 
     /**
      * 根据角色Id列表查询角色信息列表
@@ -40,7 +40,7 @@ public interface RoleMapper {
      * @param roleIds
      * @return  角色信息列表
      */
-    List<Role> findRolesByRoleIds(List<Integer> roleIds);
+    List<RoleDomain> findRolesByRoleIds(List<Integer> roleIds);
 
     /**
      * 为用户分配角色
@@ -48,5 +48,5 @@ public interface RoleMapper {
      * @param user
      * @return  Integer
      */
-    Integer insertUserRole(User user);
+    Integer insertUserRole(UserDomain user);
 }

@@ -26,6 +26,7 @@
         <module>Ter-tools/Ter-common</module>
         <module>Ter-tools/Ter-mq</module>
         <module>Ter-test</module>
+        <module>Ter-server/Ter-server-sys</module>
     </modules>
     <properties>
         <java.version>17</java.version>

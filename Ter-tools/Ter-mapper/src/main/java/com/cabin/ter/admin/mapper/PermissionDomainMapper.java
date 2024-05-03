@@ -1,6 +1,6 @@
 package com.cabin.ter.admin.mapper;
 
-import com.cabin.ter.admin.domain.Permission;
+import com.cabin.ter.admin.domain.PermissionDomain;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @date Created in 2024-04-27 16:19
  */
 
-public interface PermissionMapper {
+public interface PermissionDomainMapper {
     /**
      * 根据角色Id列表查询权限Id列表
      * @param roleIds   角色Id列表
@@ -25,5 +25,5 @@ public interface PermissionMapper {
      * @param permissionIds   权限Id列表
      * @return  权限列表
      */
-    List<Permission> selectPermissionsByPermissionIds(List<Long> permissionIds);
+    List<PermissionDomain> selectPermissionsByPermissionIds(List<Long> permissionIds);
 }

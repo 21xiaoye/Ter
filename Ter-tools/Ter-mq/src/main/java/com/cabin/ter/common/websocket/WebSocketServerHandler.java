@@ -87,6 +87,18 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     }
 
     /**
+     * 心跳检查
+     *
+     * @param ctx
+     * @param evt
+     * @throws Exception
+     */
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        super.userEventTriggered(ctx, evt);
+    }
+
+    /**
      * 抓住异常，当发生异常的时候，可以做一些相应的处理，比如打印日志、关闭链接
      */
     @Override
