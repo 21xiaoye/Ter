@@ -3,6 +3,7 @@ package com.cabin.ter.common.util;
 
 import com.alibaba.fastjson.JSON;
 import com.cabin.ter.common.constants.entity.ws.SendChannelInfo;
+import com.cabin.ter.common.constants.enums.ClusterEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,17 +23,16 @@ import java.util.List;
 @Slf4j
 @Component
 public class RedisUtil {
-
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     public void pushObj(SendChannelInfo userChannelInfo) {
-        redisTemplate.opsForHash().put("uav-flight-user",
+        redisTemplate.opsForHash().put(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage(),
                 userChannelInfo.getChannelId(), JSON.toJSONString(userChannelInfo));
     }
 
     public List<SendChannelInfo> popList() {
-        List<Object> values = redisTemplate.opsForHash().values("uav-flight-user");
+        List<Object> values = redisTemplate.opsForHash().values(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
         if (null == values) {
             return new ArrayList<>();
         }
@@ -46,11 +46,11 @@ public class RedisUtil {
     }
 
     public void remove(String channelId) {
-        redisTemplate.opsForHash().delete("uav-flight-user", channelId);
+        redisTemplate.opsForHash().delete(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), channelId);
     }
 
     public void clear() {
-        redisTemplate.delete("uav-flight-user");
+        redisTemplate.delete(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
     }
 
 
