@@ -40,5 +40,11 @@
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>Ter-mq</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

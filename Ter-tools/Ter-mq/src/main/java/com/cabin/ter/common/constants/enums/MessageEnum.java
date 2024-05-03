@@ -14,9 +14,10 @@ import lombok.Getter;
 @Getter
 public enum MessageEnum implements IStatus {
     EMAIL_MESSAGE(6001,"邮箱消息通知"),
-    WX_NO_MESSAGE(6002,"微信公众号通知"),
-    SHORT_MESSAGE(6003,"短信通知"),
-    USER_WEB_MESSAGE(6004,"用户网站通知");
+    WEBSOCKET_MESSAGE(6002,"websocket通知"),
+    WX_NO_MESSAGE(6003,"微信公众号通知"),
+    SHORT_MESSAGE(6004,"短信通知"),
+    ;
     private Integer code;
     private String message;
 

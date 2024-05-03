@@ -1,8 +1,10 @@
 package com.cabin.ter.common.websocket;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.cabin.ter.common.constants.entity.msg.WebSocketParticipant;
 import com.cabin.ter.common.constants.entity.ws.SendChannelInfo;
-import com.cabin.ter.common.constants.enums.ClusterEnum;
+import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
+import com.cabin.ter.common.service.WebSocketService;
 import com.cabin.ter.common.util.CacheUtil;
 import com.cabin.ter.common.util.MsgUtil;
 import com.cabin.ter.common.util.RedisUtil;
@@ -12,6 +14,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.websocketx.*;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +67,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         log.info("服务端收到新信息：" + request);
         try {
 
+
             log.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收到消息内容：" + request);
+//            JSONUtil.toBean()
+
             WebSocketParticipant msgAgreement = MsgUtil.json2Obj(request.toString());
 
             String toChannelId = msgAgreement.getChannelId();
@@ -76,7 +83,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
 
             log.info("接收消息的用户不在本服务端，PUSH！");
-            redisUtil.push(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), MsgUtil.obj2Json(msgAgreement));
+            redisUtil.push(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), MsgUtil.obj2Json(msgAgreement));
 
             if (null != channel) {
                 channel.writeAndFlush(new TextWebSocketFrame(request+" lalalalalalalalalalalalal"));
@@ -88,20 +95,15 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         }
     }
 
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        super.userEventTriggered(ctx, evt);
-    }
-
     /**
      * 捕获异常
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)  {
         ctx.close();
-        // 1. 清除 redis
+        //  清除 redis
         redisUtil.remove(ctx.channel().id().toString());
-        // 2. 清除缓存
+        //  清除缓存
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
         log.error("异常信息：\r\n" + cause.getMessage());
     }
@@ -151,5 +153,4 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         String responseJson = "不支持二进制消息";
         ctx.channel().writeAndFlush(new TextWebSocketFrame(responseJson));
     }
-
 }

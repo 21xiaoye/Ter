@@ -12,6 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
+
+/**
+ * <p>
+ *     redis 订阅者
+ * </p>
+ *
+ * @author xiaoye
+ * @date Created in 2024-05-03 23:05
+ */
 @Slf4j
 public class RedisChannelListener implements MessageListener {
 

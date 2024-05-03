@@ -1,5 +1,6 @@
 package com.cabin.ter.common.config;
 
+import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +56,7 @@ public class RedisConfig {
      * redis 监听器配置
      * @return
      */
-    @Bean
+    @Bean("myRedisMessageListenerContainer")
     public RedisMessageListenerContainer redisMessageListenerContainer(){
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(this.redisConnectionFactory);
@@ -73,7 +74,7 @@ public class RedisConfig {
     }
     @Bean
     ChannelTopic channelTopic() {
-        return new ChannelTopic("uav-flight-message");
+        return new ChannelTopic(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
     }
     /**
      * 序列化工具

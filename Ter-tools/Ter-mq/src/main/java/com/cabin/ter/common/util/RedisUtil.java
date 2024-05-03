@@ -3,7 +3,7 @@ package com.cabin.ter.common.util;
 
 import com.alibaba.fastjson.JSON;
 import com.cabin.ter.common.constants.entity.ws.SendChannelInfo;
-import com.cabin.ter.common.constants.enums.ClusterEnum;
+import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * <p>
- *     redis 工具类
+ *     redis 发布者配置
  * </p>
  *
  * @author xiaoye
@@ -27,12 +27,12 @@ public class RedisUtil {
     private StringRedisTemplate redisTemplate;
 
     public void pushObj(SendChannelInfo userChannelInfo) {
-        redisTemplate.opsForHash().put(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage(),
+        redisTemplate.opsForHash().put(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(),
                 userChannelInfo.getChannelId(), JSON.toJSONString(userChannelInfo));
     }
 
     public List<SendChannelInfo> popList() {
-        List<Object> values = redisTemplate.opsForHash().values(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
+        List<Object> values = redisTemplate.opsForHash().values(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
         if (null == values) {
             return new ArrayList<>();
         }
@@ -46,11 +46,11 @@ public class RedisUtil {
     }
 
     public void remove(String channelId) {
-        redisTemplate.opsForHash().delete(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), channelId);
+        redisTemplate.opsForHash().delete(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), channelId);
     }
 
     public void clear() {
-        redisTemplate.delete(ClusterEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
+        redisTemplate.delete(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
     }
 
 
@@ -58,5 +58,3 @@ public class RedisUtil {
         redisTemplate.convertAndSend(channel, message);
     }
 }
-
-
