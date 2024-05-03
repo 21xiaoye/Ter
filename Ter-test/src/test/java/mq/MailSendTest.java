@@ -19,8 +19,6 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 @RunWith(SpringRunner.class)
 public class MailSendTest {
     @Autowired
-    private EmailStrategyServiceImpl emailStrategyService;
-    @Autowired
     private TemplateEngine templateEngine;
     @Autowired
     private ApplicationContext context;

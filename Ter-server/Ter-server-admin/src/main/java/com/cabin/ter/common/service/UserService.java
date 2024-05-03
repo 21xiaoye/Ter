@@ -1,6 +1,6 @@
 package com.cabin.ter.common.service;
 
-import com.cabin.ter.common.payload.LoginRequest;
+import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
 /**
@@ -8,6 +8,6 @@ import com.cabin.ter.constants.vo.response.ApiResponse;
  * @date Created in 2024-04-23 14:46
  */
 public interface UserService {
-    ApiResponse userLogin(LoginRequest loginRequest);
-    ApiResponse userRegister(LoginRequest loginRequest);
+    ApiResponse userLogin(LoginAndRegisterRequest loginRequest);
+    ApiResponse userRegister(LoginAndRegisterRequest loginRequest);
 }

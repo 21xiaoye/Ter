@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cabin.ter.admin.mapper.RoleMapper">
+<mapper namespace="com.cabin.ter.admin.mapper.RoleDomainMapper">
     <cache></cache>
     <!-- 查询角色详情，基于角色ID列表 -->
-    <select id="findRolesByRoleIds" resultType="com.cabin.ter.admin.domain.Role">
+    <select id="findRolesByRoleIds" resultType="com.cabin.ter.admin.domain.RoleDomain">
         SELECT roleId, roleName, description
         FROM ter_role
         <where>
@@ -19,7 +19,7 @@
     </select>
 
     <!-- 插入用户角色关联信息 -->
-    <insert id="insertUserRole" parameterType="com.cabin.ter.admin.domain.User">
+    <insert id="insertUserRole" parameterType="com.cabin.ter.admin.domain.UserDomain">
         INSERT INTO ter_user_role (userId, roleId)
         VALUES
         <foreach collection="roleIdList" item="roleId" index="index" separator=",">

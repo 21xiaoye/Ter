@@ -1,7 +1,7 @@
 package com.cabin.ter.common.controller;
 
 
-import com.cabin.ter.common.payload.LoginRequest;
+import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.common.service.UserService;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
@@ -31,12 +31,12 @@ public class UserController {
 
     @Operation(summary = "用户登录接口")
     @PostMapping("/login")
-    public ApiResponse userLogin(@Valid @ModelAttribute LoginRequest loginRequest){
+    public ApiResponse userLogin(@Valid @ModelAttribute LoginAndRegisterRequest loginRequest){
         return userService.userLogin(loginRequest);
     }
 
     @PostMapping("/register")
-    public ApiResponse userRegister(@Valid @ModelAttribute LoginRequest loginRequest){
+    public ApiResponse userRegister(@Valid @ModelAttribute LoginAndRegisterRequest loginRequest){
         return userService.userRegister(loginRequest);
     }
 }

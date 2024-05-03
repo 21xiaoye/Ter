@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Ter-server-sys" />
         <module name="Ter-common" />
         <module name="Ter-oss-start" />
         <module name="Ter-server-chat" />
@@ -30,6 +31,7 @@
       <module name="Ter-server" options="-parameters" />
       <module name="Ter-server-admin" options="-parameters" />
       <module name="Ter-server-chat" options="-parameters" />
+      <module name="Ter-server-sys" options="-parameters" />
       <module name="Ter-server-video" options="-parameters" />
       <module name="Ter-test" options="-parameters" />
       <module name="Ter-tools" options="-parameters" />

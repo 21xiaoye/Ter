@@ -2,9 +2,9 @@ package com.cabin.ter.common.vo;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.cabin.ter.admin.domain.Permission;
-import com.cabin.ter.admin.domain.Role;
-import com.cabin.ter.admin.domain.User;
+import com.cabin.ter.admin.domain.PermissionDomain;
+import com.cabin.ter.admin.domain.RoleDomain;
+import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.config.ConstantPool;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
@@ -72,8 +72,8 @@ public class UserPrincipal implements UserDetails {
      */
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserPrincipal create(User user, List<Role> roles, List<Permission> permissions){
-        List<Integer> roleIdsList = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
+    public static UserPrincipal create(UserDomain user, List<RoleDomain> roles, List<PermissionDomain> permissions){
+        List<Integer> roleIdsList = roles.stream().map(RoleDomain::getRoleId).collect(Collectors.toList());
 
         List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());

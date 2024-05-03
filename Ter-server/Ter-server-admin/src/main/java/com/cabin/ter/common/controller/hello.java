@@ -1,8 +1,8 @@
 package com.cabin.ter.common.controller;
 
 
-import com.cabin.ter.admin.mapper.PermissionMapper;
-import com.cabin.ter.admin.mapper.UserMapper;
+import com.cabin.ter.admin.mapper.PermissionDomainMapper;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class hello{
     @Autowired
-    private UserMapper userMapper;
+    private UserDomainMapper userMapper;
 
     @Autowired
-    private PermissionMapper permissionMapper;
+    private PermissionDomainMapper permissionMapper;
 
     @GetMapping("/hello")
     @Operation(summary = "测试接口")

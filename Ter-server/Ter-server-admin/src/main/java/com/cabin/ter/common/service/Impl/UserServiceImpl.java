@@ -1,10 +1,10 @@
 package com.cabin.ter.common.service.Impl;
 
 import cn.hutool.core.lang.Snowflake;
-import com.cabin.ter.admin.domain.User;
-import com.cabin.ter.admin.mapper.RoleMapper;
-import com.cabin.ter.admin.mapper.UserMapper;
-import com.cabin.ter.common.payload.LoginRequest;
+import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.RoleDomainMapper;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
+import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.common.security.MyPasswordEncoder;
 import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.constants.enums.RoleEnum;
@@ -37,9 +37,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Snowflake snowflake;
     @Autowired
-    private UserMapper userMapper;
+    private UserDomainMapper userMapper;
     @Autowired
-    private RoleMapper roleMapper;
+    private RoleDomainMapper roleMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApiResponse userLogin(LoginRequest loginRequest) {
+    public ApiResponse userLogin(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getUserPasswd()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
@@ -57,14 +57,14 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
     @Override
-    public ApiResponse userRegister(LoginRequest loginRequest) {
+    public ApiResponse userRegister(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
         checkUserExistence(loginRequest.getUserEmail());
 
         String salt = myPasswordEncoder.generateSalt();
         String encryptedPassword = encryptPassword(loginRequest.getUserPasswd(), salt);
 
-        User user = buildUser(loginRequest, salt, encryptedPassword);
+        UserDomain user = buildUser(loginRequest, salt, encryptedPassword);
         validateAndSetRoles(user, loginRequest.getRoleId());
 
         userMapper.insertTerUser(user);
@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
         return MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
     }
 
-    private User buildUser(LoginRequest request, String salt, String password) {
-        return User.builder()
+    private UserDomain buildUser(LoginAndRegisterRequest request, String salt, String password) {
+        return UserDomain.builder()
                 .userId(snowflake.nextId())
                 .userEmail(request.getUserEmail())
                 .userPasswd(password)
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private void validateAndSetRoles(User user, Integer roleId) {
+    private void validateAndSetRoles(UserDomain user, Integer roleId) {
         RoleEnum role = RoleEnum.of(roleId);
         if (Objects.isNull(role)) {
             throw new BaseException(Status.PARAM_NOT_MATCH);

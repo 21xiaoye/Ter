@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date Created in 2024-04-27 15:46
  */
 @Data
-public class Permission implements Serializable {
+public class PermissionDomain implements Serializable {
     /**
      * 主键
      */

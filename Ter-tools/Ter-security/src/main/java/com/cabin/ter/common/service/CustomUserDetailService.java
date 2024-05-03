@@ -1,12 +1,12 @@
 package com.cabin.ter.common.service;
 
-import com.cabin.ter.admin.domain.Permission;
-import com.cabin.ter.admin.domain.Role;
-import com.cabin.ter.admin.domain.User;
+import com.cabin.ter.admin.domain.PermissionDomain;
+import com.cabin.ter.admin.domain.RoleDomain;
+import com.cabin.ter.admin.domain.UserDomain;
 
-import com.cabin.ter.admin.mapper.PermissionMapper;
-import com.cabin.ter.admin.mapper.RoleMapper;
-import com.cabin.ter.admin.mapper.UserMapper;
+import com.cabin.ter.admin.mapper.PermissionDomainMapper;
+import com.cabin.ter.admin.mapper.RoleDomainMapper;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.common.vo.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,24 +28,24 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
     @Autowired
-    private UserMapper userMapper;
+    private UserDomainMapper userMapper;
     @Autowired
-    private RoleMapper roleMapper;
+    private RoleDomainMapper roleMapper;
     @Autowired
-    private PermissionMapper permissionMapper;
+    private PermissionDomainMapper permissionMapper;
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        User user = userMapper.findByUsernameOrEmailOrPhone(userEmail).orElseThrow(() -> new UsernameNotFoundException("未找到用户信息:" + userEmail));
+        UserDomain user = userMapper.findByUsernameOrEmailOrPhone(userEmail).orElseThrow(() -> new UsernameNotFoundException("未找到用户信息:" + userEmail));
 
         // 查询用户角色Id
         List<Integer> roleIdsByUserId = roleMapper.findRoleIdsByUserId(user.getUserId());
-        List<Role> roles = roleMapper.findRolesByRoleIds(roleIdsByUserId);
+        List<RoleDomain> roles = roleMapper.findRolesByRoleIds(roleIdsByUserId);
 
         // 根据角色Id查询用户权限
-        List<Integer> rolesIds = roles.stream().map(Role::getRoleId).collect(Collectors.toList());
+        List<Integer> rolesIds = roles.stream().map(RoleDomain::getRoleId).collect(Collectors.toList());
         List<Long> permissionIds = permissionMapper.selectPermissionIdsByRoleIds(rolesIds);
 
-        List<Permission> permissions = permissionMapper.selectPermissionsByPermissionIds(permissionIds);
+        List<PermissionDomain> permissions = permissionMapper.selectPermissionsByPermissionIds(permissionIds);
         return UserPrincipal.create(user,roles,permissions);
     }
 }

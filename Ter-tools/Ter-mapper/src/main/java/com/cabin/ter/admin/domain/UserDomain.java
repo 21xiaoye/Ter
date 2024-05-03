@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class User implements Serializable {
+public class UserDomain implements Serializable {
     /**
      * 主键
      */
