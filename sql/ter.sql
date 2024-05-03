@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 29/04/2024 20:11:22
+ Date: 03/05/2024 16:07:11
 */
 
 SET NAMES utf8mb4;
@@ -87,6 +87,23 @@ CREATE TABLE `ter_dict_type`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for ter_mail_origin
+-- ----------------------------
+DROP TABLE IF EXISTS `ter_mail_origin`;
+CREATE TABLE `ter_mail_origin`  (
+  `mailOriginId` bigint(20) UNSIGNED NOT NULL COMMENT '邮箱发送源id',
+  `mailName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称',
+  `mailPasswd` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '密码(授权码)',
+  `mailHost` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务商',
+  `protocol` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '协议',
+  `port` int(11) NULL DEFAULT NULL COMMENT '端口',
+  `encoding` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '编码格式',
+  `createTime` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+  `updateTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`mailOriginId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '邮箱发送源' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for ter_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `ter_permission`;
@@ -124,6 +141,19 @@ CREATE TABLE `ter_role_permission`  (
   `permissionId` bigint(20) UNSIGNED NOT NULL,
   PRIMARY KEY (`roleId`, `permissionId`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ter_sys
+-- ----------------------------
+DROP TABLE IF EXISTS `ter_sys`;
+CREATE TABLE `ter_sys`  (
+  `sysId` bigint(20) UNSIGNED NOT NULL COMMENT '服务主键',
+  `sysHost` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务ip',
+  `sysPort` int(11) NULL DEFAULT NULL COMMENT '服务端口',
+  `startTime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '启动时间',
+  `sysType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务类型',
+  PRIMARY KEY (`sysId`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统服务信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ter_thumb_like
