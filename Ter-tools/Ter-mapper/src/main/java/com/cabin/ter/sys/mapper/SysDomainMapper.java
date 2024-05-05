@@ -14,6 +14,5 @@ import java.util.List;
  * @date Created in 2024-05-03 08:54
  */
 public interface SysDomainMapper {
-    @Select("SELECT sysId,sysHost,sysPort,sysType FROM ter_sys WHERE sysType='ws' ")
-    List<SysDomain> selectSysWs();
+    Integer insertSysWsList(List<SysDomain> sysDomainList);
 }

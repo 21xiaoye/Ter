@@ -1,6 +1,6 @@
 package com.cabin.ter.common.service.impl;
 
-import com.cabin.ter.common.constants.entity.msg.WebSocketParticipant;
+import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.common.service.WebSocketService;
 import io.netty.channel.Channel;
 
@@ -15,7 +15,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     /**
      * 所有已连接的websocket连接列表和一些额外参数
      */
-    private static final ConcurrentHashMap<Channel, WebSocketParticipant> ONLINE_WS_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Channel, WebSocketSingleParticipant> ONLINE_WS_MAP = new ConcurrentHashMap<>();
     /**
      * 所有在线的用户和对应的socket
      */

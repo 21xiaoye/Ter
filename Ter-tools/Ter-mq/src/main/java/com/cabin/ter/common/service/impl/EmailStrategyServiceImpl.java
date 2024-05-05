@@ -1,8 +1,8 @@
 package com.cabin.ter.common.service.impl;
 
 import com.cabin.ter.common.config.MailSenderConfig;
-import com.cabin.ter.common.constants.entity.msg.EmailParticipant;
-import com.cabin.ter.common.constants.entity.msg.MessageParticipant;
+import com.cabin.ter.common.constants.participant.msg.EmailParticipant;
+import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
 import com.cabin.ter.common.constants.enums.MessageEnum;
 import com.cabin.ter.common.service.BaseMessageStrategyService;
 import com.cabin.ter.common.template.MessageTemplate;

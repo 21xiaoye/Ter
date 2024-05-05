@@ -25,8 +25,7 @@ import java.util.concurrent.Callable;
 @Service
 @Data
 public class WebsocketServer implements Callable<Channel> {
-
-
+    @Value("${netty.port}")
     private int port;
 
     //配置服务端NIO线程组

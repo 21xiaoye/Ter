@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.entity.ws;
+package com.cabin.ter.common.constants.participant.ws;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,16 +8,17 @@ import java.util.Date;
 
 /**
  * <p>
- *     发送者管道信息，记录分配的服务器
+ *    服务端信息
  * </p>
  *
  * @author xiaoye
- * @date Created in 2024-05-02 21:39
+ * @date Created in 2024-05-02 22:00
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SendChannelInfo {
+public class ServerInfo {
+
     /**
      * 服务Ip
      */
@@ -29,12 +30,7 @@ public class SendChannelInfo {
     private int port;
 
     /**
-     * 频道id
+     * 服务启动时间
      */
-    private String channelId;
-
-    /**
-     * 链接时间
-     */
-    private Date linkDate;
+    private Date openDate;
 }

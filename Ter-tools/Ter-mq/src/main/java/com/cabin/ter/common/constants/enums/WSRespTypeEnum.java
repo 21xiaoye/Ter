@@ -1,8 +1,7 @@
 package com.cabin.ter.common.constants.enums;
 
-import com.cabin.ter.common.constants.entity.ws.WsLoginSuccess;
-import com.cabin.ter.common.constants.entity.ws.WsLoginUrl;
-import com.cabin.ter.constants.enums.IStatus;
+import com.cabin.ter.common.constants.vo.response.WsLoginSuccess;
+import com.cabin.ter.common.constants.vo.response.WsLoginUrl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,27 +1,25 @@
 package com.cabin.ter.common.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.cabin.ter.common.constants.entity.ws.SendChannelInfo;
-import com.cabin.ter.common.constants.entity.ws.ServerInfo;
+import com.cabin.ter.common.constants.enums.SourceEnum;
+import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
+import com.cabin.ter.common.constants.participant.ws.SendChannelInfo;
+import com.cabin.ter.common.constants.participant.ws.ServerInfo;
+import com.cabin.ter.common.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.common.util.CacheUtil;
 import com.cabin.ter.common.util.RedisUtil;
-import com.cabin.ter.common.websocket.WebsocketServer;
-import com.cabin.ter.constants.enums.Status;
-import com.cabin.ter.constants.vo.response.ApiResponse;
-import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/test")
@@ -29,6 +27,8 @@ import java.util.concurrent.Future;
 public class WebSocketController {
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
 
     /**
      *  查 服务端 列表
@@ -63,4 +63,13 @@ public class WebSocketController {
         }
     }
 
+    @GetMapping("/mq")
+    public SendResult mqTest(){
+        WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
+        webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
+        webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
+        webSocketSingleParticipant.setContent("这里是消息的主要内容");
+        webSocketSingleParticipant.setSendTime(LocalDate.now());
+        return rocketMQEnhanceTemplate.send(TopicConstant.SOURCE_BROADCASTING_GROUP, webSocketSingleParticipant);
+    }
 }

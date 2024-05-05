@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.entity.ws;
+package com.cabin.ter.common.constants.vo.response;
 
 import lombok.Data;
 

@@ -3,5 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.sys.mapper.SysDomainMapper">
-
+    <insert id="insertSysWsList" parameterType="java.util.List">
+        INSERT INTO ter_sys (sysId, sysHost, sysPort, sysType)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.sysId}, #{item.sysHost}, #{item.sysPort}, #{item.sysType})
+        </foreach>
+    </insert>
 </mapper>

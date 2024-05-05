@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.entity.msg;
+package com.cabin.ter.common.constants.participant.msg;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

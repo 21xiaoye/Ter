@@ -1,6 +1,8 @@
 package com.cabin.ter.sys.domain;
 
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
  * @date Created in 2024-05-03 08:52
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysDomain {

@@ -1,8 +1,8 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
-import com.cabin.ter.common.constants.entity.msg.WebSocketParticipant;
-import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
+import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.common.util.MsgUtil;
 import com.cabin.ter.common.util.RedisUtil;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class WebSocketTest {
     private RedisUtil redisUtil;
     @Test
     public void test(){
-        WebSocketParticipant msgAgreement = new WebSocketParticipant();
-        redisUtil.push(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), MsgUtil.obj2Json(msgAgreement));
+        WebSocketSingleParticipant msgAgreement = new WebSocketSingleParticipant();
+        redisUtil.push(TopicConstant.REDIS_USER_MESSAGE_PUSH, MsgUtil.obj2Json(msgAgreement));
     }
 }

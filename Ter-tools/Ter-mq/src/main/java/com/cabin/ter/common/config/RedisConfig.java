@@ -1,6 +1,6 @@
 package com.cabin.ter.common.config;
 
-import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
+import com.cabin.ter.common.constants.participant.TopicConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,7 +74,7 @@ public class RedisConfig {
     }
     @Bean
     ChannelTopic channelTopic() {
-        return new ChannelTopic(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
+        return new ChannelTopic(TopicConstant.REDIS_USER_MESSAGE_PUSH);
     }
     /**
      * 序列化工具

@@ -2,8 +2,8 @@ package com.cabin.ter.common.util;
 
 
 import com.alibaba.fastjson.JSON;
-import com.cabin.ter.common.constants.entity.ws.SendChannelInfo;
-import com.cabin.ter.common.constants.enums.ClusterTopicEnum;
+import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.ws.SendChannelInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,12 +27,12 @@ public class RedisUtil {
     private StringRedisTemplate redisTemplate;
 
     public void pushObj(SendChannelInfo userChannelInfo) {
-        redisTemplate.opsForHash().put(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(),
+        redisTemplate.opsForHash().put(TopicConstant.REDIS_USER_MESSAGE_PUSH,
                 userChannelInfo.getChannelId(), JSON.toJSONString(userChannelInfo));
     }
 
     public List<SendChannelInfo> popList() {
-        List<Object> values = redisTemplate.opsForHash().values(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
+        List<Object> values = redisTemplate.opsForHash().values(TopicConstant.REDIS_USER_MESSAGE_PUSH);
         if (null == values) {
             return new ArrayList<>();
         }
@@ -46,11 +46,11 @@ public class RedisUtil {
     }
 
     public void remove(String channelId) {
-        redisTemplate.opsForHash().delete(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage(), channelId);
+        redisTemplate.opsForHash().delete(TopicConstant.REDIS_USER_MESSAGE_PUSH, channelId);
     }
 
     public void clear() {
-        redisTemplate.delete(ClusterTopicEnum.REDIS_USER_MESSAGE_PUSH.getMessage());
+        redisTemplate.delete(TopicConstant.REDIS_USER_MESSAGE_PUSH);
     }
 
 

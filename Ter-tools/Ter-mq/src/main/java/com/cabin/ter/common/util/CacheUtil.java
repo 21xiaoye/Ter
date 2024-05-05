@@ -1,6 +1,6 @@
 package com.cabin.ter.common.util;
 
-import com.cabin.ter.common.constants.entity.ws.ServerInfo;
+import com.cabin.ter.common.constants.participant.ws.ServerInfo;
 import com.cabin.ter.common.websocket.WebsocketServer;
 import io.netty.channel.Channel;
 
