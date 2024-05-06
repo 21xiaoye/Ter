@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public class WebSocketController {
         webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
         webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
         webSocketSingleParticipant.setContent("这里是消息的主要内容");
-        webSocketSingleParticipant.setSendTime(LocalDate.now());
+        webSocketSingleParticipant.setSendTime(LocalDateTime.now());
         return rocketMQEnhanceTemplate.send(TopicConstant.SOURCE_BROADCASTING_GROUP, webSocketSingleParticipant);
     }
 }
