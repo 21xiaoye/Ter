@@ -1,7 +1,7 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
-import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.common.util.MsgUtil;
 import com.cabin.ter.common.util.RedisUtil;

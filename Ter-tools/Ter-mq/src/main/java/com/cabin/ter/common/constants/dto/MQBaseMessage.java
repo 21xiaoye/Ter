@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -32,8 +33,7 @@ public abstract class MQBaseMessage implements MessageParticipant, Serializable 
     /**
      * 发送时间
      */
-    protected LocalDate sendTime;
-
+    protected LocalDateTime sendTime;
     /**
      * 重试次数，用于判断重试次数，超过重试次数发送异常警告
      */

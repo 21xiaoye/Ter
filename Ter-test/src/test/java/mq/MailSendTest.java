@@ -2,7 +2,7 @@ package mq;
 
 import com.cabin.ter.TerApplication;
 import com.cabin.ter.common.constants.participant.msg.EmailParticipant;
-import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.common.service.MessageStrategyServiceFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ public class MailSendTest {
                 .subject("测试")
                 .content(emailTemplate)
                 .build();
-        MessageStrategyServiceFactory.getInstance().getAwardResult(message, MessageEnum.EMAIL_MESSAGE);
+        MessageStrategyServiceFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
     }
 
 }

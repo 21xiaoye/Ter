@@ -2,7 +2,7 @@ package com.cabin.ter.common.template;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cabin.ter.common.constants.dto.MQBaseMessage;
-import com.cabin.ter.common.constants.participant.RocketMqSysConstant;
+import com.cabin.ter.common.constants.participant.constant.RocketMqSysConstant;
 import com.cabin.ter.common.constants.participant.msg.RocketEnhanceProperties;
 import jakarta.annotation.Resource;
 import lombok.Data;

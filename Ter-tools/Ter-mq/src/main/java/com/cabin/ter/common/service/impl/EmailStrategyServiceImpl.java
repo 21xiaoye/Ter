@@ -3,7 +3,7 @@ package com.cabin.ter.common.service.impl;
 import com.cabin.ter.common.config.MailSenderConfig;
 import com.cabin.ter.common.constants.participant.msg.EmailParticipant;
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
-import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.common.service.BaseMessageStrategyService;
 import com.cabin.ter.common.template.MessageTemplate;
 import jakarta.mail.MessagingException;
@@ -53,8 +53,8 @@ public class EmailStrategyServiceImpl extends MessageTemplate
     }
 
     @Override
-    public MessageEnum getSource() {
-        return MessageEnum.EMAIL_MESSAGE;
+    public MessagePushMethodEnum getSource() {
+        return MessagePushMethodEnum.EMAIL_MESSAGE;
     }
 
     @Override

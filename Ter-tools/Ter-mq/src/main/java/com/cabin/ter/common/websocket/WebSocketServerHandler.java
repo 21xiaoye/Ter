@@ -1,6 +1,6 @@
 package com.cabin.ter.common.websocket;
 
-import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.common.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.common.util.CacheUtil;

@@ -2,7 +2,7 @@ package com.cabin.ter.common.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.cabin.ter.common.constants.enums.SourceEnum;
-import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.common.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.common.constants.participant.ws.ServerInfo;

@@ -1,7 +1,7 @@
 package com.cabin.ter.common.service.impl;
 
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
-import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.common.service.BaseMessageStrategyService;
 import com.cabin.ter.common.template.MessageTemplate;
 import org.springframework.stereotype.Component;
@@ -23,14 +23,12 @@ public class WebStrategyServiceImpl extends MessageTemplate
     }
 
     @Override
-    public MessageEnum getSource() {
-        return MessageEnum.WEBSOCKET_MESSAGE;
+    public MessagePushMethodEnum getSource() {
+        return MessagePushMethodEnum.USER_WEB_MESSAGE;
     }
 
     @Override
     protected <T extends MessageParticipant> Boolean messageSend(MessageParticipant message) {
         return null;
     }
-
-
 }

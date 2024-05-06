@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.participant;
+package com.cabin.ter.common.constants.participant.constant;
 
 /**
  * <p>
@@ -8,7 +8,7 @@ package com.cabin.ter.common.constants.participant;
  * @author xiaoye
  * @date Created in 2024-05-05 15:58
  */
-public interface RocketMQDelayLevel {
+public interface RocketMQDelayLevelConstant {
     int ONE_SECOND = 1;
     int FIVE_SECOND = 2;
     int TEN_SECOND = 3;

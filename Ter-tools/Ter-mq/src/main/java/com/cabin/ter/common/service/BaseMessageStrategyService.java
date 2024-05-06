@@ -1,7 +1,7 @@
 package com.cabin.ter.common.service;
 
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
-import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 
 /**
  * <p>
@@ -13,5 +13,5 @@ import com.cabin.ter.common.constants.enums.MessageEnum;
  */
 public interface BaseMessageStrategyService {
     <T extends MessageParticipant> Boolean messageStrategy(MessageParticipant message);
-    MessageEnum getSource();
+    MessagePushMethodEnum getSource();
 }

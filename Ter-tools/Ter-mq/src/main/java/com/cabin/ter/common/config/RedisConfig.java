@@ -1,6 +1,6 @@
 package com.cabin.ter.common.config;
 
-import com.cabin.ter.common.constants.participant.TopicConstant;
+import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

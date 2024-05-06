@@ -1,4 +1,4 @@
-package com.cabin.ter.common.constants.participant;
+package com.cabin.ter.common.constants.participant.constant;
 
 /**
  * <p>

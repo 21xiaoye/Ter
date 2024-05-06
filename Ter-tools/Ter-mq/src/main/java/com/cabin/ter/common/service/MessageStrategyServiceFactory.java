@@ -1,7 +1,7 @@
 package com.cabin.ter.common.service;
 
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
-import com.cabin.ter.common.constants.enums.MessageEnum;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class MessageStrategyServiceFactory implements ApplicationContextAware{
     @Autowired
     private ListableBeanFactory beanFactory;
     private static final Object lock = new Object();
-    private volatile  static Map<MessageEnum, BaseMessageStrategyService> MAP;
+    private volatile  static Map<MessagePushMethodEnum, BaseMessageStrategyService> MAP;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -49,7 +49,7 @@ public class MessageStrategyServiceFactory implements ApplicationContextAware{
      * @param messageType 消息策略类型参数
      * @return  消息策略
      */
-    public static BaseMessageStrategyService getStrategy(MessageEnum messageType) {
+    public static BaseMessageStrategyService getStrategy(MessagePushMethodEnum messageType) {
         return MAP.get(messageType);
     }
 
@@ -61,7 +61,7 @@ public class MessageStrategyServiceFactory implements ApplicationContextAware{
      * @param messageType   消息策略类型参数
      * @return  Boolean
      */
-    public Boolean getAwardResult(MessageParticipant message, MessageEnum messageType) {
+    public Boolean getAwardResult(MessageParticipant message, MessagePushMethodEnum messageType) {
         try {
             BaseMessageStrategyService strategy = getStrategy(messageType);
             if (Objects.isNull(strategy)) {

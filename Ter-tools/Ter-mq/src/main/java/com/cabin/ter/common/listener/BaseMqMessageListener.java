@@ -3,9 +3,7 @@ package com.cabin.ter.common.listener;
 import cn.hutool.json.JSONUtil;
 import com.cabin.ter.common.constants.dto.MQBaseMessage;
 import com.cabin.ter.common.constants.enums.SourceEnum;
-import com.cabin.ter.common.constants.participant.RocketMQDelayLevel;
-import com.cabin.ter.common.constants.participant.RocketMqSysConstant;
-import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
+import com.cabin.ter.common.constants.participant.constant.RocketMQDelayLevelConstant;
 import com.cabin.ter.common.template.RocketMQEnhanceTemplate;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,7 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
     /**
      * 延时等级
      */
-    private static final int DELAY_LEVEL = RocketMQDelayLevel.FIVE_SECOND;
+    private static final int DELAY_LEVEL = RocketMQDelayLevelConstant.FIVE_SECOND;
 
 
     @Resource
