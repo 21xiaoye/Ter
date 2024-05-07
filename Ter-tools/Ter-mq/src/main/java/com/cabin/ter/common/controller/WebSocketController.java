@@ -1,6 +1,7 @@
 package com.cabin.ter.common.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.common.constants.enums.SourceEnum;
 import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
@@ -9,6 +10,7 @@ import com.cabin.ter.common.constants.participant.ws.ServerInfo;
 import com.cabin.ter.common.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.common.util.CacheUtil;
 import com.cabin.ter.common.util.RedisUtil;
+import com.cabin.ter.constants.vo.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,12 +67,14 @@ public class WebSocketController {
     }
 
     @GetMapping("/mq")
-    public SendResult mqTest(){
+    public ApiResponse mqTest(){
         WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
         webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
         webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
         webSocketSingleParticipant.setContent("这里是消息的主要内容");
         webSocketSingleParticipant.setSendTime(LocalDateTime.now());
-        return rocketMQEnhanceTemplate.send(TopicConstant.SOURCE_BROADCASTING_GROUP, webSocketSingleParticipant);
+        webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.USER_WEB_MESSAGE);
+        rocketMQEnhanceTemplate.send(TopicConstant.ROCKETMQ_BROADCASTING_PUSH_MESSAGE_TOPIC,TopicConstant.SOURCE_BROADCASTING_WIND_TAG, webSocketSingleParticipant);
+        return ApiResponse.ofSuccess();
     }
 }

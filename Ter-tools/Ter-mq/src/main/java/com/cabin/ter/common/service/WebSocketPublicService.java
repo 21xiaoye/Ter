@@ -3,10 +3,14 @@ package com.cabin.ter.common.service;
 import io.netty.channel.Channel;
 
 /**
+ * <p>
+ *     处理本地连接服务，列获取验证码、实时数据等
+ * </p>
+ *
  * @author xiaoye
  * @date Created in 2024-05-03 20:32
  */
-public interface WebSocketService {
+public interface WebSocketPublicService {
     /**
      * 处理用户登录请求，需要返回一张带code的二维码
      *

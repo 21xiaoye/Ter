@@ -29,8 +29,8 @@ public class RedisChannelListener implements MessageListener{
 
         log.info("接收到PUSH消息：{}", message);
         WebSocketSingleParticipant msgAgreement = JSON.parseObject(message.getBody(), WebSocketSingleParticipant.class);
-        String toChannelId = msgAgreement.getChannelId();
-        Channel channel = CacheUtil.cacheChannel.get(toChannelId);
+        String toAddress = msgAgreement.getToAddress();
+        Channel channel = CacheUtil.cacheChannel.get(toAddress);
         if (null == channel) {
             return;
         }

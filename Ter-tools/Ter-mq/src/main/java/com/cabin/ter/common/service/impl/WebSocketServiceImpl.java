@@ -1,7 +1,7 @@
 package com.cabin.ter.common.service.impl;
 
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
-import com.cabin.ter.common.service.WebSocketService;
+import com.cabin.ter.common.service.WebSocketPublicService;
 import io.netty.channel.Channel;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author xiaoye
  * @date Created in 2024-05-03 21:11
  */
-public class WebSocketServiceImpl implements WebSocketService {
+public class WebSocketServiceImpl implements WebSocketPublicService {
     /**
      * 所有已连接的websocket连接列表和一些额外参数
      */

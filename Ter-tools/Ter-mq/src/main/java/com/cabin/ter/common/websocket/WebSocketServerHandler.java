@@ -69,9 +69,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
             WebSocketSingleParticipant msgAgreement = MsgUtil.json2Obj(request.toString());
 
-            String toChannelId = msgAgreement.getChannelId();
+            String toAddress = msgAgreement.getToAddress();
 
-            Channel channel = CacheUtil.cacheChannel.get(toChannelId);
+            Channel channel = CacheUtil.cacheChannel.get(toAddress);
             if (null != channel) {
                 channel.writeAndFlush(new TextWebSocketFrame(MsgUtil.obj2Json(msgAgreement) + " lalalalalalalalalalalalal"));
                 return;

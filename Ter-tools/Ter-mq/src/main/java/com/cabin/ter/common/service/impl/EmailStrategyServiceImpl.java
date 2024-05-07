@@ -1,6 +1,7 @@
 package com.cabin.ter.common.service.impl;
 
 import com.cabin.ter.common.config.MailSenderConfig;
+import com.cabin.ter.common.constants.dto.MQBaseMessage;
 import com.cabin.ter.common.constants.participant.msg.EmailParticipant;
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
 import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
@@ -38,7 +39,7 @@ public class EmailStrategyServiceImpl extends MessageTemplate
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
             EmailParticipant emailParticipant =(EmailParticipant) message;
-
+            System.out.println("消费的消息内容为"+emailParticipant);
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setText(emailParticipant.getContent(),true);
             helper.setTo(emailParticipant.getTo());

@@ -20,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @Data
-public class EmailParticipant implements MessageParticipant, Serializable {
+public class EmailParticipant  implements MessageParticipant, Serializable {
     /**
      * 消息主题
      */

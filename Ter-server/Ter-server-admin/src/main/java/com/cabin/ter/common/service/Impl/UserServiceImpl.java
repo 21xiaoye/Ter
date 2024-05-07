@@ -4,6 +4,11 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
+import com.cabin.ter.common.constants.enums.SourceEnum;
+import com.cabin.ter.common.constants.participant.constant.TopicConstant;
+import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
+import com.cabin.ter.common.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.common.security.MyPasswordEncoder;
 import com.cabin.ter.constants.enums.Status;
@@ -24,8 +29,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author xiaoye
@@ -45,6 +52,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MyPasswordEncoder myPasswordEncoder;
     @Autowired
+    private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
+    @Autowired
     private JwtUtil jwtUtil;
 
 
@@ -56,6 +65,8 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtil.createJWT(authenticate, loginRequest.getRememberMe());
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
+
+
     @Override
     public ApiResponse userRegister(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
@@ -69,6 +80,15 @@ public class UserServiceImpl implements UserService {
 
         userMapper.insertTerUser(user);
         roleMapper.insertUserRole(user);
+
+        WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
+        webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
+        webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
+        webSocketSingleParticipant.setContent("欢迎来到Ter");
+        webSocketSingleParticipant.setSendTime(LocalDateTime.now());
+        webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.EMAIL_MESSAGE);
+        webSocketSingleParticipant.setToAddress(loginRequest.getUserEmail());
+        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC, TopicConstant.SOURCE_SINGLE_PUSH_TAG,webSocketSingleParticipant);
         return ApiResponse.ofSuccess();
     }
 

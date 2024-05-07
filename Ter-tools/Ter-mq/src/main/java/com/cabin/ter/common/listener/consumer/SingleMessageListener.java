@@ -7,13 +7,9 @@ import com.cabin.ter.common.constants.participant.constant.TopicConstant;
 import com.cabin.ter.common.constants.participant.msg.EmailParticipant;
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
 import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
-import com.cabin.ter.common.constants.participant.msg.WebSocketWideParticipant;
 import com.cabin.ter.common.listener.BaseMqMessageListener;
 import com.cabin.ter.common.service.BaseMessageStrategyService;
 import com.cabin.ter.common.service.MessageStrategyServiceFactory;
-import com.cabin.ter.common.util.CacheUtil;
-import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.MessageModel;
@@ -22,50 +18,50 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
 /**
- * <p>
- *    广播消息 消费者
- * </p>
- *
  * @author xiaoye
- * @date Created in 2024-05-06 21:35
+ * @date Created in 2024-05-05 21:09
  */
 @Slf4j
 @Component
 @RocketMQMessageListener(
-        topic = TopicConstant.ROCKETMQ_BROADCASTING_PUSH_MESSAGE_TOPIC,
-        consumerGroup = TopicConstant.SOURCE_BROADCASTING_GROUP,
-        selectorExpression = TopicConstant.SOURCE_BROADCASTING_WIND_TAG,
+        topic = TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,
+        consumerGroup = TopicConstant.SINGLE_SINGLE_PUSH_MESSAGE_GROUP,
+        selectorExpression = TopicConstant.SOURCE_SINGLE_PUSH_TAG,
         messageModel = MessageModel.BROADCASTING,
         consumeMode = ConsumeMode.CONCURRENTLY,
         consumeThreadNumber = 5
 )
-public class WideMessageListener extends BaseMqMessageListener implements RocketMQListener<WebSocketWideParticipant>  {
-
+public class SingleMessageListener extends BaseMqMessageListener implements RocketMQListener<WebSocketSingleParticipant> {
     @Override
     protected void handleMessage(MQBaseMessage message) throws Exception {
-        WebSocketWideParticipant webSocketWideMessage = (WebSocketWideParticipant)message;
-        MessagePushMethodEnum pushMethod = webSocketWideMessage.getPushMethod();
+        log.info("单点发送消费者开始进行消费了");
+        WebSocketSingleParticipant singleMessage  = (WebSocketSingleParticipant) message;
+        MessagePushMethodEnum pushMethod = singleMessage.getPushMethod();
         switch (pushMethod){
-            case USER_WEB_MESSAGE -> {
-                for (Channel channel : CacheUtil.cacheChannel.values()) {
-                    channel.writeAndFlush(new TextWebSocketFrame(webSocketWideMessage.getContent()+"Hello !"));
-                }
+            case EMAIL_MESSAGE -> {
+                log.info("开始进行消息消费了哦");
+                BaseMessageStrategyService emailStrategy = MessageStrategyServiceFactory.getStrategy(MessagePushMethodEnum.EMAIL_MESSAGE);
+                EmailParticipant emailMessageBuild = EmailParticipant.builder()
+                        .subject(singleMessage.getSource())
+                        .content(singleMessage.getContent())
+                        .to(singleMessage.getToAddress())
+                        .build();
+                emailStrategy.messageStrategy(emailMessageBuild);
             }
             default -> {
-                log.error("推送方式不支持");
-                throwException();
+                log.info("推送失败,推送方式不支持");
             }
         }
     }
 
     @Override
     protected void handleMaxRetriesExceeded(MQBaseMessage message) {
-
+        log.info("进行事务处理");
     }
 
     @Override
     protected String ConsumerName() {
-        return ConsumerNameConstant.WIDE_MESSAGE_CONSUMER;
+        return ConsumerNameConstant.SINGLE_MESSAGE_CONSUMER;
     }
 
     @Override
@@ -73,13 +69,15 @@ public class WideMessageListener extends BaseMqMessageListener implements Rocket
         return true;
     }
 
+
     @Override
     protected boolean throwException() {
         return false;
     }
 
+
     @Override
-    public void onMessage(WebSocketWideParticipant webSocketWideParticipant) {
-        super.dispatchMessage(webSocketWideParticipant);
+    public void onMessage(WebSocketSingleParticipant webSocketSingleParticipant) {
+        super.dispatchMessage(webSocketSingleParticipant);
     }
 }

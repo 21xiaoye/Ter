@@ -1,5 +1,6 @@
 package com.cabin.ter.common.constants.dto;
 
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.common.constants.participant.msg.MessageParticipant;
 import lombok.Data;
 
@@ -38,4 +39,9 @@ public abstract class MQBaseMessage implements MessageParticipant, Serializable 
      * 重试次数，用于判断重试次数，超过重试次数发送异常警告
      */
     protected Integer retryTimes = 0;
+    /**
+     * 推送方式 (邮箱广播推送，短信推送，微信公众号推送......)
+     * @see com.cabin.ter.common.constants.enums.MessagePushMethodEnum
+     */
+    protected MessagePushMethodEnum pushMethod;
 }

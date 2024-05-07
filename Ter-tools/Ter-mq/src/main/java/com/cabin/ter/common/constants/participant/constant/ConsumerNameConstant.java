@@ -9,5 +9,6 @@ package com.cabin.ter.common.constants.participant.constant;
  * @date Created in 2024-05-05 22:37
  */
 public interface ConsumerNameConstant {
-     String SING_MESSAGE_CONSUMER = "sing_message_consumer";
+     String SINGLE_MESSAGE_CONSUMER = "single_message_consumer";
+     String WIDE_MESSAGE_CONSUMER = "wide_message_consumer";
 }

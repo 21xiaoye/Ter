@@ -1,6 +1,7 @@
 package com.cabin.ter.common.constants.participant.msg;
 
 import com.cabin.ter.common.constants.dto.MQBaseMessage;
+import com.cabin.ter.common.constants.enums.MessagePushMethodEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,30 +29,23 @@ public class WebSocketSingleParticipant extends MQBaseMessage implements Seriali
     @Serial
     private static final long serialVersionUID = 8445773977080406428L;
     /**
-     * 消息主题
+     * 推送方式 (邮箱广播推送，短信推送，微信公众号推送......)
+     * @see com.cabin.ter.common.constants.enums.MessagePushMethodEnum
      */
-    private String topic;
-    /**
-     * 消息标签
-     */
-    private int flag;
-    /**
-     * 通用值透传，可用于链路追踪
-     */
-    private Map<String, String> properties;
+    private MessagePushMethodEnum pushMethod;
     /**
      * 接受者频道Id
      */
-    @Schema(name = "channelId",description = "接收者频道Id")
-    private String channelId;
+    @Schema(name = "toAddress",description = "接收者地址")
+    private String toAddress;
     /**
      * 消息主体
      */
     @Schema(name = "content",description = "消息主体")
     private String content;
 
-    public WebSocketSingleParticipant(String channelId, String content) {
-        this.channelId = channelId;
+    public WebSocketSingleParticipant(String toAddress, String content) {
+        this.toAddress = toAddress;
         this.content = content;
     }
 }
