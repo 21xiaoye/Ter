@@ -1,10 +1,10 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
-import com.cabin.ter.common.constants.participant.constant.TopicConstant;
-import com.cabin.ter.common.constants.participant.msg.WebSocketSingleParticipant;
-import com.cabin.ter.common.util.MsgUtil;
-import com.cabin.ter.common.util.RedisUtil;
+import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
+import com.cabin.ter.util.MsgUtil;
+import com.cabin.ter.util.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

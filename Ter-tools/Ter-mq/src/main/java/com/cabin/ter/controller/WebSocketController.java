@@ -1,0 +1,78 @@
+package com.cabin.ter.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.cabin.ter.constants.enums.MessagePushMethodEnum;
+import com.cabin.ter.constants.enums.SourceEnum;
+import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
+import com.cabin.ter.constants.participant.ws.SendChannelInfo;
+import com.cabin.ter.constants.participant.ws.ServerInfo;
+import com.cabin.ter.template.RocketMQEnhanceTemplate;
+import com.cabin.ter.util.CacheUtil;
+import com.cabin.ter.util.RedisUtil;
+import com.cabin.ter.constants.vo.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/test")
+@Slf4j
+public class WebSocketController {
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
+
+    /**
+     *  查 服务端 列表
+     * @return
+     */
+    @RequestMapping("/queryNettyServerList")
+    public Collection<ServerInfo> queryNettyServerList() {
+        try {
+            Collection<ServerInfo> serverInfos = CacheUtil.serverInfoMap.values();
+            log.info("查询服务端列表。{}", JSON.toJSONString(serverInfos));
+            return serverInfos;
+        } catch (Exception e) {
+            log.info("查询服务端列表失败。", e);
+            return null;
+        }
+    }
+
+    /**
+     *  从 redis 查 用户管道
+     * @return
+     */
+    @RequestMapping("/queryUserChannelInfoList")
+    public List<SendChannelInfo> queryUserChannelInfoList() {
+        try {
+            log.info("查询用户列表信息开始");
+            List<SendChannelInfo> userChannelInfoList = redisUtil.popList();
+            log.info("查询用户列表信息完成。list：{}", JSON.toJSONString(userChannelInfoList));
+            return userChannelInfoList;
+        } catch (Exception e) {
+            log.error("查询用户列表信息失败", e);
+            return null;
+        }
+    }
+
+    @GetMapping("/mq")
+    public ApiResponse mqTest(){
+        WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
+        webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
+        webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
+        webSocketSingleParticipant.setContent("这里是消息的主要内容");
+        webSocketSingleParticipant.setSendTime(LocalDateTime.now());
+        webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.USER_WEB_MESSAGE);
+        rocketMQEnhanceTemplate.send(TopicConstant.ROCKETMQ_BROADCASTING_PUSH_MESSAGE_TOPIC,TopicConstant.SOURCE_BROADCASTING_WIND_TAG, webSocketSingleParticipant);
+        return ApiResponse.ofSuccess();
+    }
+}
