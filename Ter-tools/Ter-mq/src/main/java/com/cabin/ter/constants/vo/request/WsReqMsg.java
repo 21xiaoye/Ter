@@ -22,7 +22,7 @@ public class WsReqMsg {
      * 请求类型
      */
     @Schema(name = "type",description = "请求类型")
-    private String type;
+    private Integer type;
     /**
      * 请求数据
      */

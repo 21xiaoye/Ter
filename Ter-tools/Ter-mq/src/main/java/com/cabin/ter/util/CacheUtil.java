@@ -18,7 +18,11 @@ import java.util.Map;
  * @date Created in 2024-05-02 22:30
  */
 public class CacheUtil {
-    // 缓存channel
+    /**
+     * 用来存储用户未登录时的websocket连接
+     *
+     * 处理登录验证码发送、扫码成功消息推送等情况
+     */
     public static Map<String, Channel> cacheChannel = Collections.synchronizedMap(new HashMap<>());
 
     // 缓存服务信息

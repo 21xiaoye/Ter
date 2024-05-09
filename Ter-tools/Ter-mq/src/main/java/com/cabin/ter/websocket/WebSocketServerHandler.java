@@ -1,12 +1,12 @@
 package com.cabin.ter.websocket;
 
-import com.cabin.ter.constants.participant.constant.TopicConstant;
-import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
+import cn.hutool.json.JSONUtil;
+import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
+import com.cabin.ter.constants.vo.request.WsReqMsg;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.util.MsgUtil;
 import com.cabin.ter.util.RedisUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -58,33 +57,26 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
             sendErrorMessage(ctx, "仅支持文本(Text)格式，不支持二进制消息");
         }
 
-
-        String request = ((TextWebSocketFrame) frame).text();
-        log.info("服务端收到新信息：" + request);
         try {
-            log.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 接收到消息内容：" + request);
+            String request = ((TextWebSocketFrame) frame).text();
+            log.info("服务端收到新信息：" + request);
+            WsReqMsg reqMsg = JSONUtil.toBean(request, WsReqMsg.class);
+            WSReqTypeEnum wsReqTypeEnum = WSReqTypeEnum.of(reqMsg.getType());
 
-            WebSocketSingleParticipant msgAgreement = MsgUtil.json2Obj(request.toString());
-
-            String toAddress = msgAgreement.getToAddress();
-
-            Channel channel = CacheUtil.cacheChannel.get(toAddress);
-            if (null != channel) {
-                channel.writeAndFlush(new TextWebSocketFrame(MsgUtil.obj2Json(msgAgreement) + " lalalalalalalalalalalalal"));
-                return;
+            switch (wsReqTypeEnum){
+                case WX_LOGIN -> {
+                    log.info("返回二维码");
+                }
+                // 心跳检测，直接跳过
+                case HEARTBEAT, AUTHORIZE -> {
+                    log.info("心跳检测");
+                }
+                default -> {
+                    log.info("未知类型");
+                }
             }
-
-
-            log.info("接收消息的用户不在本服务端，PUSH！");
-            redisUtil.push(TopicConstant.REDIS_USER_MESSAGE_PUSH, MsgUtil.obj2Json(msgAgreement));
-
-            if (null != channel) {
-                channel.writeAndFlush(new TextWebSocketFrame(request+" lalalalalalalalalalalalal"));
-            }
-
-        } catch (Exception e) {
-            sendErrorMessage(ctx, "JSON字符串转换出错！");
-            e.printStackTrace();
+        }catch (Exception e){
+            throw new RuntimeException("json转换错误"+e);
         }
     }
 
@@ -108,7 +100,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
      * @throws Exception
      */
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx)   {
         SocketChannel channel = (SocketChannel) ctx.channel();
         log.info("客户端上线");
         log.info("客户端信息：有一客户端链接到本服务端。channelId：" + channel.id());

@@ -17,7 +17,7 @@
     <modules>
         <module>Ter-tools</module>
         <module>Ter-server</module>
-        <module>Ter-tools/ter-oss-start</module>
+        <module>Ter-tools/Ter-core</module>
         <module>Ter-tools/Ter-mapper</module>
         <module>Ter-server/Ter-server-video</module>
         <module>Ter-server/Ter-server-chat</module>
@@ -39,6 +39,8 @@
         <jjwt.veersion>0.9.1</jjwt.veersion>
         <jasypt.version>2.1.1</jasypt.version>
         <rocketmq.version>2.2.2</rocketmq.version>
+        <caffeine.version>3.1.8</caffeine.version>
+        <weixin-java-mp.version>4.4.0</weixin-java-mp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -61,6 +63,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>${weixin-java-mp.version}</version>
         </dependency>
         <!--Mysql数据库驱动-->
         <dependency>
@@ -198,6 +205,12 @@
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>${jasypt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
     </dependencies>

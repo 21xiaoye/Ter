@@ -75,7 +75,13 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry-> authorizationRegistry
                         .requestMatchers(HttpMethod.GET,"/","/*.html").permitAll()
-                        .requestMatchers("/api/user/login","/v3/**","/api/user/register","/test/**","/test2","/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/user/login",
+                                "/v3/**",
+                                "/api/user/register",
+                                "/test/**",
+                                "/test2",
+                                "/wx/portal/public/**",
+                                "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())
                 // 禁用缓存
