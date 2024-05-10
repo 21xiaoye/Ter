@@ -1,5 +1,6 @@
 package com.cabin.ter.constants.vo.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  * @date Created in 2024-05-03 20:54
  */
 @Data
+@Builder
 public class WsLoginUrl {
     private String loginUrl;
 }

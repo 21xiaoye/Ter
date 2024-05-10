@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.vo.request.WsReqMsg;
+import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.util.MsgUtil;
 import com.cabin.ter.util.RedisUtil;
@@ -33,6 +34,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private WebSocketPublicService webSocketPublicService;
 
     /**
      * 读取 消息
@@ -65,7 +69,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
             switch (wsReqTypeEnum){
                 case WX_LOGIN -> {
-                    log.info("返回二维码");
+                    webSocketPublicService.handleLoginReq(ctx.channel());
                 }
                 // 心跳检测，直接跳过
                 case HEARTBEAT, AUTHORIZE -> {

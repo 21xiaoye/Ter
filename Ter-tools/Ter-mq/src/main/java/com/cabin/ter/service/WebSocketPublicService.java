@@ -1,6 +1,8 @@
 package com.cabin.ter.service;
 
 import io.netty.channel.Channel;
+import me.chanjar.weixin.common.error.WxErrorException;
+import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -16,7 +18,7 @@ public interface WebSocketPublicService {
      *
      * @param channel
      */
-    void handleLoginReq(Channel channel);
+    void handleLoginReq(Channel channel) throws WxErrorException;
 
     /**
      * 处理所有ws连接的事件
