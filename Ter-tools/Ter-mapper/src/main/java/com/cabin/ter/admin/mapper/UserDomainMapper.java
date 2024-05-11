@@ -50,4 +50,14 @@ public interface UserDomainMapper {
      */
     @Insert("INSERT INTO ter_user (userId, userName,userPasswd, salt,userEmail,createTime) VALUES (#{userId},#{userName}, #{userPasswd},#{salt},#{userEmail},#{createTime})")
     Integer insertTerUser(UserDomain user);
+
+
+    /**
+     * 根据openId 查询用户信息
+     *
+     * @param openId    用户微信标识
+     * @return  UserDomain
+     */
+    @Select("SELECT userId,userName, userEmail,userAvatar,userStatus,openId FROM ter_user WHERE openId=#{openId}")
+    UserDomain findByUserOpenId(String openId);
 }

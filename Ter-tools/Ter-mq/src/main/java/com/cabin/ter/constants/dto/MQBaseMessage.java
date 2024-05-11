@@ -2,6 +2,7 @@ package com.cabin.ter.constants.dto;
 
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.constants.participant.msg.MessageParticipant;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;

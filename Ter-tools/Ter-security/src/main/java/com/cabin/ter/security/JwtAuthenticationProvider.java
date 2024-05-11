@@ -27,7 +27,6 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(userEmail);
         String salt = userDetails.getSalt();
-        System.out.println(userDetails);
         userPasswd = myPasswordEncoder.passwdEncryption(userPasswd, salt);
 
         if(passwordEncoder.matches(userPasswd,userDetails.getPassword())) {

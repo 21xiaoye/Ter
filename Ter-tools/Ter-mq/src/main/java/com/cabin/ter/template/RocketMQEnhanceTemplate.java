@@ -1,6 +1,7 @@
 package com.cabin.ter.template;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cabin.ter.constants.dto.LoginMessageDTO;
 import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.participant.constant.RocketMqSysConstant;
 import com.cabin.ter.constants.participant.msg.RocketEnhanceProperties;

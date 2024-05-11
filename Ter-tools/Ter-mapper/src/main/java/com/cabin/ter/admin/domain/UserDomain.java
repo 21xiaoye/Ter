@@ -47,6 +47,10 @@ public class UserDomain implements Serializable {
      */
     private String userEmail;
     /**
+     * 微信标识
+     */
+    private String openId;
+    /**
      * 角色列表
      */
     private List<Integer> roleIdList;

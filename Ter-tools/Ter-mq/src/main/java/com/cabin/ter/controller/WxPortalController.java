@@ -31,7 +31,6 @@ public class WxPortalController {
     private final WxMsgService wxMsgService;
     private final WxMpMessageRouter messageRouter;
 
-    //    private final WxMpMessageRouter messageRouter;
     @GetMapping(produces = "text/plan; charset = utf-8")
     public String authGet(@RequestParam(name = "signature", required = false) String signature,
                           @RequestParam(name = "timestamp", required = false) String timestamp,

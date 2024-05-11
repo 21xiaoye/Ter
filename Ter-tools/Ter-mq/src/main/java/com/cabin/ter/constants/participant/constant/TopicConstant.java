@@ -42,4 +42,17 @@ public interface TopicConstant {
      * 单点推送，指定用户接受消息
      */
     String SOURCE_SINGLE_PUSH_TAG = "rocket_single_push_message_tag";
+
+
+    /**
+     * (授权完成后)登录信息mq
+     */
+    String LOGIN_MSG_TOPIC = "user_login_send_msg";
+    String LOGIN_MSG_GROUP = "user_login_send_msg_group";
+
+    /**
+     * 扫码成功 信息发送mq
+     */
+    String SCAN_MSG_TOPIC = "user_scan_send_msg";
+    String SCAN_MSG_GROUP = "user_scan_send_msg_group";
 }

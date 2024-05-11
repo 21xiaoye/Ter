@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
+
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
@@ -33,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author xiaoye
@@ -72,15 +74,28 @@ public class UserServiceImpl implements UserService {
         AsserUtil.fastFailValidate(loginRequest);
         checkUserExistence(loginRequest.getUserEmail());
 
-        String salt = myPasswordEncoder.generateSalt();
-        String encryptedPassword = encryptPassword(loginRequest.getUserPasswd(), salt);
-
-        UserDomain user = buildUser(loginRequest, salt, encryptedPassword);
-        validateAndSetRoles(user, loginRequest.getRoleId());
-
+        UserDomain user = createUserWithRoles(loginRequest);
         userMapper.insertTerUser(user);
         roleMapper.insertUserRole(user);
 
+        sendWelcomeMessage(loginRequest);
+        return ApiResponse.ofSuccess();
+    }
+
+    @Override
+    public void register(UserDomain user) {
+
+    }
+
+    private UserDomain createUserWithRoles(LoginAndRegisterRequest loginRequest) {
+        String salt = myPasswordEncoder.generateSalt();
+        String encryptedPassword = encryptPassword(loginRequest.getUserPasswd(), salt);
+        UserDomain user = buildUser(loginRequest, salt, encryptedPassword);
+        validateAndSetRoles(user, loginRequest.getRoleId());
+        return user;
+    }
+
+    private void sendWelcomeMessage(LoginAndRegisterRequest loginRequest) {
         WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
         webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
         webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
@@ -88,8 +103,10 @@ public class UserServiceImpl implements UserService {
         webSocketSingleParticipant.setSendTime(LocalDateTime.now());
         webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.EMAIL_MESSAGE);
         webSocketSingleParticipant.setToAddress(loginRequest.getUserEmail());
-        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC, TopicConstant.SOURCE_SINGLE_PUSH_TAG,webSocketSingleParticipant);
-        return ApiResponse.ofSuccess();
+
+        CompletableFuture.runAsync(() ->
+                rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC, TopicConstant.SOURCE_SINGLE_PUSH_TAG, webSocketSingleParticipant)
+        );
     }
 
     private void checkUserExistence(String userEmail) {

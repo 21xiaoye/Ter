@@ -1,5 +1,6 @@
 package com.cabin.ter.service;
 
+import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
@@ -10,4 +11,5 @@ import com.cabin.ter.constants.vo.response.ApiResponse;
 public interface UserService {
     ApiResponse userLogin(LoginAndRegisterRequest loginRequest);
     ApiResponse userRegister(LoginAndRegisterRequest loginRequest);
+    void register(UserDomain user);
 }

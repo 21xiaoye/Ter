@@ -29,7 +29,6 @@ public class WebStrategyServiceImpl extends MessageTemplate
 
     @Override
     protected <T extends MessageParticipant> Boolean messageSend(MessageParticipant message) {
-
         return null;
     }
 }

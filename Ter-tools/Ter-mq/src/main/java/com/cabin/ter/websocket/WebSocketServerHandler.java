@@ -1,19 +1,24 @@
 package com.cabin.ter.websocket;
 
+import cn.hutool.json.JSONException;
 import cn.hutool.json.JSONUtil;
+import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.vo.request.WsReqMsg;
+import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.util.MsgUtil;
 import com.cabin.ter.util.RedisUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.websocketx.*;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,7 +85,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
                 }
             }
         }catch (Exception e){
-            throw new RuntimeException("json转换错误"+e);
+            Channel channel = ctx.channel();
+            channel.writeAndFlush(new TextWebSocketFrame("参数错误"));
+            throw new RuntimeException("参数错误，json转换失败");
         }
     }
 
