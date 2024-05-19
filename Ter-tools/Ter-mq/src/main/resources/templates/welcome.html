@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ter</title>
+</head>
+<style>
+    *{margin: 0;padding: 0;box-sizing: border-box;}
+    html, body {
+        min-height: 100%;
+    }
+    h1, h2, h3, h4, h5, h6{font-weight:normal;}
+    ul,li{
+        list-style: none;
+    }
+    #welcome{
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #232323;
+    }
+    .wel-main{
+        width: 400px;
+        height: 600px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+    }
+    .wel-title{
+        text-align: center;
+        font-weight: bolder;
+        line-height: 1.2em;
+    }
+    .wel-path>ul>li{
+        padding: 10px;
+    }
+    .wel-path>ul>li>span>a{
+        color: red;
+        text-decoration: none;
+    }
+    .wel-path>ul>li>span>a:hover{
+        text-decoration: underline;
+    }
+    .wel-user{
+        display: flex;
+        justify-content: center;
+
+    }
+    .wel-user-wx{
+        width: 150px;
+    }
+    .wel-user-wx>img{
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    .wel-user-wx>p{
+        font-weight: bolder;
+        text-align: center;
+    }
+
+    .wel-pay{
+        padding: 10px;
+    }
+    .wel-pay{
+        font-weight: bolder;
+    }
+    .play-list{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+    }
+    .pay-item{
+        width: 150px;
+    }
+    .pay-item>img{
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    .pay-item>p{
+        text-align: center;
+    }
+</style>
+<body>
+<div id="welcome">
+    <div class="wel-main">
+        <div class="wel-title">
+            <p>欢迎来到 Ter</p>
+        </div>
+        <div class="wel-path">
+           <p>
+               如果你认为 Ter 对你有帮助的话，可以Star一下吗？
+                <ul>
+                    <li>
+                        <span>作者主页地址：<a href="https://github.com/21xiaoye">https://github.com/21xiaoye</a></span>
+                    </li>
+                    <li>
+                        <span>Ter 后端地址：<a href="https://github.com/21xiaoye/Ter.git">https://github.com/21xiaoye/Ter.git</a></span>
+                    </li>
+                    <li>
+                        <span>Ter 桌面端地址：<a href="https://github.com/21xiaoye/Ter-c.git">https://github.com/21xiaoye/Ter-c.git</a></span>
+                    </li>
+                </ul>
+           </p>
+        </div>
+        <div class="wel-user">
+            <div class="wel-user-wx">
+                <img src="./wx.jpg">
+                <p>作者微信</p>
+            </div>
+        </div>
+        <div class="wel-pay">
+            <p>如果对你有帮助，请任意打赏</p>
+            <div class="play-list">
+                <div class="pay-item">
+                    <img src="./wx_pay.jpg">
+                    <p>微信打赏</p>
+                </div>
+                <div class="pay-item">
+                    <img src="./zfb_pay.jpg">
+                    <p>支付宝打赏</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
