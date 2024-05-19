@@ -7,6 +7,8 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
 
 /**
  * @author xiaoye
@@ -15,6 +17,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface WxMsgService {
-    WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage);
+    WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage) throws UnsupportedEncodingException;
     void authorize(WxOAuth2UserInfo userInfo);
 }

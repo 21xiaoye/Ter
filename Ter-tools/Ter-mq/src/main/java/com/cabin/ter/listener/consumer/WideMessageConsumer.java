@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
         consumeMode = ConsumeMode.CONCURRENTLY,
         consumeThreadNumber = 5
 )
-public class WideMessageListener extends BaseMqMessageListener implements RocketMQListener<WebSocketWideParticipant>  {
+public class WideMessageConsumer extends BaseMqMessageListener implements RocketMQListener<WebSocketWideParticipant>  {
     @Override
     protected void handleMessage(MQBaseMessage message) throws Exception {
         WebSocketWideParticipant webSocketWideMessage = (WebSocketWideParticipant)message;

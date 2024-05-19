@@ -112,4 +112,16 @@ public class RedisCache {
     public static String objToStr(Object o) {
         return JsonUtils.toStr(o);
     }
+    private  String get(String key) {
+        return key == null ? null : redisTemplate.opsForValue().get(key);
+    }
+
+    public  <T> T get(String key, Class<T> tClass) {
+        String s = get(key);
+        return toBeanOrNull(s, tClass);
+    }
+
+    static <T> T toBeanOrNull(String json, Class<T> tClass) {
+        return json == null ? null : JsonUtils.toObj(json, tClass);
+    }
 }

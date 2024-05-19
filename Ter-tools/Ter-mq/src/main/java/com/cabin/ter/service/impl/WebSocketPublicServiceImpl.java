@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -86,9 +87,34 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
 
     @Override
     public Boolean scanSuccess(Integer loginCode) {
-        return null;
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        if(Objects.nonNull(channel)){
+            sendMsg(channel, WSAdapter.buildScanSuccessResp());
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
     private void sendMsg(Channel channel, WSBaseResp<?> wsBaseResp){
         channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(wsBaseResp)));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,11 @@
 package com.cabin.ter.config;
 
 import com.cabin.ter.constants.participant.WxMpProperties;
+import com.cabin.ter.handler.LogHandler;
+import com.cabin.ter.handler.ScanHandler;
+import com.cabin.ter.handler.SubscribeHandler;
 import lombok.AllArgsConstructor;
+import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
@@ -9,6 +13,9 @@ import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.SUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
+import static me.chanjar.weixin.common.api.WxConsts.EventType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +29,9 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties(WxMpProperties.class)
 public class WxMpConfiguration {
     private final WxMpProperties properties;
+    private final LogHandler logHandler;
+    private final ScanHandler scanHandler;
+    private final SubscribeHandler subscribeHandler;
 
     @Bean
     public WxMpService wxMpService(){
@@ -45,13 +55,13 @@ public class WxMpConfiguration {
         final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);
 
         // 记录所有事件的日志 （异步执行）
-//        newRouter.rule().handler(this.logHandler).next();
+        newRouter.rule().handler(this.logHandler).next();
 
         // 关注事件
-//        newRouter.rule().async(false).msgType(EVENT).event(SUBSCRIBE).handler(this.subscribeHandler).end();
+        newRouter.rule().async(false).msgType(EVENT).event(SUBSCRIBE).handler(this.subscribeHandler).end();
 
         // 扫码事件
-//        newRouter.rule().async(false).msgType(EVENT).event(WxConsts.EventType.SCAN).handler(this.scanHandler).end();
+        newRouter.rule().async(false).msgType(EVENT).event(EventType.SCAN).handler(this.scanHandler).end();
 
         // 默认
 //        newRouter.rule().async(false).handler(this.msgHandler).end();

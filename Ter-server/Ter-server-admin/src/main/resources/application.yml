@@ -149,7 +149,6 @@ l2cache:
       topic: cache:redis:caffeine:topic
 wx:
   mp:
-    #    callback: http://f4cd-113-92-129-127.ngrok.io
     callback: ${Ter.wx.callback}
     configs:
       - appId: ${Ter.wx.appId} # 第一个公众号的appid

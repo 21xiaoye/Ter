@@ -9,6 +9,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -54,8 +55,7 @@ public class SubscribeHandler extends AbstractHandler{
     /**
      * 处理特殊请求，比如如果是扫码进来的，可以做相应处理
      */
-    private WxMpXmlOutMessage handleSpecial(WxMpService weixinService, WxMpXmlMessage wxMessage)
-            throws Exception {
-        return wxMsgService.scan(weixinService, wxMessage);
+    private WxMpXmlOutMessage handleSpecial(WxMpService wxService, WxMpXmlMessage wxMessage) throws UnsupportedEncodingException {
+        return wxMsgService.scan(wxService, wxMessage);
     }
 }

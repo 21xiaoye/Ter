@@ -50,6 +50,7 @@ public class WxPortalController {
 
     @GetMapping("/callBack")
     public RedirectView callBack(@RequestParam String code) {
+        log.info("开始进行身份验证");
         try {
             WxOAuth2AccessToken accessToken =wxMpService.getOAuth2Service().getAccessToken(code);
             WxOAuth2UserInfo userInfo = wxMpService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
@@ -58,7 +59,7 @@ public class WxPortalController {
             log.error("callBack error", e);
         }
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("https://baidu.com");
+        redirectView.setUrl("http://122.51.0.43:80/test/hello");
         return redirectView;
     }
     @PostMapping(produces = "application/xml; charset=UTF-8")
@@ -86,7 +87,6 @@ public class WxPortalController {
             if (outMessage == null) {
                 return "";
             }
-
             out = outMessage.toXml();
         } else if ("aes".equalsIgnoreCase(encType)) {
             // aes加密的消息

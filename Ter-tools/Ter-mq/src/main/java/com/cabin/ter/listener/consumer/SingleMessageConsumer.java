@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
         consumeMode = ConsumeMode.CONCURRENTLY,
         consumeThreadNumber = 5
 )
-public class SingleMessageListener extends BaseMqMessageListener implements RocketMQListener<WebSocketSingleParticipant> {
+public class SingleMessageConsumer extends BaseMqMessageListener implements RocketMQListener<WebSocketSingleParticipant> {
     @Override
     protected void handleMessage(MQBaseMessage message) {
         WebSocketSingleParticipant singleMessage  = (WebSocketSingleParticipant) message;

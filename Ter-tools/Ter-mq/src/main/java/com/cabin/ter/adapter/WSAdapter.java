@@ -19,4 +19,10 @@ public class WSAdapter {
         wsBaseResp.setData(WsLoginUrl.builder().loginUrl(wxMpQrCodeTicket.getUrl()).build());
         return wsBaseResp;
     }
+
+    public static WSBaseResp buildScanSuccessResp() {
+        WSBaseResp wsBaseResp = new WSBaseResp();
+        wsBaseResp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
+        return wsBaseResp;
+    }
 }
