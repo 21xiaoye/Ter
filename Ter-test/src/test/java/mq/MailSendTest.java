@@ -46,4 +46,5 @@ public class MailSendTest {
         MessageStrategyServiceFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
     }
 
+
 }

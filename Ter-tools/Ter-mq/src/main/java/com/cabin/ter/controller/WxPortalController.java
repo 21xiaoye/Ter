@@ -1,4 +1,6 @@
 package com.cabin.ter.controller;
+import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
+import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.service.WxMsgService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +51,7 @@ public class WxPortalController {
     }
 
     @GetMapping("/callBack")
-    public RedirectView callBack(@RequestParam String code) {
+    public String callBack(@RequestParam String code) {
         log.info("开始进行身份验证");
         try {
             WxOAuth2AccessToken accessToken =wxMpService.getOAuth2Service().getAccessToken(code);
@@ -58,9 +60,7 @@ public class WxPortalController {
         } catch (Exception e) {
             log.error("callBack error", e);
         }
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://122.51.0.43:80/test/hello");
-        return redirectView;
+        return "授权成功";
     }
     @PostMapping(produces = "application/xml; charset=UTF-8")
     public String post(@RequestBody String requestBody,

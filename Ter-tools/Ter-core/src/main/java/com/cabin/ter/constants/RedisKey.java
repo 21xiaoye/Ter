@@ -23,6 +23,15 @@ public class RedisKey {
      */
     public static final String OPEN_ID_STRING = "openid:%s";
 
+    /**
+     * 保存邮箱验证码
+     */
+    public static final String SAVE_EMAIL_CODE = "save_email_code:%s";
+
+    /**
+     * 微信扫码登录，绑定邮箱成功之后，等待用户授权之前保存用户信息
+     */
+    public static final String AUTHORIZE_WX = "authorize_wx:%s";
     public static String getKey(String key, Object... objects) {
         return BASE_KEY + String.format(key, objects);
     }

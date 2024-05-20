@@ -1,7 +1,5 @@
 package com.cabin.ter.constants.enums;
 
-import com.cabin.ter.constants.enums.IStatus;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +15,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SourceEnum    {
     CHAT_SOURCE_RETRY("SOURCE_RETRY","重试消息"),
-    TEST_SOURCE("MESSAGE_TEST","消息测试");
+    TEST_SOURCE("MESSAGE_TEST","消息测试"),
+    EMAIL_BINDING_SEND_CODE_SOURCE("email_binding_send_code","邮箱绑定验证码发送");
+
 
     private final String source;
     private final String description;

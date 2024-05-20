@@ -55,4 +55,9 @@ public interface TopicConstant {
      */
     String SCAN_MSG_TOPIC = "user_scan_send_msg";
     String SCAN_MSG_GROUP = "user_scan_send_msg_group";
+    /**
+     * 邮箱绑定mq
+     */
+    String EMAIL_BINDING_TOPIC = "email_binding_msg";
+    String EMAIL_BIDING_GROUP = "email_binding_send_msg_group";
 }

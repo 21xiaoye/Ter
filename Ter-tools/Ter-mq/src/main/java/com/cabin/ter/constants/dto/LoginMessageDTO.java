@@ -1,6 +1,5 @@
 package com.cabin.ter.constants.dto;
 
-import com.cabin.ter.constants.participant.msg.MessageParticipant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

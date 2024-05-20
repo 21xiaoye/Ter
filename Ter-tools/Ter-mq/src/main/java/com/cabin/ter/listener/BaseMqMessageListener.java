@@ -11,7 +11,14 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 
-
+/**
+ * <p>
+ *     消费者基类
+ * </p>
+ *
+ * @author xiaoye
+ * @date Created in 2024-05-06 21:20
+ */
 @Slf4j
 public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
     /**

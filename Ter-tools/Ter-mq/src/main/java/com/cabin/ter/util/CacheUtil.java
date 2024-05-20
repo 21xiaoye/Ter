@@ -27,12 +27,10 @@ public class CacheUtil {
      * 处理登录验证码发送、扫码成功消息推送等情况
      */
     public static Map<String, Channel> cacheChannel = Collections.synchronizedMap(new HashMap<>());
-
     /**
      * 缓存用户登录成功之后的信息
      */
     private static final ConcurrentHashMap<Channel, WSChannelExtraDTO> ONLINE_WS_MAP = new ConcurrentHashMap<>();
-
     /**
      * 所有在线用户及其在线好友
      */

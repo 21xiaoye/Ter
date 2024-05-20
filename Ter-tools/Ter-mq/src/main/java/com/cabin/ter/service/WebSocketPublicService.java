@@ -54,6 +54,8 @@ public interface WebSocketPublicService {
      */
     Boolean scanSuccess(Integer loginCode);
 
+    Boolean emailBinding(Integer loginCode);
+
     /**
      * 推动消息给所有在线的人
      *

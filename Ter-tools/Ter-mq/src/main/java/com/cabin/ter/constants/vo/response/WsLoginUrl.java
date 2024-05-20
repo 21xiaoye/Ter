@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * <p>
- *     请求二维码返回
+ *     请求二维码、openId返回
  * </p>
  *
  * @author xiaoye
@@ -15,4 +15,5 @@ import lombok.Data;
 @Builder
 public class WsLoginUrl {
     private String loginUrl;
+
 }

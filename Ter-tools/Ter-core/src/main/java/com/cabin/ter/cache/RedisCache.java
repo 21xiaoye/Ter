@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -107,6 +108,25 @@ public class RedisCache {
             log.error(e.getMessage(), e);
             return false;
         }
+    }
+    public Boolean setHashMap(String key,String hashKey, Object value){
+        try {
+            redisTemplate.opsForHash().put(key, hashKey, objToStr(value));
+            return true;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            return false;
+        }
+    }
+
+    public void delHashMap(String key, String... hashKey){
+        redisTemplate.opsForHash().delete(key,hashKey);
+    }
+    public Object getHashMap(String key, String hashKey){
+        if(key == null || hashKey == null){
+            return null;
+        }
+        return redisTemplate.opsForHash().get(key,hashKey);
     }
 
     public static String objToStr(Object o) {

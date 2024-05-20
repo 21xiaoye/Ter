@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 public enum WSRespTypeEnum {
     LOGIN_URL(1, "登录二维码返回", WsLoginUrl.class),
     LOGIN_SCAN_SUCCESS(2, "用户扫描成功等待授权", null),
-    LOGIN_SUCCESS(3, "用户登录成功返回用户信息", WsLoginSuccess.class),
+    LOGIN_EMAIL_BINDING(3,"用户扫描成功，未绑定邮箱，进行邮箱绑定完成注册",null),
+    LOGIN_SUCCESS(4, "用户登录成功返回用户信息", WsLoginSuccess.class),
     ;
 
     private final Integer type;

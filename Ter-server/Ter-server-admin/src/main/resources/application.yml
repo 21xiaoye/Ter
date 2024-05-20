@@ -12,12 +12,12 @@ spring:
     suffix: .html #配置后缀名，配置以后可以省略文件后缀
     cache: false #关闭缓存
   datasource:
-    url: jdbc:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-#    url: jdbc:p6spy:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#    url: jdbc:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:p6spy:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: ${Ter.mysql.username}
     password: ${Ter.mysql.password}
-#    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+#    driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       #初始化时建立物理连接的个数
       initial-size: 5

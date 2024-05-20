@@ -2,26 +2,27 @@ package com.cabin.ter.constants.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 /**
  * <p>
- *     扫码成功对象，推送给用户的消息对象
+ *     通知用户绑定邮箱
+ *
+ *     只有微信扫码用户且在此之前未进行注册操作，则需要绑定邮箱完成注册
  * </p>
  *
  * @author xiaoye
- * @date Created in 2024-05-11 11:31
+ * @date Created in 2024-05-20 10:13
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScanSuccessMessageDTO extends MQBaseMessage implements Serializable {
+public class EmailBindingDTO extends MQBaseMessage implements Serializable {
     /**
      * 推送的uid
      */
     private Integer code;
-    private String openId;
-
 }

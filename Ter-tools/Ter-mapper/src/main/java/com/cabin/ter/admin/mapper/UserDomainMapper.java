@@ -3,6 +3,7 @@ package com.cabin.ter.admin.mapper;
 import com.cabin.ter.admin.domain.UserDomain;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Optional;
 
@@ -40,8 +41,8 @@ public interface UserDomainMapper {
      * @param userEmail 用户邮箱
      * @return  UserDomain
      */
-    @Select("SELECT userEmail FROM ter_user WHERE userEmail=#{userEmail}")
-    Optional<UserDomain> findByUserEmail(String userEmail);
+    @Select("SELECT userId,userEmail FROM ter_user WHERE userEmail=#{userEmail}")
+    UserDomain findByUserEmail(String userEmail);
     /**
      * 插入用户
      *
@@ -60,4 +61,13 @@ public interface UserDomainMapper {
      */
     @Select("SELECT userId,userName, userEmail,userAvatar,userStatus,openId FROM ter_user WHERE openId=#{openId}")
     UserDomain findByUserOpenId(String openId);
+
+    /**
+     * 根据用户 Id 绑定 openId
+     *
+     * @param openId 用户 openId
+     * @return Integer
+     */
+    @Update("UPDATE ter_user SET openId = #{openId} WHERE userId = #{userId}")
+    Integer updateUserOpenId(Long userId,String openId);
 }

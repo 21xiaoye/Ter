@@ -87,12 +87,29 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
 
     @Override
     public Boolean scanSuccess(Integer loginCode) {
-        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        Channel channel = checkLoginCode(loginCode);
         if(Objects.nonNull(channel)){
             sendMsg(channel, WSAdapter.buildScanSuccessResp());
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+    @Override
+    public Boolean emailBinding(Integer loginCode) {
+        Channel channel = checkLoginCode(loginCode);
+        if(Objects.nonNull(channel)){
+            sendMsg(channel,WSAdapter.buildEmailBindingResp());
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+    private Channel checkLoginCode(Integer loginCode){
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        if(Objects.nonNull(channel)){
+            return channel;
+        }
+        return null;
     }
     private void sendMsg(Channel channel, WSBaseResp<?> wsBaseResp){
         channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(wsBaseResp)));

@@ -13,7 +13,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
  * @date Created in 2024-05-10 10:16
  */
 public class WSAdapter {
-    public static WSBaseResp<Object> buildLoginResp(WxMpQrCodeTicket wxMpQrCodeTicket){
+    public static WSBaseResp<Object> buildLoginResp(WxMpQrCodeTicket wxMpQrCodeTicket ){
         WSBaseResp<Object> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_URL.getType());
         wsBaseResp.setData(WsLoginUrl.builder().loginUrl(wxMpQrCodeTicket.getUrl()).build());
@@ -23,6 +23,12 @@ public class WSAdapter {
     public static WSBaseResp buildScanSuccessResp() {
         WSBaseResp wsBaseResp = new WSBaseResp();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
+        return wsBaseResp;
+    }
+
+    public static WSBaseResp buildEmailBindingResp(){
+        WSBaseResp wsBaseResp = new WSBaseResp();
+        wsBaseResp.setType(WSRespTypeEnum.LOGIN_EMAIL_BINDING.getType());
         return wsBaseResp;
     }
 }
