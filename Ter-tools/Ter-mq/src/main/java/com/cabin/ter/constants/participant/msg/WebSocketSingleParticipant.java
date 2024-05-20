@@ -33,7 +33,7 @@ public class WebSocketSingleParticipant extends MQBaseMessage implements Seriali
      */
     private MessagePushMethodEnum pushMethod;
     /**
-     * 接受者频道Id
+     * 接受者频道Id或邮箱地址
      */
     @Schema(name = "toAddress",description = "接收者地址")
     private String toAddress;

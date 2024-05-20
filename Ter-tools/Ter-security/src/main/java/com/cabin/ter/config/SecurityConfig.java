@@ -81,7 +81,8 @@ public class SecurityConfig {
                                 "/test/**",
                                 "/test2",
                                 "/wx/portal/public/**",
-                                "/swagger-ui/**").permitAll()
+                                "/swagger-ui/**",
+                                "/templates/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())
                 // 禁用缓存

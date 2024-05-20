@@ -7,6 +7,10 @@ spring:
     active: test
   application:
     name: ter
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html #配置后缀名，配置以后可以省略文件后缀
+    cache: false #关闭缓存
   datasource:
     url: jdbc:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
 #    url: jdbc:p6spy:mysql://${Ter.mysql.ip}:${Ter.mysql.port}/${Ter.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai

@@ -1,7 +1,6 @@
 package com.cabin.ter.template;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cabin.ter.constants.dto.LoginMessageDTO;
 import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.participant.constant.RocketMqSysConstant;
 import com.cabin.ter.constants.participant.msg.RocketEnhanceProperties;
@@ -62,11 +61,11 @@ public class RocketMQEnhanceTemplate {
     }
 
 
-    public <T extends MQBaseMessage> SendResult send(String destination, T message) {
+    public  <T extends MQBaseMessage> SendResult send(String topic, T message) {
         Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getKey()).build();
-        SendResult sendResult = rocketMQTemplate.syncSend(destination, sendMessage);
+        SendResult sendResult = rocketMQTemplate.syncSend(topic, sendMessage);
 
-        log.info("[{}]同步消息[{}]发送结果[{}]", destination, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
+        log.info("[{}]同步消息[{}]发送结果[{}]", topic, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
         return sendResult;
     }
 
@@ -77,10 +76,10 @@ public class RocketMQEnhanceTemplate {
         return send(buildDestination(topic,tag), message, delayLevel);
     }
 
-    public <T extends MQBaseMessage> SendResult send(String destination, T message, int delayLevel) {
+    public <T extends MQBaseMessage> SendResult send(String topic, T message, int delayLevel) {
         Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getKey()).build();
-        SendResult sendResult = rocketMQTemplate.syncSend(destination, sendMessage, 3000, delayLevel);
-        log.info("[{}]延迟等级[{}]消息[{}]发送结果[{}]", destination, delayLevel, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
+        SendResult sendResult = rocketMQTemplate.syncSend(topic, sendMessage, 3000, delayLevel);
+        log.info("[{}]延迟等级[{}]消息[{}]发送结果[{}]", topic, delayLevel, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
         return sendResult;
     }
 }

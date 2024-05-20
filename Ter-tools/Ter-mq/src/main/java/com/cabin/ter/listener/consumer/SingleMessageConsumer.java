@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 public class SingleMessageConsumer extends BaseMqMessageListener implements RocketMQListener<WebSocketSingleParticipant> {
     @Override
     protected void handleMessage(MQBaseMessage message) {
+        log.info("收到消息[{]]",message);
         WebSocketSingleParticipant singleMessage  = (WebSocketSingleParticipant) message;
         MessagePushMethodEnum pushMethod = singleMessage.getPushMethod();
         switch (pushMethod){
