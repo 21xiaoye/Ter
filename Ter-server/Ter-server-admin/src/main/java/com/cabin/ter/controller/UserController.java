@@ -46,10 +46,10 @@ public class UserController {
     }
 
     @Operation(summary = "邮箱验证码验证接口")
-    @PostMapping("/emailVerify")
+    @PostMapping("/emailBiding")
     public ApiResponse emailBinding(@Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg){
         log.info("openId=[{}]绑定邮箱email=[{}]",emailBindingReqMsg.getOpenId(),emailBindingReqMsg.getEmail());
-        return userService.emailVerify(emailBindingReqMsg);
+        return userService.emailBiding(emailBindingReqMsg);
     }
     @Operation(summary = "发送邮箱验证码接口")
     @PostMapping("/sendEmailCode")

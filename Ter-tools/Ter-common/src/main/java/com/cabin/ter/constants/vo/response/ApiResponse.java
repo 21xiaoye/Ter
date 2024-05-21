@@ -88,7 +88,7 @@ public class ApiResponse implements Serializable {
      * @return ApiResponse
      */
     public static ApiResponse ofMessage(String message) {
-        return of(Status.SUCCESS.getCode(), message, null);
+        return of(Status.SUCCESS.getStatus(), message, null);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ApiResponse implements Serializable {
      * @return ApiResponse
      */
     public static ApiResponse ofStatus(IStatus status, Object data) {
-        return of(status.getCode(), status.getMessage(), data);
+        return of(status.getStatus(), status.getMessage(), data);
     }
 
     /**

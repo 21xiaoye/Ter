@@ -20,19 +20,19 @@ import java.util.stream.Collectors;
 public enum RoleEnum implements IStatus {
     ADMIN(40001,"管理员"),
     ORDINARY(40002,"普通用户");
-    private Integer code;
+    private Integer status;
     private String message;
 
 
-    RoleEnum(Integer code, String message) {
-        this.code = code;
+    RoleEnum(Integer status, String message) {
+        this.status = status;
         this.message = message;
     }
 
     private static Map<Integer, RoleEnum> cache;
 
     static {
-        cache = Arrays.stream(RoleEnum.values()).collect(Collectors.toMap(RoleEnum::getCode, Function.identity()));
+        cache = Arrays.stream(RoleEnum.values()).collect(Collectors.toMap(RoleEnum::getStatus, Function.identity()));
     }
 
     public static RoleEnum of(Integer type) {

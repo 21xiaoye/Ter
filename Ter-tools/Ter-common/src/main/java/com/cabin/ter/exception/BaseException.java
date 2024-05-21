@@ -20,7 +20,7 @@ public class BaseException extends RuntimeException{
 
     public BaseException(Status status){
         super(status.getMessage());
-        this.code = status.getCode();
+        this.code = status.getStatus();
         this.message = status.getMessage();
     }
 

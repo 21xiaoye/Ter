@@ -19,14 +19,14 @@ public enum EncryptionEnum implements IStatus {
     /**
      * 状态码
      */
-    private Integer code;
+    private Integer status;
     /**
      * 返回信息
      */
     private String message;
 
-    EncryptionEnum(Integer code, String message){
-        this.code=code;
+    EncryptionEnum(Integer status, String message){
+        this.status=status;
         this.message=message;
     }
 }
