@@ -30,14 +30,17 @@ import com.cabin.ter.util.AsserUtil;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -90,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         UserDomain userDomain = userMapper.findByUserEmail(loginRequest.getUserEmail());
 
-        if(Objects.nonNull(userDomain)){
+        if(userDomain!=null){
             throw new BaseException(Status.USER_OCCUPY);
         }
 
@@ -98,20 +101,24 @@ public class UserServiceImpl implements UserService {
         userMapper.insertTerUser(user);
         roleMapper.insertUserRole(user);
 
-        this.buildEmailMessage(loginRequest.getUserEmail(), "欢迎来到 Ter",SourceEnum.TEST_SOURCE.getSource());
+        this.sendEmailMessage(loginRequest.getUserEmail(), "欢迎来到 Ter",SourceEnum.TEST_SOURCE.getSource());
 
         return ApiResponse.ofSuccess();
     }
 
     @Override
-    public ApiResponse sendEmailCode(String email) {
+    public ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg) {
+        AsserUtil.fastFailValidate(emailBindingReqMsg);
         String code = VerifyUtil.generateCode();
-        this.sendMailAsync(email, code);
+        CompletableFuture<Void> future = sendMailAsync(emailBindingReqMsg.getEmail(), code);
+        future.thenRunAsync(()->{
+            redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,emailBindingReqMsg.getEmail()),code,60, TimeUnit.SECONDS);
+        });
         return ApiResponse.ofSuccess("验证码已发送");
     }
     // TODO: 这里还没有写完整，应该返回用户token，用户权限范围
     @Override
-    public ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg) {
+    public ApiResponse emailVerify(EmailBindingReqMsg emailBindingReqMsg) {
         AsserUtil.fastFailValidate(emailBindingReqMsg);
 
         String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, emailBindingReqMsg.getEmail()),String.class);
@@ -122,7 +129,7 @@ public class UserServiceImpl implements UserService {
 
             Long userId;
             // 微信用户再此之前未进行邮箱注册
-            if(!Objects.nonNull(userDomain)){
+            if(userDomain == null){
                 userId = snowflake.nextId();
                 UserDomain user = UserDomain.builder()
                         .openId(emailBindingReqMsg.getOpenId())
@@ -147,19 +154,26 @@ public class UserServiceImpl implements UserService {
             CompletableFuture.runAsync(()->{
                 rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(userId, loginCode));
             });
-            return ApiResponse.ofSuccess("登录成功");
+            return ApiResponse.ofSuccess("绑定成功");
         }
         return ApiResponse.ofSuccess("验证码错误");
     }
+
+    @Override
+    public void register(UserDomain user) {
+
+    }
+
     @Async
-    public void sendMailAsync(String email, String code) {
-        redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,email),code,60, TimeUnit.SECONDS);
+    public CompletableFuture<Void> sendMailAsync(String email, String code) {
         // 将验证码放到thymeleaf页面中
         Context context  = new Context();
         context.setVariable("code", Arrays.asList(code.split("")));
         // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
         String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
-        this.buildEmailMessage(email, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE.getSource());
+        this.sendEmailMessage(email, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE.getSource());
+
+        return CompletableFuture.completedFuture(null);
     }
 
     // TODO: 这里我觉得可以使用责任链模式来进行优化，检查用户是否存在-> 加盐哈希加密 -> 权限分配 -> 存储用户信息
@@ -178,7 +192,7 @@ public class UserServiceImpl implements UserService {
      * @param content
      */
 
-    private void buildEmailMessage(String email, String content, String source) {
+    private void sendEmailMessage(String email, String content, String source) {
         WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
         webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
         webSocketSingleParticipant.setSource(source);
@@ -232,7 +246,7 @@ public class UserServiceImpl implements UserService {
     private void validateAndSetRoles(UserDomain user, Integer roleId) {
         // 默认用户角色为普通用户
         if(roleId == null){
-            roleId = RoleEnum.ORDINARY.getStatus();
+            roleId = RoleEnum.ORDINARY.getCode();
         }
         RoleEnum role = RoleEnum.of(roleId);
         if (Objects.isNull(role)) {
@@ -240,10 +254,10 @@ public class UserServiceImpl implements UserService {
         }
         switch (role){
             case ADMIN :
-                user.setRoleIdList(Arrays.asList(RoleEnum.ADMIN.getStatus(),RoleEnum.ORDINARY.getStatus()));
+                user.setRoleIdList(Arrays.asList(RoleEnum.ADMIN.getCode(),RoleEnum.ORDINARY.getCode()));
                 break;
             case ORDINARY:
-                user.setRoleIdList(Arrays.asList(RoleEnum.ORDINARY.getStatus()));
+                user.setRoleIdList(Arrays.asList(RoleEnum.ORDINARY.getCode()));
                 break;
             default:
                 log.error("未知角色");

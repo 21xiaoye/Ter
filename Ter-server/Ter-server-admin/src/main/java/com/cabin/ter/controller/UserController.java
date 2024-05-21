@@ -6,13 +6,10 @@ import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
-import com.cabin.ter.util.AsserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/api/user",consumes  = "application/x-www-form-urlencoded")
 @Tag(name = "用户管理模块")
 public class UserController {
     @Autowired
@@ -49,17 +46,15 @@ public class UserController {
     }
 
     @Operation(summary = "邮箱验证码验证接口")
-    @PostMapping("/emailBinding")
+    @PostMapping("/emailVerify")
     public ApiResponse emailBinding(@Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg){
         log.info("openId=[{}]绑定邮箱email=[{}]",emailBindingReqMsg.getOpenId(),emailBindingReqMsg.getEmail());
-        return userService.emailBiding(emailBindingReqMsg);
+        return userService.emailVerify(emailBindingReqMsg);
     }
     @Operation(summary = "发送邮箱验证码接口")
-    @GetMapping("/sendEmailCode")
-    public ApiResponse sendEmailCode(
-            @Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg) {
-        AsserUtil.fastFailValidate(emailBindingReqMsg);
+    @PostMapping("/sendEmailCode")
+    public ApiResponse sendEmailCode(@Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg){
         log.info("email=[{}]发送邮箱验证码",emailBindingReqMsg.getEmail());
-        return userService.sendEmailCode(emailBindingReqMsg.getEmail());
+        return userService.sendEmailCode(emailBindingReqMsg);
     }
 }
