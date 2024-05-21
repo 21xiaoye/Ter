@@ -27,10 +27,10 @@ public interface UserService {
     /**
      * 发送邮箱验证码
      *
-     * @param email
+     * @param emailBindingReqMsg
      * @return
      */
-    ApiResponse sendEmailCode(String email);
+    ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg);
 
     /**
      * 绑定邮箱

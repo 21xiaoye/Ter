@@ -35,19 +35,19 @@ public class UserController {
 
     @Operation(summary = "用户登录接口")
     @PostMapping("/login")
-    public ApiResponse userLogin(@Valid @ModelAttribute LoginAndRegisterRequest loginRequest){
+    public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
         return userService.userLogin(loginRequest);
     }
 
     @Operation(summary = "用户注册接口")
     @PostMapping("/register")
-    public ApiResponse userRegister(@Valid @ModelAttribute LoginAndRegisterRequest loginRequest){
+    public ApiResponse userRegister(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
         return userService.userRegister(loginRequest);
     }
 
-    @Operation(summary = "邮箱验证码验证接口")
+    @Operation(summary = "绑定邮箱接口")
     @PostMapping("/emailBinding")
-    public ApiResponse emailBinding(@Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg){
+    public ApiResponse emailBinding(@Valid @RequestBody EmailBindingReqMsg emailBindingReqMsg){
         log.info("openId=[{}]绑定邮箱email=[{}]",emailBindingReqMsg.getOpenId(),emailBindingReqMsg.getEmail());
         return userService.emailBiding(emailBindingReqMsg);
     }
@@ -57,6 +57,6 @@ public class UserController {
             @Valid @ModelAttribute EmailBindingReqMsg emailBindingReqMsg) {
         AsserUtil.fastFailValidate(emailBindingReqMsg);
         log.info("email=[{}]发送邮箱验证码",emailBindingReqMsg.getEmail());
-        return userService.sendEmailCode(emailBindingReqMsg.getEmail());
+        return userService.sendEmailCode(emailBindingReqMsg);
     }
 }

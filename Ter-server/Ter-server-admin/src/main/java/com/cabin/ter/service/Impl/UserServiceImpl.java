@@ -104,9 +104,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse sendEmailCode(String email) {
+    public ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg) {
         String code = VerifyUtil.generateCode();
-        this.sendMailAsync(email, code);
+        this.sendMailAsync(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId(), code);
         return ApiResponse.ofSuccess("验证码已发送");
     }
     // TODO: 这里还没有写完整，应该返回用户token，用户权限范围
@@ -114,12 +114,11 @@ public class UserServiceImpl implements UserService {
     public ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg) {
         AsserUtil.fastFailValidate(emailBindingReqMsg);
 
-        String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, emailBindingReqMsg.getEmail()),String.class);
+        String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, emailBindingReqMsg.getOpenId()),String.class);
         log.info("[{}]验证码为=[{}]",emailBindingReqMsg.getEmail(),code);
         if(emailBindingReqMsg.getCode().equals(code)){
             UserDomain userDomain = userMapper.findByUserEmail(emailBindingReqMsg.getEmail());
             WxOAuth2UserInfo userInfo = redisCache.get(RedisKey.getKey(RedisKey.AUTHORIZE_WX, emailBindingReqMsg.getOpenId()), WxOAuth2UserInfo.class);
-
             Long userId;
             // 微信用户再此之前未进行邮箱注册
             if(!Objects.nonNull(userDomain)){
@@ -145,6 +144,7 @@ public class UserServiceImpl implements UserService {
              * 异步通知用户登录成功
              */
             CompletableFuture.runAsync(()->{
+                redisCache.del(RedisKey.getKey(RedisKey.AUTHORIZE_WX, emailBindingReqMsg.getOpenId()));
                 rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(userId, loginCode));
             });
             return ApiResponse.ofSuccess("登录成功");
@@ -152,8 +152,8 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.ofSuccess("验证码错误");
     }
     @Async
-    public void sendMailAsync(String email, String code) {
-        redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,email),code,60, TimeUnit.SECONDS);
+    public void sendMailAsync(String email, String openId,String code) {
+        redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,openId),code,60, TimeUnit.SECONDS);
         // 将验证码放到thymeleaf页面中
         Context context  = new Context();
         context.setVariable("code", Arrays.asList(code.split("")));
