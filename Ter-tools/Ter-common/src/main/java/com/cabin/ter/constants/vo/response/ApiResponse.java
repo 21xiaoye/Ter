@@ -34,8 +34,8 @@ public class ApiResponse implements Serializable {
     /**
      * 状态码
      */
-    @Schema(name = "code",description = "通用返回状态码")
-    private Integer code;
+    @Schema(name = "status",description = "通用返回状态码")
+    private Integer status;
 
     /**
      * 返回内容
@@ -52,13 +52,13 @@ public class ApiResponse implements Serializable {
     /**
      * 构造一个自定义的API返回
      *
-     * @param code    状态码
+     * @param status    状态码
      * @param message 返回内容
      * @param data    返回数据
      * @return ApiResponse
      */
-    public static ApiResponse of(Integer code, String message, Object data) {
-        return new ApiResponse(code, message, data);
+    public static ApiResponse of(Integer status, String message, Object data) {
+        return new ApiResponse(status, message, data);
     }
 
     /**
@@ -88,7 +88,7 @@ public class ApiResponse implements Serializable {
      * @return ApiResponse
      */
     public static ApiResponse ofMessage(String message) {
-        return of(Status.SUCCESS.getCode(), message, null);
+        return of(Status.SUCCESS.getStatus(), message, null);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ApiResponse implements Serializable {
      * @return ApiResponse
      */
     public static ApiResponse ofStatus(IStatus status, Object data) {
-        return of(status.getCode(), status.getMessage(), data);
+        return of(status.getStatus(), status.getMessage(), data);
     }
 
     /**

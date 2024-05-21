@@ -1,5 +1,6 @@
 package com.cabin.ter.adapter;
 
+import com.cabin.ter.constants.dto.EmailBindingDTO;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.constants.vo.response.WsLoginUrl;
@@ -26,9 +27,10 @@ public class WSAdapter {
         return wsBaseResp;
     }
 
-    public static WSBaseResp buildEmailBindingResp(){
+    public static WSBaseResp buildEmailBindingResp(EmailBindingDTO emailBindingDTO){
         WSBaseResp wsBaseResp = new WSBaseResp();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_EMAIL_BINDING.getType());
+        wsBaseResp.setData(emailBindingDTO);
         return wsBaseResp;
     }
 }

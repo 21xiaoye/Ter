@@ -1,6 +1,5 @@
 package com.cabin.ter.service;
 
-import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
@@ -28,10 +27,10 @@ public interface UserService {
     /**
      * 发送邮箱验证码
      *
-     * @param emailBindingReqMsg
+     * @param email
      * @return
      */
-    ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg);
+    ApiResponse sendEmailCode(String email);
 
     /**
      * 绑定邮箱
@@ -39,6 +38,5 @@ public interface UserService {
      * @param emailBindingReqMsg
      * @return
      */
-    ApiResponse emailVerify(EmailBindingReqMsg emailBindingReqMsg);
-    void register(UserDomain user);
+    ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg);
 }

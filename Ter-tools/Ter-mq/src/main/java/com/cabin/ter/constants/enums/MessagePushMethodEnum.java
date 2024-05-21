@@ -1,6 +1,6 @@
 package com.cabin.ter.constants.enums;
 
-import com.cabin.ter.constants.enums.IStatus;
+
 import lombok.Getter;
 
 /**
@@ -18,11 +18,11 @@ public enum MessagePushMethodEnum implements IStatus {
     WX_NO_MESSAGE(6003,"微信公众号通知"),
     SHORT_MESSAGE(6004,"短信通知"),
     ;
-    private Integer code;
+    private Integer status;
     private String message;
 
-    MessagePushMethodEnum(Integer code, String message) {
-        this.code = code;
+    MessagePushMethodEnum(Integer status, String message) {
+        this.status = status;
         this.message = message;
     }
 }

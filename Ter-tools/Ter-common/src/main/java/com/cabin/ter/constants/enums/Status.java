@@ -95,20 +95,20 @@ public enum Status implements IStatus {
     /**
      * 状态码
      */
-    private Integer code;
+    private Integer status;
     /**
      * 返回信息
      */
     private String message;
 
-    Status(Integer code, String message){
-        this.code=code;
+    Status(Integer status, String message){
+        this.status=status;
         this.message=message;
     }
     public static Status fromCode(Integer code){
         Status[] statuses = Status.values();
         for (Status status:statuses) {
-            if(status.getCode().equals(code)){
+            if(status.getStatus().equals(code)){
                 return status;
             }
         }
@@ -117,6 +117,6 @@ public enum Status implements IStatus {
 
     @Override
     public String toString() {
-        return String.format(" Status:{code=%s,message=%s}",getCode(),getMessage());
+        return String.format(" Status:{code=%s,message=%s}",getStatus(),getMessage());
     }
 }

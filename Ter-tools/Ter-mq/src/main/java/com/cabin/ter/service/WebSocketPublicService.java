@@ -1,5 +1,6 @@
 package com.cabin.ter.service;
 
+import com.cabin.ter.constants.dto.EmailBindingDTO;
 import io.netty.channel.Channel;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public interface WebSocketPublicService {
      */
     Boolean scanSuccess(Integer loginCode);
 
-    Boolean emailBinding(Integer loginCode);
+    Boolean emailBinding(EmailBindingDTO emailBindingDTO);
 
     /**
      * 推动消息给所有在线的人

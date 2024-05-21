@@ -6,7 +6,7 @@ public interface IStatus {
      *
      * @return 状态码
      */
-    Integer getCode();
+    Integer getStatus();
 
     /**
      * 返回信息

@@ -25,4 +25,8 @@ public class EmailBindingDTO extends MQBaseMessage implements Serializable {
      * 推送的uid
      */
     private Integer code;
+    /**
+     * 用户 openId
+     */
+    private String openId;
 }

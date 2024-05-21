@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.cabin.ter.adapter.WSAdapter;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.constants.RedisKey;
+import com.cabin.ter.constants.dto.EmailBindingDTO;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.service.WebSocketPublicService;
@@ -96,10 +97,10 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     }
 
     @Override
-    public Boolean emailBinding(Integer loginCode) {
-        Channel channel = checkLoginCode(loginCode);
+    public Boolean emailBinding(EmailBindingDTO emailBindingDTO) {
+        Channel channel = checkLoginCode(emailBindingDTO.getCode());
         if(Objects.nonNull(channel)){
-            sendMsg(channel,WSAdapter.buildEmailBindingResp());
+            sendMsg(channel,WSAdapter.buildEmailBindingResp(emailBindingDTO));
             return Boolean.TRUE;
         }
         return Boolean.FALSE;

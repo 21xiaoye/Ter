@@ -31,6 +31,6 @@ public class EmailBindingConsumer implements RocketMQListener<EmailBindingDTO> {
 
     @Override
     public void onMessage(EmailBindingDTO emailBindingDTO) {
-        webSocketPublicService.emailBinding(emailBindingDTO.getCode());
+        webSocketPublicService.emailBinding(emailBindingDTO);
     }
 }

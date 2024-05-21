@@ -25,18 +25,18 @@ public enum WSReqTypeEnum implements IStatus {
     ;
 
 
-    private Integer code;
+    private Integer status;
     private String message;
 
-    WSReqTypeEnum(Integer code, String message){
-        this.code = code;
+    WSReqTypeEnum(Integer status, String message){
+        this.status = status;
         this.message = message;
     }
 
     private static Map<Integer, WSReqTypeEnum> cache;
 
     static {
-        cache = Arrays.stream(WSReqTypeEnum.values()).collect(Collectors.toMap(WSReqTypeEnum::getCode, Function.identity()));
+        cache = Arrays.stream(WSReqTypeEnum.values()).collect(Collectors.toMap(WSReqTypeEnum::getStatus, Function.identity()));
     }
 
     public static WSReqTypeEnum of(Integer type) {

@@ -61,9 +61,9 @@ public class WxMsgServiceImpl implements WxMsgService {
         /**
          * 数据库有用户 openId 记录，直接通知登录成功，无需授权
          */
-        if (Objects.nonNull(userDomain) && StringUtils.isNotEmpty(userDomain.getUserAvatar())) {
+        if (Objects.nonNull(userDomain)) {
             rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(userDomain.getUserId(), loginCode));
-            return null;
+            return new TextBuilder().build("登录成功",wxMpXmlMessage, wxMpService);
         }
 
         /**
@@ -100,6 +100,6 @@ public class WxMsgServiceImpl implements WxMsgService {
         /**
          * 用户完成授权，通知用户进行邮箱绑定
          */
-        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(code));
+        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(code, userInfo.getOpenid()));
     }
 }

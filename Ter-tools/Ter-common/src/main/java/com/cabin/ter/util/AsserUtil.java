@@ -78,6 +78,6 @@ public class AsserUtil {
         if (Objects.isNull(status)) {
             status = Status.PARAM_NOT_MATCH;
         }
-        throw new BaseException(status.getCode(), MessageFormat.format(status.getMessage(), arg));
+        throw new BaseException(status.getStatus(), MessageFormat.format(status.getMessage(), arg));
     }
 }
