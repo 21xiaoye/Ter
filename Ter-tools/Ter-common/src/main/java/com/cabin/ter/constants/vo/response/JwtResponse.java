@@ -1,4 +1,4 @@
-package com.cabin.ter.vo;
+package com.cabin.ter.constants.vo.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

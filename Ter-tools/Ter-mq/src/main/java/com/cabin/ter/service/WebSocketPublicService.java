@@ -46,7 +46,7 @@ public interface WebSocketPublicService {
     /**
      * 扫码用户登录成功通知,清除本地Cache中的loginCode和channel的关系
      */
-    Boolean scanLoginSuccess(Integer loginCode, Long uid);
+    Boolean scanLoginSuccess(String openId,Integer loginCode, String loginEmail);
 
     /**
      * 通知用户扫码成功

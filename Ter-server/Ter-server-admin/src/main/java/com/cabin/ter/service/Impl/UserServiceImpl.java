@@ -29,7 +29,7 @@ import com.cabin.ter.factory.MyPasswordEncoderFactory;
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.util.VerifyUtil;
-import com.cabin.ter.vo.JwtResponse;
+import com.cabin.ter.constants.vo.response.JwtResponse;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.constants.enums.EncryptionEnum;
 import com.cabin.ter.util.AsserUtil;
@@ -78,7 +78,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TxObjectStorageAdapter txObjectStorageAdapter;
 
-
     @Override
     public ApiResponse userLogin(LoginAndRegisterRequest loginRequest) {
         AsserUtil.fastFailValidate(loginRequest);
@@ -111,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg) {
-        String code = VerifyUtil.generateCode();
+        String code = VerifyUtil.generateCode(8);
         this.sendMailAsync(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId(), code);
         return ApiResponse.ofSuccess("验证码已发送");
     }
@@ -125,14 +124,12 @@ public class UserServiceImpl implements UserService {
         if(emailBindingReqMsg.getCode().equals(code)){
             UserDomain userDomain = userMapper.findByUserEmail(emailBindingReqMsg.getEmail());
             WxOAuth2UserInfo userInfo = redisCache.get(RedisKey.getKey(RedisKey.AUTHORIZE_WX, emailBindingReqMsg.getOpenId()), WxOAuth2UserInfo.class);
-            Long userId;
             // 微信用户再此之前未进行邮箱注册
             if(!Objects.nonNull(userDomain)){
-                userId = snowflake.nextId();
                 UserDomain user = UserDomain.builder()
                         .openId(emailBindingReqMsg.getOpenId())
                         .userEmail(emailBindingReqMsg.getEmail())
-                        .userId(userId)
+                        .userId(snowflake.nextId())
                         .userName(userInfo.getNickname())
                         .userAvatar(userInfo.getHeadImgUrl())
                         .build();
@@ -140,18 +137,14 @@ public class UserServiceImpl implements UserService {
                 userMapper.insertTerUser(user);
                 roleMapper.insertUserRole(user);
             }else{
-                // 微信用户已经进行过邮箱注册，这里只需授权绑定 openId 即可
-                userId =userDomain.getUserId();
-                log.info("用户id={}进行openId绑定",userId);
-                userMapper.updateUserOpenId(userId, emailBindingReqMsg.getOpenId());
+                userMapper.updateUserOpenId(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId());
             }
             Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, emailBindingReqMsg.getOpenId()), Integer.class);
             /**
              * 异步通知用户登录成功
              */
             CompletableFuture.runAsync(()->{
-                redisCache.del(RedisKey.getKey(RedisKey.AUTHORIZE_WX, emailBindingReqMsg.getOpenId()));
-                rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(userId, loginCode));
+                rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(emailBindingReqMsg.getOpenId(), emailBindingReqMsg.getEmail(), loginCode));
             });
             return ApiResponse.ofSuccess("登录成功");
         }

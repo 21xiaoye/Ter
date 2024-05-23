@@ -16,7 +16,6 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,6 @@ public class WxMsgServiceImpl implements WxMsgService {
     private RocketMQEnhanceTemplate rocketMQTemplate;
 
 
-
     /**
      * 用户扫码
      * @param wxMpService
@@ -56,18 +54,9 @@ public class WxMsgServiceImpl implements WxMsgService {
     public WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage)  {
         String openid = wxMpXmlMessage.getFromUser();
         Integer loginCode = Integer.parseInt(getEventKey(wxMpXmlMessage));
-        log.info("收到微信用户[{}]的登录请求",openid);
-        UserDomain userDomain = userDomainMapper.findByUserOpenId(openid);
-        /**
-         * 数据库有用户 openId 记录，直接通知登录成功，无需授权
-         */
-        if (Objects.nonNull(userDomain)) {
-            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(userDomain.getUserId(), loginCode));
-            return new TextBuilder().build("登录成功",wxMpXmlMessage, wxMpService);
-        }
 
         /**
-         * 数据库没有 openId 记录，通知用户进行授权
+         * 通知用户进行授权
          */
         redisCache.set(RedisKey.getKey(RedisKey.OPEN_ID_STRING, openid), loginCode, 60, TimeUnit.MINUTES);
 
@@ -91,15 +80,27 @@ public class WxMsgServiceImpl implements WxMsgService {
     @Override
     public void authorize(WxOAuth2UserInfo userInfo) {
 
-        Integer code = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
+        Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
+        String openId = userInfo.getOpenid();
+        log.info("收到微信用户[{}]的登录请求",openId);
+        UserDomain userDomain = userDomainMapper.findByUserOpenId(openId);
+
         /**
-         * 用户授权成功，等待绑定邮箱之前，先保存用户信息
+         * 用户授权成功，保存用户信息
          */
         log.info("微信用户的信息{}",userInfo);
         redisCache.set(RedisKey.getKey(RedisKey.AUTHORIZE_WX,userInfo.getOpenid()),userInfo,60,TimeUnit.MINUTES);
         /**
-         * 用户完成授权，通知用户进行邮箱绑定
+         * 数据库有用户 openId 记录，直接通知登录成功，无需授权
          */
-        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(code, userInfo.getOpenid()));
+        if (Objects.nonNull(userDomain)) {
+            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(openId,userDomain.getUserEmail(), loginCode));
+            log.info("用户扫码登录成功");
+        }else{
+            /**
+             * 通知用户进行邮箱绑定
+             */
+            rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(loginCode, userInfo.getOpenid()));
+        }
     }
 }

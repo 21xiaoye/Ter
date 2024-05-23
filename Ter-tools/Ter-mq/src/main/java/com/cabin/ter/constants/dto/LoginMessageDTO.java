@@ -21,6 +21,7 @@ public class LoginMessageDTO extends MQBaseMessage implements Serializable  {
 
     private static final long serialVersionUID = 1L;
 
-    private Long uid;
-    private Integer code;
+    private String openId;
+    private String loginEmail;
+    private Integer logonCode;
 }

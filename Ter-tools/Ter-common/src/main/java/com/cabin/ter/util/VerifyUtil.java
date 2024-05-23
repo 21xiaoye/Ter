@@ -14,22 +14,12 @@ import java.util.Random;
  */
 @Slf4j
 public class VerifyUtil {
-    public static String generateCode() {
-        String charList = "ABCDEFGHIJKLMNPQRSTUVWXY";
-        String numList = "0123456789";
-        String rev = "";
-        int maxNumCount = 4;
-        int length = 6;
-        Random f = new Random();
-        for (int i = 0; i < length; i++) {
-            if (f.nextBoolean() && maxNumCount > 0) {
-                maxNumCount--;
-                rev += numList.charAt(f.nextInt(numList.length()));
-            } else {
-                rev += charList.charAt(f.nextInt(charList.length()));
-            }
+    public static String generateCode(int len) {
+        Random r = new Random();
+        StringBuilder rs = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            rs.append(r.nextInt(10));
         }
-        return rev;
+        return rs.toString();
     }
-
 }

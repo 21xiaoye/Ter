@@ -30,8 +30,8 @@ import java.util.*;
 @Component
 public class TxObjectStorageAdapter  {
     private static volatile COSClient singletonCOSClient;
-    private final static String SECRET_ID  = "you secret id";
-    private final static String SECRET_KEY = "you secret key";
+    private final static String SECRET_ID  = "";
+    private final static String SECRET_KEY = "";
     private final static String REGION = "ap-guangzhou";
     static{
         if(Objects.isNull(singletonCOSClient)){

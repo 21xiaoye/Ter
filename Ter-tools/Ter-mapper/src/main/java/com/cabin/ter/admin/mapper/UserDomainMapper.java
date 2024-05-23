@@ -59,7 +59,7 @@ public interface UserDomainMapper {
      * @param openId    用户微信标识
      * @return  UserDomain
      */
-    @Select("SELECT userId,userName, userEmail,userAvatar,userStatus,openId FROM ter_user WHERE openId=#{openId}")
+    @Select("SELECT userId, userEmail,openId FROM ter_user WHERE openId=#{openId}")
     UserDomain findByUserOpenId(String openId);
 
     /**
@@ -68,6 +68,6 @@ public interface UserDomainMapper {
      * @param openId 用户 openId
      * @return Integer
      */
-    @Update("UPDATE ter_user SET openId = #{openId} WHERE userId = #{userId}")
-    Integer updateUserOpenId(Long userId,String openId);
+    @Update("UPDATE ter_user SET openId = #{openId} WHERE userEmail = #{userEmail}")
+    Integer updateUserOpenId(String userEmail,String openId);
 }
