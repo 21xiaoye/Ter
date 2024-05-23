@@ -159,3 +159,7 @@ wx:
         secret: ${Ter.wx.secret} # 公众号的appsecret
         token: ${Ter.wx.token} # 接口配置里的Token值
         aesKey: ${Ter.wx.aesKey} # 接口配置里的EncodingAESKey值
+os:
+  tx:
+    SecretId: ${Ter.os.tx.secretId}
+    SecretKey: ${Ter.os.tx.secretKey}

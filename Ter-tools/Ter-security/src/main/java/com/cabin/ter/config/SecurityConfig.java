@@ -76,7 +76,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationRegistry-> authorizationRegistry
                         .requestMatchers(HttpMethod.GET,"/","/*.html").permitAll()
                         .requestMatchers(
-                                "/api/user/**",
+                                "/api/common/**",
                                 "/v3/**",
                                 "/test/**",
                                 "/test2",

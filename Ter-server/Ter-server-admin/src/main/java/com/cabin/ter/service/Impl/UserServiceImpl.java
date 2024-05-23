@@ -1,12 +1,18 @@
 package com.cabin.ter.service.Impl;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.StrUtil;
+import com.cabin.ter.adapter.TxObjectStorageAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
 
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.constants.RedisKey;
+import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.dto.LoginMessageDTO;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.constants.enums.SourceEnum;
@@ -40,9 +46,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -71,6 +75,8 @@ public class UserServiceImpl implements UserService {
     private TemplateEngine templateEngine;
     @Autowired
     private RedisCache redisCache;
+    @Autowired
+    private TxObjectStorageAdapter txObjectStorageAdapter;
 
 
     @Override
@@ -160,6 +166,23 @@ public class UserServiceImpl implements UserService {
         // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
         String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
         this.buildEmailMessage(email, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE.getSource());
+    }
+
+    public ApiResponse uploadAvatar(OssReq ossReq){
+        String absolutePath = ossReq.isAutoPath() ? this.generateAutoPath(ossReq) : ossReq.getFilePath() + StrUtil.SLASH + ossReq.getFileName();
+        return ApiResponse.ofSuccess(txObjectStorageAdapter.generateUploadUrl(absolutePath));
+    }
+    /**
+     * 生成随机文件名，防止重复
+     *
+     * @return
+     */
+    private String generateAutoPath(OssReq req) {
+        String uid = Optional.ofNullable(req.getUid()).map(String::valueOf).orElse("000000");
+        cn.hutool.core.lang.UUID uuid = cn.hutool.core.lang.UUID.fastUUID();
+        String suffix = FileNameUtil.getSuffix(req.getFileName());
+        String yearAndMonth = DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN);
+        return req.getFilePath() + StrUtil.SLASH + yearAndMonth + StrUtil.SLASH + uid + StrUtil.SLASH + uuid + StrUtil.DOT + suffix;
     }
 
     // TODO: 这里我觉得可以使用责任链模式来进行优化，检查用户是否存在-> 加盐哈希加密 -> 权限分配 -> 存储用户信息

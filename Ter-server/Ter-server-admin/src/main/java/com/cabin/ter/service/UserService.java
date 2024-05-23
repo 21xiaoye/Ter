@@ -1,5 +1,6 @@
 package com.cabin.ter.service;
 
+import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
@@ -39,4 +40,11 @@ public interface UserService {
      * @return
      */
     ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg);
+    /**
+     * 上传头像
+     *
+     * @param ossReq
+     * @return
+     */
+    ApiResponse uploadAvatar(OssReq ossReq);
 }
