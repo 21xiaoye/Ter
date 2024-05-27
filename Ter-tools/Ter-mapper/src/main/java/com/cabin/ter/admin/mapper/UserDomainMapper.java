@@ -32,7 +32,7 @@ public interface UserDomainMapper {
      * @param userEmail     用户邮箱
      * @return  UserDomain
      */
-    @Select("SELECT userId,userName, userEmail,userPasswd,userAvatar,salt,userStatus FROM ter_user WHERE userEmail=#{userEmail}")
+    @Select("SELECT userId,userName, uId,userEmail,userPasswd,userAvatar,salt,userStatus FROM ter_user WHERE userEmail=#{userEmail}")
     Optional<UserDomain> findByUsernameOrEmailOrPhone(String userEmail);
 
     /**
@@ -41,7 +41,7 @@ public interface UserDomainMapper {
      * @param userEmail 用户邮箱
      * @return  UserDomain
      */
-    @Select("SELECT userId,userEmail FROM ter_user WHERE userEmail=#{userEmail}")
+    @Select("SELECT uId,userEmail FROM ter_user WHERE userEmail=#{userEmail}")
     UserDomain findByUserEmail(String userEmail);
     /**
      * 插入用户
@@ -49,7 +49,6 @@ public interface UserDomainMapper {
      * @param user  用户对象
      * @return  Integer
      */
-    @Insert("INSERT INTO ter_user (userId, userName,userPasswd, salt,userEmail,createTime) VALUES (#{userId},#{userName}, #{userPasswd},#{salt},#{userEmail},#{createTime})")
     Integer insertTerUser(UserDomain user);
 
 

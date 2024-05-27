@@ -1,15 +1,15 @@
 package com.cabin.ter.websocket;
 
-import cn.hutool.json.JSONException;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
+import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.request.WsReqMsg;
-import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.util.MsgUtil;
+import com.cabin.ter.util.NettyUtil;
 import com.cabin.ter.util.RedisUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
@@ -17,8 +17,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.websocketx.*;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
     @Autowired
     private WebSocketPublicService webSocketPublicService;
+
 
     /**
      * 读取 消息
@@ -77,7 +79,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
                     webSocketPublicService.handleLoginReq(ctx.channel());
                 }
                 // 心跳检测，直接跳过
-                case HEARTBEAT, AUTHORIZE -> {
+                case HEARTBEAT,AUTHORIZE -> {
                     log.info("心跳检测");
                 }
                 default -> {
@@ -89,6 +91,29 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
             channel.writeAndFlush(new TextWebSocketFrame("参数错误"));
             throw new RuntimeException("参数错误，json转换失败");
         }
+    }
+    private void userOffLine(ChannelHandlerContext ctx) {
+        this.webSocketPublicService.removed(ctx.channel());
+        ctx.channel().close();
+    }
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        log.info("执行这个方法哦");
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            // 读空闲
+            if (idleStateEvent.state() == IdleState.READER_IDLE) {
+                // 关闭用户的连接
+                userOffLine(ctx);
+            }
+        } else if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
+            this.webSocketPublicService.connect(ctx.channel());
+            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            if (StrUtil.isNotBlank(token)) {
+                this.webSocketPublicService.authorize(ctx.channel(), new WSAuthorize(token));
+            }
+        }
+        super.userEventTriggered(ctx, evt);
     }
 
     /**
@@ -139,6 +164,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx){
+        userOffLine(ctx);
         log.info("客户端断开链接" + ctx.channel().localAddress().toString());
         redisUtil.remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());

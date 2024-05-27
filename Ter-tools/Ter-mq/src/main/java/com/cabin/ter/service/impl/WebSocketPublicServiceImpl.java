@@ -1,15 +1,25 @@
 package com.cabin.ter.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.cabin.ter.adapter.WSAdapter;
+import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.cache.RedisCache;
+import com.cabin.ter.config.ThreadPoolConfig;
 import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.constants.dto.EmailBindingDTO;
+import com.cabin.ter.constants.dto.WSChannelExtraDTO;
+import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
+import com.cabin.ter.listener.event.UserOfflineEvent;
+import com.cabin.ter.listener.event.UserOnlineEvent;
 import com.cabin.ter.service.CustomUserDetailService;
 import com.cabin.ter.service.WebSocketPublicService;
+import com.cabin.ter.service.cache.UserCache;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.vo.response.JwtResponse;
+import com.cabin.ter.util.NettyUtil;
 import com.cabin.ter.vo.UserPrincipal;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -20,11 +30,19 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import org.checkerframework.checker.guieffect.qual.AlwaysSafe;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,7 +58,18 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             .expireAfterWrite(EXPIRE_TIME)
             .maximumSize(MAX_MUM_SIZE)
             .build();
+    /**
+     * 所有已连接的websocket连接列表和一些额外参数
+     */
+    private static final ConcurrentHashMap<Channel, WSChannelExtraDTO> ONLINE_WS_MAP = new ConcurrentHashMap<>();
+    /**
+     * 所有在线的用户和对应的socket
+     */
+    private static final ConcurrentHashMap<Long, CopyOnWriteArrayList<Channel>> ONLINE_UID_MAP = new ConcurrentHashMap<>();
 
+    public static ConcurrentHashMap<Channel, WSChannelExtraDTO> getOnlineMap() {
+        return ONLINE_WS_MAP;
+    }
     private static final String LOGIN_CODE = "login code";
 
     @Autowired
@@ -52,6 +81,13 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     private CustomUserDetailService userDetailsService;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    @Qualifier(ThreadPoolConfig.WS_EXECUTOR)
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private UserCache userCache;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 返回用户登录二维码
@@ -80,12 +116,59 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
 
     @Override
     public void connect(Channel channel) {
-
+        ONLINE_WS_MAP.put(channel, new WSChannelExtraDTO());
     }
+
 
     @Override
     public void removed(Channel channel) {
+        WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
+        Optional<Long> uidOptional = Optional.ofNullable(wsChannelExtraDTO)
+                .map(WSChannelExtraDTO::getUid);
+        boolean offline = offline(channel, uidOptional);
 
+        // 登录用户下线
+        if(uidOptional.isPresent() && offline){
+            UserDomain userDomain = new UserDomain();
+            userDomain.setUId(uidOptional.get());
+            userDomain.setLastOptTime(System.currentTimeMillis());
+
+            applicationEventPublisher.publishEvent(new UserOfflineEvent(this,userDomain));
+        }
+    }
+
+    /**
+     * 用户是否下线成功
+     *
+     * @param channel
+     * @param uidOptional
+     * @return
+     */
+    // TODO: 这里没有清空则自己手动清空，但是按理来说是自动清空的，因为离西安自动调用remote方法
+    private boolean offline(Channel channel, Optional<Long> uidOptional){
+        ONLINE_WS_MAP.remove(channel);
+        if(uidOptional.isPresent()){
+            CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uidOptional.get());
+            if(CollectionUtil.isNotEmpty(channels)){
+                channels.removeIf(ch-> Objects.equals(ch,channels));
+            }else {
+                ONLINE_UID_MAP.remove(uidOptional);
+            }
+        }
+        return true;
+    }
+    /**
+     * 主动认证登录
+     *
+     * @param channel
+     * @param wsAuthorize
+     */
+    public void authorize(Channel channel, WSAuthorize wsAuthorize){
+        boolean b = jwtUtil.verityToken(wsAuthorize.getToken());
+        // 通知前端 token 失效
+        if(!b){
+            sendMsg(channel, WSAdapter.buildScanSuccessResp());
+        }
     }
 
     @Override
@@ -96,14 +179,10 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             return Boolean.FALSE;
         }
         WAIT_LOGIN_MAP.invalidate(loginCode);
-        UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(loginEmail);
-        String jwt = jwtUtil.createJWT(true, userDetails.getUserId(), userDetails.getUserEmail(), userDetails.getRoles(), userDetails.getAuthorities());
-        JwtResponse jwtResponse = new JwtResponse(jwt);
 
-        WxOAuth2UserInfo userInfo = redisCache.get(RedisKey.getKey(RedisKey.AUTHORIZE_WX, openId), WxOAuth2UserInfo.class);
-        log.info("拿到微信信息"+userInfo);
-        userDetails.setUserAvatar(userInfo.getHeadImgUrl());
-        userDetails.setUserName(userInfo.getNickname());
+        UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(loginEmail);
+        String jwt = jwtUtil.createJWT(true, userDetails.getUId(), userDetails.getUserEmail(), userDetails.getRoles(), userDetails.getAuthorities());
+        JwtResponse jwtResponse = new JwtResponse(jwt);
         this.loginSuccess(channel,userDetails, jwtResponse);
         return Boolean.TRUE;
     }
@@ -127,11 +206,55 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         }
         return Boolean.FALSE;
     }
+
+    @Override
+    public void sendToUid(WSBaseResp<?> wsBaseResp, Long uid) {
+        CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uid);
+        if(CollectionUtil.isEmpty(channels)){
+            log.info("用户：{}不在线",uid);
+            return;
+        }
+        channels.forEach(channel -> {
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
+
     /**
      * (channel必在本地)登录成功，并更新状态
      */
     private void loginSuccess(Channel channel, UserPrincipal user, JwtResponse token) {
+        this.online(channel, user.getUId());
         sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token.getToken()));
+        boolean online = userCache.isOnline(user.getUId());
+        if(!online){
+            user.setLastOptTime(new Date());
+            log.info("发送上线事件");
+            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
+        }
+    }
+
+    /**
+     * 用户上线
+     */
+    private void online(Channel channel, Long uid) {
+        getOrInitChannelExt(channel).setUid(uid);
+        ONLINE_UID_MAP.putIfAbsent(uid, new CopyOnWriteArrayList<>());
+        ONLINE_UID_MAP.get(uid).add(channel);
+        ONLINE_WS_MAP.put(channel,new WSChannelExtraDTO(uid));
+        NettyUtil.setAttr(channel, NettyUtil.UID, uid);
+    }
+    /**
+     * 如果在线列表不存在，就先把该channel放进在线列表
+     *
+     * @param channel
+     * @return
+     */
+    private WSChannelExtraDTO getOrInitChannelExt(Channel channel) {
+        WSChannelExtraDTO wsChannelExtraDTO =
+                ONLINE_WS_MAP.getOrDefault(channel, new WSChannelExtraDTO());
+
+        WSChannelExtraDTO old = ONLINE_WS_MAP.putIfAbsent(channel, wsChannelExtraDTO);
+        return ObjectUtil.isNull(old) ? wsChannelExtraDTO : old;
     }
 
     private Channel checkLoginCode(Integer loginCode){

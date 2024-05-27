@@ -55,6 +55,17 @@ public class WxMsgServiceImpl implements WxMsgService {
         String openid = wxMpXmlMessage.getFromUser();
         Integer loginCode = Integer.parseInt(getEventKey(wxMpXmlMessage));
 
+        UserDomain userDomain = userDomainMapper.findByUserOpenId(openid);
+
+        /**
+         * 数据库有用户 openId 记录，直接通知登录成功，无需授权
+         */
+        if (Objects.nonNull(userDomain)) {
+            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(openid,userDomain.getUserEmail(), loginCode));
+            log.info("用户扫码登录成功");
+            return null;
+        }
+
         /**
          * 通知用户进行授权
          */
@@ -81,26 +92,14 @@ public class WxMsgServiceImpl implements WxMsgService {
     public void authorize(WxOAuth2UserInfo userInfo) {
 
         Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
-        String openId = userInfo.getOpenid();
-        log.info("收到微信用户[{}]的登录请求",openId);
-        UserDomain userDomain = userDomainMapper.findByUserOpenId(openId);
-
         /**
          * 用户授权成功，保存用户信息
          */
         log.info("微信用户的信息{}",userInfo);
         redisCache.set(RedisKey.getKey(RedisKey.AUTHORIZE_WX,userInfo.getOpenid()),userInfo,60,TimeUnit.MINUTES);
         /**
-         * 数据库有用户 openId 记录，直接通知登录成功，无需授权
+         * 通知用户进行邮箱绑定
          */
-        if (Objects.nonNull(userDomain)) {
-            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(openId,userDomain.getUserEmail(), loginCode));
-            log.info("用户扫码登录成功");
-        }else{
-            /**
-             * 通知用户进行邮箱绑定
-             */
-            rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(loginCode, userInfo.getOpenid()));
-        }
+        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(loginCode, userInfo.getOpenid()));
     }
 }

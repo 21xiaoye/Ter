@@ -140,13 +140,8 @@ public class UserServiceImpl implements UserService {
                 userMapper.updateUserOpenId(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId());
             }
             Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, emailBindingReqMsg.getOpenId()), Integer.class);
-            /**
-             * 异步通知用户登录成功
-             */
-            CompletableFuture.runAsync(()->{
-                rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(emailBindingReqMsg.getOpenId(), emailBindingReqMsg.getEmail(), loginCode));
-            });
-            return ApiResponse.ofSuccess("登录成功");
+            rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(emailBindingReqMsg.getOpenId(), emailBindingReqMsg.getEmail(), loginCode));
+            return ApiResponse.ofSuccess();
         }
         return ApiResponse.ofSuccess("验证码错误");
     }

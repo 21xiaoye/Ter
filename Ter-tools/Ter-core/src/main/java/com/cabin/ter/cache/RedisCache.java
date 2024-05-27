@@ -39,6 +39,11 @@ public class RedisCache {
         return redisTemplate.execute(redisScript, Collections.singletonList(key), String.valueOf(unit.toSeconds(time)));
     }
 
+    public Long UIDInc(String key){
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR_EXPIRE, Long.class);
+        return redisTemplate.execute(redisScript, Collections.singletonList(key));
+    }
+
     public  Integer integerInc(String key, int time, TimeUnit unit){
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR_EXPIRE, Long.class);
         Long result = redisTemplate.execute(redisScript, Collections.singletonList(key), String.valueOf(unit.toSeconds(time)));
@@ -143,5 +148,30 @@ public class RedisCache {
 
     static <T> T toBeanOrNull(String json, Class<T> tClass) {
         return json == null ? null : JsonUtils.toObj(json, tClass);
+    }
+
+    public  Boolean zAdd(String key, String value, Long score) {
+        return redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    public  Boolean zAdd(String key, Object value, Long score) {
+        return zAdd(key, value.toString(), score);
+    }
+
+    public Boolean zIsMember(String key, Object value) {
+        return Objects.nonNull(redisTemplate.opsForZSet().score(key, value.toString()));
+    }
+
+
+    public  Long zCard(String key) {
+        return redisTemplate.opsForZSet().zCard(key);
+    }
+
+    public Long zRemove(String key, Object value) {
+        return zRemove(key, value.toString());
+    }
+
+    public  Long zRemove(String key, String value) {
+        return redisTemplate.opsForZSet().remove(key, value);
     }
 }

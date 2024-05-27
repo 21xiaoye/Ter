@@ -25,7 +25,7 @@ public enum WSRespTypeEnum {
     LOGIN_SCAN_SUCCESS(2, "用户扫描成功等待授权", null),
     LOGIN_EMAIL_BINDING(3,"用户扫描成功，未绑定邮箱，进行邮箱绑定完成注册",null),
     LOGIN_SUCCESS(4, "用户登录成功返回用户信息", WSLoginSuccess.class),
-    ;
+    INVALIDATE_TOKEN(5, "使前端的token失效，意味着前端需要重新登录", null),;
 
     private final Integer type;
     private final String desc;

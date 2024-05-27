@@ -1,10 +1,13 @@
 package com.cabin.ter.security;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.cabin.ter.constants.dto.RequestInfoDTO;
 import com.cabin.ter.exception.SecurityException;
 import com.cabin.ter.service.CustomUserDetailService;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.enums.Status;
+import com.cabin.ter.util.RequestHolderUtil;
 import com.cabin.ter.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -51,6 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StrUtil.isNotBlank(jwt)) {
             try {
                 String username = jwtUtil.getUsernameFromJWT(jwt);
+                Long uidFromJWT = jwtUtil.getUIDFromJWT(jwt);
+                RequestInfoDTO requestInfoDTO = new RequestInfoDTO();
+                requestInfoDTO.setIp(request.getRemoteAddr());
+                requestInfoDTO.setUid(uidFromJWT);
+
+                RequestHolderUtil.set(requestInfoDTO);
 
                 UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

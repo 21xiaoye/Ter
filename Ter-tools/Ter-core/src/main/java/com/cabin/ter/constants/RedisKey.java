@@ -22,6 +22,15 @@ public class RedisKey {
      * 保存Open id
      */
     public static final String OPEN_ID_STRING = "openid:%s";
+    /**
+     * 保存用户上线信息
+     */
+
+    public static final String USER_ONLINE_INFO_MAP="userInfoMap";
+    /**
+     * 用户uid
+     */
+    public static final String USER_UID = "UID";
 
     /**
      * 保存邮箱验证码

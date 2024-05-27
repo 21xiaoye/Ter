@@ -15,7 +15,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,11 +33,15 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, Serializable {
     /**
      * 主键Id
      */
     private Long userId;
+    /**
+     * 用户 UID
+     */
+    private Long uId;
     /**
      * 用户名称
      */
@@ -44,6 +50,10 @@ public class UserPrincipal implements UserDetails {
      * 用户头像
      */
     private String userAvatar;
+    /**
+     * 最后上下线时间
+     */
+    private Date lastOptTime;
     /**
      * 邮箱
      */
@@ -67,6 +77,7 @@ public class UserPrincipal implements UserDetails {
      * 用户角色列表
      */
     private List<Integer> roles;
+
     /**
      * 用户权限列表
      */
@@ -78,7 +89,7 @@ public class UserPrincipal implements UserDetails {
         List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
 
-        return new UserPrincipal(user.getUserId(), user.getUserName(),user.getUserAvatar(), user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
+        return new UserPrincipal(user.getUserId(), user.getUId(),user.getUserName(),user.getUserAvatar(), null,user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
     }
 
     @Override

@@ -219,6 +219,12 @@
             <artifactId>cos_api</artifactId>
             <version>${qcloud-version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.roaringbitmap/RoaringBitmap -->
+        <dependency>
+            <groupId>org.roaringbitmap</groupId>
+            <artifactId>RoaringBitmap</artifactId>
+            <version>1.0.5</version>
+        </dependency>
 
         <dependency>
             <groupId>com.qcloud</groupId>

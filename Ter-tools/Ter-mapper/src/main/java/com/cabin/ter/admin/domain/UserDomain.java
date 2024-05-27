@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 
@@ -29,6 +30,14 @@ public class UserDomain implements Serializable {
      * 主键
      */
     private Long userId;
+    /**
+     * 用户uid
+     */
+    private Long uId;
+    /**
+     * 用户性别
+     */
+    private char sex;
     /**
      * 用户名
      */
@@ -54,6 +63,10 @@ public class UserDomain implements Serializable {
      * 角色列表
      */
     private List<Integer> roleIdList;
+    /**
+     * 用户最后上下线时间
+     */
+    private Long lastOptTime;
     /**
      * 盐值
      */

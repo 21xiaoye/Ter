@@ -80,7 +80,7 @@ public class JwtUtil {
      */
     public String createJWT(Authentication authentication, Boolean rememberMe){
         UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
-        return createJWT(rememberMe, principal.getUserId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
+        return createJWT(rememberMe, principal.getUId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
     }
 
     /**
@@ -126,6 +126,11 @@ public class JwtUtil {
         }
     }
 
+    public boolean verityToken(String jwt){
+        Claims claims = this.parseJWT(jwt);
+        if(Objects.isNull(claims)) return false;
+        return true;
+    }
     /**
      * 设置JWT过期
      *
@@ -147,6 +152,17 @@ public class JwtUtil {
     public String getUsernameFromJWT(String jwt) {
         Claims claims = parseJWT(jwt);
         return claims.getSubject();
+    }
+
+    /**
+     * 根据token 获取用户 UID
+     *
+     * @param jwt
+     * @return
+     */
+    public Long getUIDFromJWT(String jwt){
+        Claims claims = parseJWT(jwt);
+        return Long.parseLong(claims.getId());
     }
 
     /**
