@@ -4,6 +4,7 @@ import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.vo.response.UserInfoResp;
 
 /**
  * @author xiaoye
@@ -47,4 +48,11 @@ public interface UserService {
      * @return
      */
     ApiResponse uploadAvatar(OssReq ossReq);
+    /**
+     * 获取前端展示信息
+     *
+     * @param uid
+     * @return
+     */
+    UserInfoResp getUserInfo(Long uid);
 }

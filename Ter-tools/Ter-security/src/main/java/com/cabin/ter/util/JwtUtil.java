@@ -10,6 +10,7 @@ import com.cabin.ter.vo.UserPrincipal;
 import com.cabin.ter.config.ConstantPool;
 import com.cabin.ter.constants.enums.Status;
 import io.jsonwebtoken.*;
+import io.netty.channel.Channel;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class JwtUtil {
         return createJWT(rememberMe, principal.getUId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
     }
 
+
     /**
      * 解析JWT
      *
@@ -126,9 +128,24 @@ public class JwtUtil {
         }
     }
 
+
     public boolean verityToken(String jwt){
-        Claims claims = this.parseJWT(jwt);
-        if(Objects.isNull(claims)) return false;
+        Claims claims = Jwts.parser().setSigningKey(jwtConfig.getKey()).parseClaimsJws(jwt).getBody();
+
+        String username = claims.getSubject();
+        String redisKey = ConstantPool.REDIS_JWT_KEY_PREFIX + username;
+
+        // 校验redis中的JWT是否存在
+        Long expire = stringRedisTemplate.getExpire(redisKey, TimeUnit.MILLISECONDS);
+        if (Objects.isNull(expire) || expire <= 0) {
+            return false;
+        }
+
+        // 校验redis中的JWT是否与当前的一致，不一致则代表用户已注销/用户在不同设备登录，均代表JWT已过期
+        String redisToken = stringRedisTemplate.opsForValue().get(redisKey);
+        if (!StrUtil.equals(jwt, redisToken)) {
+            return false;
+        }
         return true;
     }
     /**

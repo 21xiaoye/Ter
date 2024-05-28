@@ -165,9 +165,13 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
      */
     public void authorize(Channel channel, WSAuthorize wsAuthorize){
         boolean b = jwtUtil.verityToken(wsAuthorize.getToken());
+        log.info("用户token是否有效{}",b);
         // 通知前端 token 失效
         if(!b){
-            sendMsg(channel, WSAdapter.buildScanSuccessResp());
+            sendMsg(channel, WSAdapter.buildInvalidateTokenResp());
+        }else{
+            NettyUtil.setAttr(channel, NettyUtil.UID,jwtUtil.getUIDFromJWT(wsAuthorize.getToken()));
+            this.online(channel, NettyUtil.getAttr(channel, NettyUtil.UID));
         }
     }
 
@@ -223,14 +227,8 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
      * (channel必在本地)登录成功，并更新状态
      */
     private void loginSuccess(Channel channel, UserPrincipal user, JwtResponse token) {
-        this.online(channel, user.getUId());
         sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token.getToken()));
-        boolean online = userCache.isOnline(user.getUId());
-        if(!online){
-            user.setLastOptTime(new Date());
-            log.info("发送上线事件");
-            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
-        }
+        this.online(channel, user.getUId());
     }
 
     /**
@@ -242,6 +240,18 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         ONLINE_UID_MAP.get(uid).add(channel);
         ONLINE_WS_MAP.put(channel,new WSChannelExtraDTO(uid));
         NettyUtil.setAttr(channel, NettyUtil.UID, uid);
+
+        onlineNotification(uid);
+    }
+    public void onlineNotification(Long uid){
+        boolean online = userCache.isOnline(uid);
+        if(!online){
+            UserPrincipal userPrincipal = new UserPrincipal();
+            userPrincipal.setLastOptTime(new Date());
+            userPrincipal.setUId(uid);
+            log.info("发送上线事件");
+            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userPrincipal));
+        }
     }
     /**
      * 如果在线列表不存在，就先把该channel放进在线列表

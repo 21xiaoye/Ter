@@ -4,6 +4,7 @@ import com.cabin.ter.constants.dto.EmailBindingDTO;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.stereotype.Service;
 

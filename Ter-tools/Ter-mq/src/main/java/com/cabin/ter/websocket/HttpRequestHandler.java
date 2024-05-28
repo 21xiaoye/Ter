@@ -1,15 +1,29 @@
 package com.cabin.ter.websocket;
 
+import cn.hutool.core.net.url.UrlBuilder;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.cabin.ter.adapter.WSAdapter;
+import com.cabin.ter.constants.vo.request.WSAuthorize;
+import com.cabin.ter.service.WebSocketPublicService;
+import com.cabin.ter.util.JwtUtil;
+import com.cabin.ter.util.NettyUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.net.InetSocketAddress;
+import java.util.Optional;
 
 /**
  * <p>
@@ -23,6 +37,8 @@ import org.springframework.stereotype.Component;
 @Component
 @ChannelHandler.Sharable
 public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
+    @Autowired
+    private WebSocketPublicService webSocketPublicService;
 
     /**
      * 读取 数据
@@ -49,7 +65,6 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
                     new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
             return;
         }
-
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
                 "ws:/" + ctx.channel() + "/websocket", null, false);
         WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(req);
@@ -59,8 +74,28 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
         } else {
             handshaker.handshake(ctx.channel(), req);
         }
+        this.parseIpToken(ctx,req);
     }
 
+    public void parseIpToken(ChannelHandlerContext ctx,FullHttpRequest request){
+        UrlBuilder urlBuilder = UrlBuilder.ofHttp(request.uri());
+        // 获取token参数
+        String token = Optional.ofNullable(urlBuilder.getQuery()).map(k->k.get("token")).map(CharSequence::toString).orElse("");
+        NettyUtil.setAttr(ctx.channel(), NettyUtil.TOKEN, token);
+
+        // 获取请求路径
+        request.setUri(urlBuilder.getPath().toString());
+        HttpHeaders headers = request.headers();
+        String ip = headers.get("X-Real-IP");
+        if (StringUtils.isEmpty(ip)) {//如果没经过nginx，就直接获取远端地址
+            InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
+            ip = address.getAddress().getHostAddress();
+        }
+        NettyUtil.setAttr(ctx.channel(), NettyUtil.IP, ip);
+        if (StrUtil.isNotBlank(token)) {
+            this.webSocketPublicService.authorize(ctx.channel(), new WSAuthorize(NettyUtil.getAttr(ctx.channel(),NettyUtil.TOKEN)));
+        }
+    }
     private void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, DefaultFullHttpResponse res) {
         // 返回应答给客户端
         if (res.status().code() != 200) {

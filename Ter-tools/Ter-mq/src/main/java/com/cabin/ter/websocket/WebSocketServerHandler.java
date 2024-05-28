@@ -2,6 +2,7 @@ package com.cabin.ter.websocket;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.cabin.ter.adapter.WSAdapter;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
@@ -80,6 +81,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
                 }
                 // 心跳检测，直接跳过
                 case HEARTBEAT,AUTHORIZE -> {
+                    log.info(ctx.channel().toString());
                     log.info("心跳检测");
                 }
                 default -> {
@@ -109,6 +111,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         } else if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
             this.webSocketPublicService.connect(ctx.channel());
             String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            log.info("用户握手成功，开始进行授权");
             if (StrUtil.isNotBlank(token)) {
                 this.webSocketPublicService.authorize(ctx.channel(), new WSAuthorize(token));
             }
@@ -144,7 +147,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         log.info("客户端Port:" + channel.localAddress().getPort());
         log.info("客户端信息完毕");
 
-
+        this.webSocketPublicService.connect(ctx.channel());
         SendChannelInfo userChannelInfo = new SendChannelInfo(channel.localAddress().getHostString(),
                 channel.localAddress().getPort(), channel.id().toString(), new Date());
 
@@ -172,7 +175,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
 
     private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {
-        String responseJson = "不支持二进制消息";
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(responseJson));
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(errorMsg));
     }
 }

@@ -55,10 +55,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String username = jwtUtil.getUsernameFromJWT(jwt);
                 Long uidFromJWT = jwtUtil.getUIDFromJWT(jwt);
+
                 RequestInfoDTO requestInfoDTO = new RequestInfoDTO();
                 requestInfoDTO.setIp(request.getRemoteAddr());
                 requestInfoDTO.setUid(uidFromJWT);
-
                 RequestHolderUtil.set(requestInfoDTO);
 
                 UserDetails userDetails = customUserDetailService.loadUserByUsername(username);

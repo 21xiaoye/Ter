@@ -33,6 +33,7 @@ import com.cabin.ter.constants.vo.response.JwtResponse;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.constants.enums.EncryptionEnum;
 import com.cabin.ter.util.AsserUtil;
+import com.cabin.ter.vo.response.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +155,11 @@ public class UserServiceImpl implements UserService {
         // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
         String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
         this.buildEmailMessage(email, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE.getSource());
+    }
+
+    @Override
+    public UserInfoResp getUserInfo(Long uid) {
+        return null;
     }
 
     public ApiResponse uploadAvatar(OssReq ossReq){

@@ -1,10 +1,14 @@
 package com.cabin.ter.controller;
 
 
+import cn.hutool.system.UserInfo;
 import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
 import com.cabin.ter.service.UserService;
+import com.cabin.ter.util.RequestHolderUtil;
+import com.cabin.ter.vo.response.UserInfoResp;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,5 +35,10 @@ public class UserController {
     public ApiResponse uploadFile(@RequestBody OssReq ossReq){
         return userService.uploadAvatar(ossReq);
     }
-
+    @GetMapping("/userInfo")
+    @Operation(summary = "用户详情")
+    public ApiResponse getUserInfo(@RequestParam Long uid) {
+        log.info("收到用户id{}的请求", RequestHolderUtil.get().getUid());
+        return ApiResponse.ofSuccess(userService.getUserInfo(uid));
+    }
 }
