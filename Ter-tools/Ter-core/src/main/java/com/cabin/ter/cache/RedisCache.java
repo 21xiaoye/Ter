@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -133,7 +134,32 @@ public class RedisCache {
         }
         return redisTemplate.opsForHash().get(key,hashKey);
     }
+    public  <T> List<T> mget(Collection<String> keys, Class<T> tClass) {
+        List<String> list = redisTemplate.opsForValue().multiGet(keys);
+        if (Objects.isNull(list)) {
+            return new ArrayList<>();
+        }
+        return list.stream().map(o -> toBeanOrNull(o, tClass)).collect(Collectors.toList());
+    }
 
+    public  <T> void mset(Map<String, T> map, long time) {
+        Map<String, String> collect = map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e) -> objToStr(e.getValue())));
+        redisTemplate.opsForValue().multiSet(collect);
+        map.forEach((key, value) -> {
+            this.expire(key, time);
+        });
+    }
+    public  Boolean expire(String key, long time) {
+        try {
+            if (time > 0) {
+                redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
     public static String objToStr(Object o) {
         return JsonUtils.toStr(o);
     }

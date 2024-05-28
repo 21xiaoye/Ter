@@ -26,7 +26,7 @@ public class RedisKey {
      * 保存用户上线信息
      */
 
-    public static final String USER_ONLINE_INFO_MAP="userInfoMap";
+    public static final String USER_ONLINE_INFO="userInfo:uid_%d";
     /**
      * 用户uid
      */

@@ -24,8 +24,7 @@ import org.springframework.stereotype.Component;
 public class UserOnlineListener {
     @Autowired
     private UserCache userCache;
-    @Autowired
-    private RedisCache redisCache;
+
 
     /**
      * 用户上线监听
@@ -37,17 +36,5 @@ public class UserOnlineListener {
     public void saveRedisAndPush(UserOnlineEvent event) {
         UserPrincipal user = event.getUserPrincipal();
         userCache.online(user.getUId(), user.getLastOptTime());
-    }
-
-    /**
-     * 保存用户信息
-     *
-     * @param event
-     */
-    @Async(value = "terExecutor")
-    @EventListener(classes = UserOnlineEvent.class)
-    public void saveDB(UserOnlineEvent event) {
-        UserPrincipal user = event.getUserPrincipal();
-        redisCache.setHashMap(RedisKey.getKey(RedisKey.USER_ONLINE_INFO_MAP), user.getUId().toString(), user);
     }
 }

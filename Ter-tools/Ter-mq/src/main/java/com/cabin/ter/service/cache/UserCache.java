@@ -1,11 +1,16 @@
 package com.cabin.ter.service.cache;
 
+import cn.hutool.core.collection.CollUtil;
+import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.constants.RedisKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoye
@@ -16,6 +21,8 @@ import java.util.Date;
 public class UserCache {
     @Autowired
     private RedisCache redisCache;
+    @Autowired
+    private UserDomainMapper userDomainMapper;
     /**
      * 获取在线在线人数
      */
@@ -70,6 +77,32 @@ public class UserCache {
     public boolean isOnline(Long uid) {
         String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
         return redisCache.zIsMember(onlineKey, uid);
+    }
+
+    public UserDomain getUserInfo(Long uid){
+        return getUserInfoBatch(Collections.singleton(uid)).get(uid);
+    }
+
+    /**
+     * 获取用户信息，盘路缓存模式
+     */
+    public Map<Long, UserDomain> getUserInfoBatch(Set<Long> uids) {
+        //批量组装key
+        List<String> keys = uids.stream().map(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a)).collect(Collectors.toList());
+        //批量get
+        List<UserDomain> mget = redisCache.mget(keys, UserDomain.class);
+        Map<Long, UserDomain> map = mget.stream().filter(Objects::nonNull).collect(Collectors.toMap(UserDomain::getUId, Function.identity()));
+        //发现差集——还需要load更新的uid
+        List<Long> needLoadUidList = uids.stream().filter(a -> !map.containsKey(a)).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(needLoadUidList)) {
+            //批量load
+            List<UserDomain> needLoadUserList = userDomainMapper.listByIds(needLoadUidList);
+            Map<String, UserDomain> redisMap = needLoadUserList.stream().collect(Collectors.toMap(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a.getUId()), Function.identity()));
+            redisCache.mset(redisMap, 5 * 60);
+            //加载回redis
+            map.putAll(needLoadUserList.stream().collect(Collectors.toMap(UserDomain::getUId, Function.identity())));
+        }
+        return map;
     }
 
 }

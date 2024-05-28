@@ -2,9 +2,11 @@ package com.cabin.ter.admin.mapper;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -69,4 +71,6 @@ public interface UserDomainMapper {
      */
     @Update("UPDATE ter_user SET openId = #{openId} WHERE userEmail = #{userEmail}")
     Integer updateUserOpenId(String userEmail,String openId);
+
+    List<UserDomain> listByIds(@Param("uIdsList") List<Long> uIdsList);
 }

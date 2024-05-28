@@ -37,8 +37,8 @@ public class UserController {
     }
     @GetMapping("/userInfo")
     @Operation(summary = "用户详情")
-    public ApiResponse getUserInfo(@RequestParam Long uid) {
+    public ApiResponse getUserInfo() {
         log.info("收到用户id{}的请求", RequestHolderUtil.get().getUid());
-        return ApiResponse.ofSuccess(userService.getUserInfo(uid));
+        return ApiResponse.ofSuccess(userService.getUserInfo(RequestHolderUtil.get().getUid()));
     }
 }

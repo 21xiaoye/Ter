@@ -1,5 +1,7 @@
 package com.cabin.ter.config;
 
+import com.cabin.ter.constants.enums.Status;
+import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.sys.domain.MailProperties;
 import com.cabin.ter.sys.mapper.MailPropertiesMapper;
 import jakarta.annotation.PostConstruct;
@@ -25,12 +27,11 @@ import java.util.Random;
 @Slf4j
 @Component
 @AllArgsConstructor
-
 public class MailSenderConfig {
     @Autowired
     private MailPropertiesMapper mailPropertiesMapper;
 
-    private final List<JavaMailSenderImpl> javaMailSenderList;
+    private final List<JavaMailSenderImpl> javaMailSenderList = new ArrayList<>();
 
     /**
      * 初始化 sender
@@ -38,6 +39,7 @@ public class MailSenderConfig {
     @PostConstruct
     public void buildMailSender(){
         List<MailProperties> mailList = mailPropertiesMapper.findMailList();
+        log.info(mailList.toString());
         mailList.forEach(item -> {
             try {
                 JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -47,11 +49,10 @@ public class MailSenderConfig {
                 javaMailSender.setProtocol(item.getProtocol());
                 javaMailSender.setUsername(item.getMailName());
                 javaMailSender.setPassword(item.getMailPasswd());
-
                 javaMailSenderList.add(javaMailSender);
             } catch (Exception e) {
                 log.error("Error creating JavaMailSenderImpl", e);
-                throw new RuntimeException(e);
+                throw new BaseException(Status.ERROR,e);
             }
         });
     }

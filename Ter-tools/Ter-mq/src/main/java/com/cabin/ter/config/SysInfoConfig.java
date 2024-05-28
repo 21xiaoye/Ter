@@ -57,9 +57,5 @@ public class SysInfoConfig {
                 e.printStackTrace();
             }
         }
-
-        public int getServerPort() {
-            return serverPort;
-        }
     }
 }

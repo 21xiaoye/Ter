@@ -6,6 +6,7 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.adapter.TxObjectStorageAdapter;
+import com.cabin.ter.adapter.UserAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
@@ -19,6 +20,7 @@ import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
+import com.cabin.ter.service.cache.UserCache;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.security.MyPasswordEncoder;
@@ -78,6 +80,8 @@ public class UserServiceImpl implements UserService {
     private RedisCache redisCache;
     @Autowired
     private TxObjectStorageAdapter txObjectStorageAdapter;
+    @Autowired
+    private UserCache userCache;
 
     @Override
     public ApiResponse userLogin(LoginAndRegisterRequest loginRequest) {
@@ -159,7 +163,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoResp getUserInfo(Long uid) {
-        return null;
+        UserDomain userInfo = userCache.getUserInfo(uid);
+        return UserAdapter.buildUserInfoResp(userInfo);
     }
 
     public ApiResponse uploadAvatar(OssReq ossReq){

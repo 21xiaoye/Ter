@@ -28,4 +28,15 @@
             <if test="userAvatar != null">#{userAvatar},</if>
         </trim>
     </insert>
+
+    <select id="listByIds" resultType="com.cabin.ter.admin.domain.UserDomain" parameterType="java.util.List">
+        SELECT userAvatar, uId, userEmail, openId, userName, sex
+        FROM ter_user
+        WHERE uId IN
+        <foreach item="uId" index="index" collection="uIdsList" open="(" separator="," close=")">
+            #{uId}
+        </foreach>
+    </select>
+
+
 </mapper>
