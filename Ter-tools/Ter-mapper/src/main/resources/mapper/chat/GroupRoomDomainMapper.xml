@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.ter.chat.mapper.GroupRoomDomainMapper">
+<!--    <insert id="saveGroupRoom" parameterType="com.cabin.ter.chat.domain.GroupRoomDomain">-->
+<!--        INSERT INTO ter_room_group-->
+<!--        <trim prefix="(" suffix=")" suffixOverrides=",">-->
+<!--            <if test="groupRoomDomain.roomId != null">roomId,</if>-->
+<!--            <if test="groupRoomDomain.roomName != null">roomName,</if>-->
+<!--            <if test="groupRoomDomain.roomAvatar != null">roomAvatar,</if>-->
+<!--            <if test="groupRoomDomain.createdTime != null">createdTime</if>-->
+<!--        </trim>-->
+<!--        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">-->
+<!--            <if test="groupRoomDomain.roomId != null">#{groupRoomDomain.roomId},</if>-->
+<!--            <if test="groupRoomDomain.roomName != null">#{groupRoomDomain.roomName},</if>-->
+<!--            <if test="groupRoomDomain.roomAvatar != null">#{groupRoomDomain.roomAvatar},</if>-->
+<!--            <if test="groupRoomDomain.createdTime != null">#{groupRoomDomain.createdTime}</if>-->
+<!--        </trim>-->
+<!--    </insert>-->
+
+    <select id="listByIds" resultType="com.cabin.ter.chat.domain.GroupRoomDomain" parameterType="java.util.List">
+        SELECT roomId, roomName, roomAvatar, deleteStatus, createTime
+        FROM ter_room_group
+        WHERE roomId IN
+        <foreach item="roomId" index="index" collection="roomIdsList" open="(" separator="," close=")">
+            #{roomId}
+        </foreach>
+    </select>
+</mapper>

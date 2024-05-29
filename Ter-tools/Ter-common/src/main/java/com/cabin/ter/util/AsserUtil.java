@@ -67,6 +67,12 @@ public class AsserUtil {
             throwException(msg);
         }
     }
+    //如果不是非空对象，则抛异常
+    public static void isNotEmpty(Object obj, IStatus errorEnum, Object... args) {
+        if (isEmpty(obj)) {
+            throwException(errorEnum, args);
+        }
+    }
 
     public static boolean isEmpty(Object obj){
         return ObjectUtil.isEmpty(obj);
@@ -76,8 +82,9 @@ public class AsserUtil {
     }
     private static void throwException(IStatus status, Object... arg) {
         if (Objects.isNull(status)) {
-            status = Status.PARAM_NOT_MATCH;
+            throw new BaseException(Status.SUCCESS, arg);
         }
+        status = Status.PARAM_NOT_MATCH;
         throw new BaseException(status.getStatus(), MessageFormat.format(status.getMessage(), arg));
     }
 }

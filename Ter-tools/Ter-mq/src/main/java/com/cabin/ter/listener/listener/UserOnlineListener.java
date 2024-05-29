@@ -1,9 +1,7 @@
 package com.cabin.ter.listener.listener;
 
-import com.cabin.ter.cache.RedisCache;
-import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.listener.event.UserOnlineEvent;
-import com.cabin.ter.service.cache.UserCache;
+import com.cabin.ter.cache.UserCache;
 import com.cabin.ter.vo.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,11 @@
 package com.cabin.ter.controller;
 
 
-import cn.hutool.system.UserInfo;
 import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.util.RequestHolderUtil;
-import com.cabin.ter.vo.response.UserInfoResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;

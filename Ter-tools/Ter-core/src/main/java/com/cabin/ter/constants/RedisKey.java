@@ -28,9 +28,18 @@ public class RedisKey {
 
     public static final String USER_ONLINE_INFO="userInfo:uid_%d";
     /**
-     * 用户uid
+     * 房间详情
      */
-    public static final String USER_UID = "UID";
+    public static final String ROOM_INFO_STRING = "roomInfo:roomId_%d";
+
+    /**
+     * 群组详情
+     */
+    public static final String GROUP_INFO_STRING = "groupInfo:roomId_%d";
+    /**
+     * 群组成员信息
+     */
+    public static final String GROUP_MEMBER_INFO_STRING = "groupMemberInfo:roomId_%d";
 
     /**
      * 保存邮箱验证码

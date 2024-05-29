@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.ter.chat.mapper.RoomDomainMapper">
+    <select id="listByIds" resultType="com.cabin.ter.chat.domain.RoomDomain" parameterType="java.util.List">
+        SELECT id, type, hotFlag, activeTime, lastMsgId, extJson,createTime
+        FROM ter_room
+        WHERE id IN
+        <foreach item="id" index="index" collection="roomIdsList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

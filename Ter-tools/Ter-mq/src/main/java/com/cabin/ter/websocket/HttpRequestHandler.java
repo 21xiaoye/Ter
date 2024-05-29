@@ -77,7 +77,13 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object> {
         this.parseIpToken(ctx,req);
     }
 
-    public void parseIpToken(ChannelHandlerContext ctx,FullHttpRequest request){
+    /**
+     * 完成websocket协议升级之后，获取此次链接的Ip地址和token验证
+     *
+     * @param ctx
+     * @param request
+     */
+    private void parseIpToken(ChannelHandlerContext ctx,FullHttpRequest request){
         UrlBuilder urlBuilder = UrlBuilder.ofHttp(request.uri());
         // 获取token参数
         String token = Optional.ofNullable(urlBuilder.getQuery()).map(k->k.get("token")).map(CharSequence::toString).orElse("");

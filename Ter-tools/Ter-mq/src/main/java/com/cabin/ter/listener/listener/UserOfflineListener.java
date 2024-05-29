@@ -2,15 +2,12 @@ package com.cabin.ter.listener.listener;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.listener.event.UserOfflineEvent;
-import com.cabin.ter.service.cache.UserCache;
-import com.cabin.ter.vo.UserPrincipal;
+import com.cabin.ter.cache.UserCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * 用户下线监听器

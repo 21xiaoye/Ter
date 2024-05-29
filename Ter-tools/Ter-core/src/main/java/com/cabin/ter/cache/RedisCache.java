@@ -82,6 +82,9 @@ public class RedisCache {
             log.debug("---------------------------------------------");
         }
     }
+    public  void del(List<String> keys) {
+        redisTemplate.delete(keys);
+    }
 
     /**
      * 普通缓存放入并设置时间

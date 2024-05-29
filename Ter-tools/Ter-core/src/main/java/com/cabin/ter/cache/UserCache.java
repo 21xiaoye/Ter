@@ -1,4 +1,4 @@
-package com.cabin.ter.service.cache;
+package com.cabin.ter.cache;
 
 import cn.hutool.core.collection.CollUtil;
 import com.cabin.ter.admin.domain.UserDomain;

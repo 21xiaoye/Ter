@@ -20,7 +20,7 @@ import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
-import com.cabin.ter.service.cache.UserCache;
+import com.cabin.ter.cache.UserCache;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.security.MyPasswordEncoder;

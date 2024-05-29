@@ -97,9 +97,6 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
         return DELAY_LEVEL;
     }
 
-    /**
-     * 使用模板模式构建消息消费框架，可自由扩展或删减
-     */
     public void dispatchMessage(T message) {
         // 基础日志记录被父类处理了
         log.info("[{}]消费者收到消息[{}]",ConsumerName(),JSONUtil.toJsonStr(message));

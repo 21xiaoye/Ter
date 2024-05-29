@@ -1,6 +1,5 @@
 package com.cabin.ter.config;
 
-import com.cabin.ter.config.IdConfig;
 import com.cabin.ter.sys.domain.SysDomain;
 import com.cabin.ter.sys.mapper.SysDomainMapper;
 import jakarta.annotation.PostConstruct;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.lang.ref.PhantomReference;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
