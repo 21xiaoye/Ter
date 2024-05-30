@@ -31,7 +31,7 @@ public class ChatMessageResp {
     @Data
     public static class Message{
         @Schema(name = "messageId",description = "消息id")
-        private Long messageId;
+        private Long id;
 
         @Schema(name = "roomId", description = "房间id")
         private Long roomId;
@@ -43,9 +43,9 @@ public class ChatMessageResp {
         /**
          * @see com.cabin.ter.constants.enums.MessageTypeEnum
          */
-        private Integer messageType;
+        private Integer type;
 
         @Schema(name = "body", description = "消息内容")
-        private Objects body;
+        private Object body;
     }
 }

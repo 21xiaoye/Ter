@@ -60,20 +60,20 @@ public interface WebSocketPublicService {
 
     Boolean emailBinding(EmailBindingDTO emailBindingDTO);
 
-//    /**
-//     * 推动消息给所有在线的人
-//     *
-//     * @param wsBaseResp 发送的消息体
-//     * @param skipUid    需要跳过的人
-//     */
-//    void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid);
-//
-//    /**
-//     * 推动消息给所有在线的人
-//     *
-//     * @param wsBaseResp 发送的消息体
-//     */
-//    void sendToAllOnline(WSBaseResp<?> wsBaseResp);
-//
+    /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseResp 发送的消息体
+     * @param skipUid    需要跳过的人
+     */
+    void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid);
+
+    /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseResp 发送的消息体
+     */
+    void sendToAllOnline(WSBaseResp<?> wsBaseResp);
+
     void sendToUid(WSBaseResp<?> wsBaseResp, Long uid);
 }

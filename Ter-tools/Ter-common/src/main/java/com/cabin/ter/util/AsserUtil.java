@@ -73,7 +73,16 @@ public class AsserUtil {
             throwException(errorEnum, args);
         }
     }
-
+    public static void equal(Object o1, Object o2, String msg) {
+        if (!ObjectUtil.equal(o1, o2)) {
+            throwException(msg);
+        }
+    }
+    public static void isTrue(boolean expression, String msg) {
+        if (!expression) {
+            throwException(msg);
+        }
+    }
     public static boolean isEmpty(Object obj){
         return ObjectUtil.isEmpty(obj);
     }

@@ -1,6 +1,7 @@
 package com.cabin.ter.chat.domain;
 
 import com.cabin.ter.chat.domain.msg.BaseFileDTO;
+import com.cabin.ter.chat.domain.msg.MessageExtra;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -63,9 +64,9 @@ public class MessageDomain implements Serializable {
     /**
      * 消息扩展字段
      */
-    @JsonSerialize(using = JsonSerializer.class)
-    @JsonDeserialize(using = JsonDeserializer.class)
-    private BaseFileDTO.MessageExtra extra;
+    @JsonSerialize
+    @JsonDeserialize
+    private MessageExtra extra;
 
     /**
      * 创建时间

@@ -69,7 +69,7 @@ public class JwtUtil {
 
         String jwt = jwtBuilder.compact();
 
-        stringRedisTemplate.opsForValue().set(ConstantPool.REDIS_JWT_KEY_PREFIX+subject, jwt, ttl, TimeUnit.MICROSECONDS);
+        stringRedisTemplate.opsForValue().set(ConstantPool.REDIS_JWT_KEY_PREFIX+subject, jwt, ttl, TimeUnit.MINUTES);
         return jwt;
     }
 

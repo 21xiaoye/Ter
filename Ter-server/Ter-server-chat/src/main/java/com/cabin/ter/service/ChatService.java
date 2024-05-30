@@ -1,5 +1,6 @@
 package com.cabin.ter.service;
 
+import com.cabin.ter.chat.domain.MessageDomain;
 import com.cabin.ter.vo.request.ChatMessageReq;
 import com.cabin.ter.vo.response.ChatMessageResp;
 
@@ -21,8 +22,9 @@ public interface ChatService {
      * 获取消息响应
      *
      * @param msgId         消息id
-     * @param receiveUid    接受用户uid
      * @return  ChatMessageResp 消息响应体
      */
-    ChatMessageResp getMsgResp(Long msgId, Long receiveUid);
+    ChatMessageResp getMsgResp(Long msgId);
+
+    ChatMessageResp getMsgResp(MessageDomain message);
 }

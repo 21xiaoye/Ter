@@ -32,4 +32,15 @@
             <if test="updateTime != null">#{updateTime},</if>
         </trim>
     </insert>
+
+    <update id="updateByMsgId" parameterType="com.cabin.ter.chat.domain.MessageDomain">
+        UPDATE ter_message
+        <set>
+            <if test="messageDomain.content != null"> content = #{messageDomain.content},</if>
+            <if test="messageDomain.replyMsgId != null"> replyMsgId = #{messageDomain.replyMsgId},</if>
+            <if test="messageDomain.gapCount != null"> gapCount = #{messageDomain.gapCount},</if>
+            <if test="messageDomain.extra != null"> extra = #{messageDomain.extra},</if>
+        </set>
+        WHERE id = #{messageDomain.id}
+    </update>
 </mapper>

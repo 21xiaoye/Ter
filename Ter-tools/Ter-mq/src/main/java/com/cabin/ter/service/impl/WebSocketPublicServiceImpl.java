@@ -163,13 +163,11 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
      */
     public void authorize(Channel channel, WSAuthorize wsAuthorize){
         boolean b = jwtUtil.verityToken(wsAuthorize.getToken());
-        log.info("用户token是否有效{}",b);
         // 通知前端 token 失效
         if(!b){
             sendMsg(channel, WSAdapter.buildInvalidateTokenResp());
         }else{
-            NettyUtil.setAttr(channel, NettyUtil.UID,jwtUtil.getUIDFromJWT(wsAuthorize.getToken()));
-            this.online(channel, NettyUtil.getAttr(channel, NettyUtil.UID));
+            this.online(channel,jwtUtil.getUIDFromJWT(wsAuthorize.getToken()));
         }
     }
 
@@ -221,6 +219,21 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         });
     }
 
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid) {
+        ONLINE_WS_MAP.forEach((channel, ext) -> {
+            if (Objects.nonNull(skipUid) && Objects.equals(ext.getUid(), skipUid)) {
+                return;
+            }
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
+
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> wsBaseResp) {
+        this.sendToAllOnline(wsBaseResp, null);
+    }
+
     /**
      * (channel必在本地)登录成功，并更新状态
      */
@@ -236,8 +249,8 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         getOrInitChannelExt(channel).setUid(uid);
         ONLINE_UID_MAP.putIfAbsent(uid, new CopyOnWriteArrayList<>());
         ONLINE_UID_MAP.get(uid).add(channel);
+        log.info("用户再次上线{}通道为{}",uid,ONLINE_UID_MAP.get(uid));
         ONLINE_WS_MAP.put(channel,new WSChannelExtraDTO(uid));
-        NettyUtil.setAttr(channel, NettyUtil.UID, uid);
 
         onlineNotification(uid);
     }

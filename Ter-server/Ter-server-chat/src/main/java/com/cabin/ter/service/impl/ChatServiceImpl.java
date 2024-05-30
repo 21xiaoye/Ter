@@ -1,9 +1,14 @@
 package com.cabin.ter.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.cache.GroupMemberCache;
+import com.cabin.ter.cache.MessageCache;
 import com.cabin.ter.cache.RoomCache;
 import com.cabin.ter.cache.RoomGroupCache;
 import com.cabin.ter.chat.domain.GroupRoomDomain;
+import com.cabin.ter.chat.domain.MessageDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
 import com.cabin.ter.listener.event.MessageSendEvent;
 import com.cabin.ter.service.ChatService;
@@ -16,9 +21,13 @@ import org.checkerframework.checker.fenum.qual.AwtFlowLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,13 +42,16 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private RoomCache roomCache;
     @Autowired
-    private RoomGroupCache roomGroupCache;
+    private MessageAdapter messageAdapter;
+    @Autowired
+    private MessageCache messageCache;
     @Autowired
     private GroupMemberCache groupMemberCache;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
+    @Transactional
     public Long senMsg(ChatMessageReq chatMessageReq, Long uid) {
         this.roomCheck(chatMessageReq, uid);
         AbstractMsgHandler abstractMsgHandler = MsgHandlerFactory.getStrategyNoNull(chatMessageReq.getMessageType());
@@ -49,15 +61,14 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatMessageResp getMsgResp(Long msgId, Long receiveUid) {
-        ChatMessageResp.UserInfo userInfo = new ChatMessageResp.UserInfo();
-        userInfo.setUid(15L);
-        ChatMessageResp.Message message = new ChatMessageResp.Message();
-        message.setMessageType(1);
-        message.setMessageId(112312L);
-        message.setSendTime(System.currentTimeMillis());
-        message.setRoomId(1312312L);
-        return new ChatMessageResp(userInfo, message);
+    public ChatMessageResp getMsgResp(MessageDomain message) {
+        return CollUtil.getFirst(getMsgRespBatch(Collections.singletonList(message)));
+    }
+
+    @Override
+    public ChatMessageResp getMsgResp(Long msgId) {
+        MessageDomain messageDomain = messageCache.getMsg(msgId);
+        return this.getMsgResp(messageDomain);
     }
 
     private void roomCheck(ChatMessageReq chatMessageReq, Long uid){
@@ -73,5 +84,12 @@ public class ChatServiceImpl implements ChatService {
                 AsserUtil.isNotEmpty(null, "您已经被移除该群");
             }
         }
+    }
+
+    public List<ChatMessageResp> getMsgRespBatch(List<MessageDomain> messages) {
+        if (CollectionUtil.isEmpty(messages)) {
+            return new ArrayList<>();
+        }
+        return messageAdapter.buildMsgResp(messages);
     }
 }

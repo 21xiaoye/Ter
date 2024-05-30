@@ -62,9 +62,14 @@ public interface TopicConstant {
     String EMAIL_BIDING_GROUP = "email_binding_send_msg_group";
 
     /**
-     * chat消息发送 mq
+     * 消息发送 mq
      */
     String SEND_MSG_TOPIC = "send_msg_topic";
     String SEND_MSG_GROUP = "chat_send_msg_group";
+    /**
+     * push用户
+     */
+    String PUSH_TOPIC = "websocket_push";
+    String PUSH_GROUP = "websocket_push_group";
 
 }

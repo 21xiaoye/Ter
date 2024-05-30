@@ -83,10 +83,8 @@ public class RocketMQEnhanceTemplate {
         log.info("[{}]延迟等级[{}]消息[{}]发送结果[{}]", topic, delayLevel, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
         return sendResult;
     }
-
     @SecureInvoke
     public <T extends MQBaseMessage> void sendSecureMsg(String topic, T message) {
-
         this.send(topic, message);
     }
 }
