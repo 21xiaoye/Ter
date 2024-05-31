@@ -18,7 +18,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/chat")
-@Tag(name = "会话接口")
+@Tag(name = "消息接口")
 @Slf4j
 public class ChatController {
     @Autowired

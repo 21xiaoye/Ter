@@ -43,4 +43,22 @@
         </set>
         WHERE id = #{messageDomain.id}
     </update>
+
+    <select id="getUnReadCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM ter_message
+        WHERE room_id = #{roomId}
+        <if test="readTime != null">
+            AND createTime > #{readTime}
+        </if>
+    </select>
+    <select id="listByIds" resultType="com.cabin.ter.chat.domain.MessageDomain" parameterType="java.util.List">
+        SELECT  id, roomId,fromUid,content,replyMsgId,status,gapCount,type,extra,createTime
+        FROM ter_message
+        WHERE id IN
+        <foreach item="id" index="index" collection="roomIdsList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

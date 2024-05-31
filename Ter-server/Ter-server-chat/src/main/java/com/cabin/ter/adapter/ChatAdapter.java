@@ -2,16 +2,18 @@ package com.cabin.ter.adapter;
 
 import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.chat.domain.GroupMemberDomain;
-import com.cabin.ter.chat.domain.GroupRoomDomain;
-import com.cabin.ter.chat.domain.RoomDomain;
+import com.cabin.ter.cache.RoomFriendCache;
+import com.cabin.ter.chat.domain.*;
 import com.cabin.ter.chat.enums.GroupRoleEnum;
 import com.cabin.ter.chat.enums.HotFlagEnum;
 import com.cabin.ter.chat.enums.RoomTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -53,4 +55,44 @@ public class ChatAdapter {
                     return member;
                 }).collect(Collectors.toList());
     }
+
+    /**
+     * 获取好友uId 集合
+     *
+     * @param values
+     * @param uid
+     * @return
+     */
+    public Set<Long> getFriendUidSet(Collection<FriendRoomDomain> values, Long uid){
+        return values.stream()
+                .map(a-> this.getFriendUid(a, uid))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * 获取好友uid
+     */
+    public Long getFriendUid(FriendRoomDomain roomFriend, Long uid) {
+        return Objects.equals(uid, roomFriend.getAUId()) ? roomFriend.getBUId() : roomFriend.getAUId();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

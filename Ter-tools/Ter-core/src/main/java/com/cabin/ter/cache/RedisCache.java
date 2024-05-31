@@ -4,8 +4,8 @@ import com.cabin.ter.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class RedisCache {
-
     @Autowired
     private StringRedisTemplate redisTemplate;
     private static final String LUA_INCR_EXPIRE =
@@ -182,6 +181,18 @@ public class RedisCache {
     public  Boolean zAdd(String key, String value, Long score) {
         return redisTemplate.opsForZSet().add(key, value, score);
     }
+    public  Set<ZSetOperations.TypedTuple<String>> zReverseRangeWithScores(String key,
+                                                                                 long pageSize) {
+        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key, Double.MIN_VALUE,
+                Double.MAX_VALUE, 0, pageSize);
+    }
+
+    public  Set<ZSetOperations.TypedTuple<String>> zReverseRangeByScoreWithScores(String key,
+                                                                                        double max, long pageSize) {
+        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key, Double.MIN_VALUE, max,
+                1, pageSize);
+    }
+
 
     public  Boolean zAdd(String key, Object value, Long score) {
         return zAdd(key, value.toString(), score);

@@ -81,7 +81,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
                 }
                 // 心跳检测，直接跳过
                 case HEARTBEAT,AUTHORIZE -> {
-                    log.info(ctx.channel().toString());
                     log.info("心跳检测");
                 }
                 default -> {
@@ -100,7 +99,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     }
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        log.info("执行这个方法哦");
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             // 读空闲

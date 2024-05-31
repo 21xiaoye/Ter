@@ -37,4 +37,6 @@ public interface GroupMemberDomainMapper {
      * @return
      */
     List<GroupMemberDomain> listByIds(@Param("roomIdsList") List<Long> roomIdsList);
+
+    Integer saveGroupMemberList(@Param("groupMemberDomainList") List<GroupMemberDomain> groupMemberDomainList);
 }

@@ -11,4 +11,28 @@
             #{roomId}
         </foreach>
     </select>
+
+    <insert id="saveGroupMemberList" parameterType="java.util.List">
+        INSERT INTO ter_group_member (id, groupId, uid, role, createTime)
+        VALUES
+        <foreach collection="groupMemberDomainList" item="item" separator=",">
+            (
+            <if test="item.id != null">
+                #{item.id},
+            </if>
+            <if test="item.groupId != null">
+                #{item.groupId},
+            </if>
+            <if test="item.uid != null">
+                #{item.uid},
+            </if>
+            <if test="item.role != null">
+                #{item.role},
+            </if>
+            <if test="item.createTime != null">
+                #{item.createTime}
+            </if>
+            )
+        </foreach>
+    </insert>
 </mapper>

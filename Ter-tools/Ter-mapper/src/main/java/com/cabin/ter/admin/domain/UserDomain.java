@@ -26,6 +26,9 @@ import java.util.List;
 @Builder
 @Data
 public class UserDomain implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    public static Long UID_SYSTEM = 1L;//系统uid
     /**
      * 主键
      */

@@ -40,6 +40,10 @@ public class RedisKey {
      * 群组成员信息
      */
     public static final String GROUP_MEMBER_INFO_STRING = "groupMemberInfo:roomId_%d";
+    /**
+     * 公共房间
+     */
+    public static final String HOT_ROOM_STRING = "hot_room_string:roomId_%d";
 
     /**
      * 保存邮箱验证码
