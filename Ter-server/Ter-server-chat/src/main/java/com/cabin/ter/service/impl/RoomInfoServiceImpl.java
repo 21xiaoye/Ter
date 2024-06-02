@@ -68,9 +68,10 @@ public class RoomInfoServiceImpl implements RoomInfoService {
      */
     @Override
     public Long addGroup(Long uid, GroupAddReq request) {
+        // 群组
         GroupRoomDomain group = roomService.createGroup(uid);
-        List<GroupMemberDomain> groupMemberDomains = chatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId());
-
+        // 构建群组要求人员基本信息
+        List<GroupMemberDomain> groupMemberDomains = chatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uid);
         // 保存群成员
         groupMemberDomainMapper.saveGroupMemberList(groupMemberDomains);
         // 发送群通知

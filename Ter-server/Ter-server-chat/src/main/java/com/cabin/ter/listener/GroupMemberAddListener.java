@@ -44,15 +44,19 @@ public class GroupMemberAddListener {
     @Async(value = ThreadPoolConfig.WS_EXECUTOR)
     @TransactionalEventListener(classes = GroupMemberAddEvent.class, fallbackExecution = true)
     public void sendAddMsg(GroupMemberAddEvent event){
+        // 获取成员信息
         List<GroupMemberDomain> memberDomainList = event.getMemberDomainList();
+        // 获取群组信息
         GroupRoomDomain groupRoomDomain = event.getGroupRoomDomain();
-
+        // 获取用户UID
         Long inviteUid = event.getInviteUid();
+        // 查询用户信息
         UserDomain userDomain = userInfoCache.get(inviteUid);
-
+        // 拿到群组成员uid列表
         List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
+
         ChatMessageReq chatMessageReq = RoomAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userInfoCache.getBatch(uidList));
-        chatService.senMsg(chatMessageReq, UserDomain.UID_SYSTEM);
+        chatService.senMsg(chatMessageReq, inviteUid);
     }
 
     @Async(value = ThreadPoolConfig.WS_EXECUTOR)
@@ -61,7 +65,6 @@ public class GroupMemberAddListener {
         List<GroupMemberDomain> memberDomainList = event.getMemberDomainList();
         GroupRoomDomain groupRoomDomain = event.getGroupRoomDomain();
 
-        List<Long> memberUidList = groupMemberCache.getMemberUidList(groupRoomDomain.getRoomId());
         List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(uidList);
 
@@ -69,7 +72,7 @@ public class GroupMemberAddListener {
 
         userDomainList.forEach(user -> {
             WSBaseResp<WSMemberChange> ws = MemberAdapter.buildMemberAddWS(groupRoomDomain.getRoomId(), user);
-            pushService.sendPushMsg(ws, memberUidList);
+            pushService.sendPushMsg(ws, user.getUId());
         });
         //移除缓存
         groupMemberCache.evictMemberUidList(groupRoomDomain.getRoomId());

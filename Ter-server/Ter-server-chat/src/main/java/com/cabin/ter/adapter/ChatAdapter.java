@@ -42,14 +42,23 @@ public class ChatAdapter {
         return groupRoomDomain;
     }
 
-    public  List<GroupMemberDomain> buildGroupMemberBatch(List<Long> uidList, Long groupId) {
+    /**
+     * 创建群成员列表
+     *
+     * @param uidList   成员列表
+     * @param groupId   群组id
+     * @param uid       创建者id
+     * @return
+     */
+    public  List<GroupMemberDomain> buildGroupMemberBatch(List<Long> uidList, Long groupId, Long uid) {
         return uidList.stream()
                 .distinct()
-                .map(uid -> {
+                .map(id -> {
                     GroupMemberDomain member = new GroupMemberDomain();
                     member.setId(snowflake.nextId());
-                    member.setRole(GroupRoleEnum.MEMBER.getType());
-                    member.setUid(uid);
+                    // 如果是创建者则分配权限未群主
+                    member.setRole(uid.equals(id) ? GroupRoleEnum.LEADER.getType() : GroupRoleEnum.MEMBER.getType());
+                    member.setUid(id);
                     member.setGroupId(groupId);
                     member.setCreateTime(System.currentTimeMillis());
                     return member;

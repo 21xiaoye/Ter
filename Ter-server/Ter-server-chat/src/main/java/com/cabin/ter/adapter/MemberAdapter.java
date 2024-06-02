@@ -16,7 +16,7 @@ public class MemberAdapter {
         WSBaseResp<WSMemberChange> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.MEMBER_CHANGE.getType());
         WSMemberChange wsMemberChange = new WSMemberChange();
-        wsMemberChange.setActiveStatus(user.getUserStatus());
+
         wsMemberChange.setUid(user.getUserId());
         wsMemberChange.setRoomId(roomId);
         wsMemberChange.setChangeType(CHANGE_TYPE_ADD);

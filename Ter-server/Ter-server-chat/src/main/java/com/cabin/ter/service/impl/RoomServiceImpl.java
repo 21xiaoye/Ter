@@ -40,21 +40,14 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GroupRoomDomain createGroup(Long uid) {
+        // 获取创建者信息
         UserDomain userDomain = userInfoCache.get(uid);
-        RoomDomain room = createRoom(RoomTypeEnum.GROUP);
-
+        // 创建房间基本信息
+        RoomDomain room = this.createRoom(RoomTypeEnum.GROUP);
+        // 构建群组基本信息
         GroupRoomDomain groupRoomDomain = chatAdapter.buildGroupRoom(userDomain, room.getId());
+        // 保存群组
         groupRoomDomainMapper.saveGroupRoom(groupRoomDomain);
-
-        GroupMemberDomain groupMemberDomain = GroupMemberDomain.builder()
-                .id(snowflake.nextId())
-                .uid(userDomain.getUId())
-                .groupId(room.getId())
-                .role(GroupRoleEnum.LEADER.getType())
-                .createTime(System.currentTimeMillis())
-                .build();
-
-        groupMemberDomainMapper.saveGroupMember(groupMemberDomain);
         return groupRoomDomain;
     }
 
