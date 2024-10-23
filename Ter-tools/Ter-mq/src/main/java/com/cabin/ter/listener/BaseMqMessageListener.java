@@ -31,7 +31,6 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
      */
     private static final int DELAY_LEVEL = RocketMQDelayLevelConstant.FIVE_SECOND;
 
-
     @Resource
     private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
 
@@ -53,7 +52,6 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
     /**
      * 消费者名称
      */
-
     protected abstract String ConsumerName();
 
 
@@ -98,7 +96,7 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
     }
 
     public void dispatchMessage(T message) {
-        // 基础日志记录被父类处理了
+        // 基础日志记录被父类处理
         log.info("[{}]消费者收到消息[{}]",ConsumerName(),JSONUtil.toJsonStr(message));
 
         if (filter(message)) {
@@ -149,13 +147,12 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
             sendResult = rocketMQEnhanceTemplate.send(annotation.topic(), annotation.selectorExpression(), message, getDelayLevel());
         } catch (Exception ex) {
             // 此处捕获之后，相当于此条消息被消息完成然后重新发送新的消息
-            //由生产者直接发送
+            // 由生产者直接发送
             throw new RuntimeException(ex);
         }
         // 发送失败的处理就是不进行ACK，由RocketMQ重试
         if (sendResult.getSendStatus() != SendStatus.SEND_OK) {
             throw new RuntimeException("重试消息发送失败");
         }
-
     }
 }

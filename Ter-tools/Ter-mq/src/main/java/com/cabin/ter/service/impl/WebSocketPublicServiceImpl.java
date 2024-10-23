@@ -116,19 +116,16 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     public void connect(Channel channel) {
         ONLINE_WS_MAP.put(channel, new WSChannelExtraDTO());
     }
-
-
     @Override
     public void removed(Channel channel) {
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         Optional<Long> uidOptional = Optional.ofNullable(wsChannelExtraDTO)
                 .map(WSChannelExtraDTO::getUid);
         boolean offline = offline(channel, uidOptional);
-
         // 登录用户下线
         if(uidOptional.isPresent() && offline){
             UserDomain userDomain = new UserDomain();
-            userDomain.setUId(uidOptional.get());
+            userDomain.setUserId(uidOptional.get());
             userDomain.setLastOptTime(System.currentTimeMillis());
 
             applicationEventPublisher.publishEvent(new UserOfflineEvent(this,userDomain));
@@ -181,7 +178,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         WAIT_LOGIN_MAP.invalidate(loginCode);
 
         UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(loginEmail);
-        String jwt = jwtUtil.createJWT(true, userDetails.getUId(), userDetails.getUserEmail(), userDetails.getRoles(), userDetails.getAuthorities());
+        String jwt = jwtUtil.createJWT(true, userDetails.getUserId(), userDetails.getUserEmail(), userDetails.getRoles(), userDetails.getAuthorities());
         JwtResponse jwtResponse = new JwtResponse(jwt);
         this.loginSuccess(channel,userDetails, jwtResponse);
         return Boolean.TRUE;
@@ -240,7 +237,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
      */
     private void loginSuccess(Channel channel, UserPrincipal user, JwtResponse token) {
         sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token.getToken()));
-        this.online(channel, user.getUId());
+        this.online(channel, user.getUserId());
     }
 
     /**
@@ -255,12 +252,12 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
 
         onlineNotification(uid);
     }
-    public void onlineNotification(Long uid){
-        boolean online = userCache.isOnline(uid);
+    public void onlineNotification(Long userId){
+        boolean online = userCache.isOnline(userId);
         if(!online){
             UserPrincipal userPrincipal = new UserPrincipal();
             userPrincipal.setLastOptTime(new Date());
-            userPrincipal.setUId(uid);
+            userPrincipal.setUserId(userId);
             log.info("发送上线事件");
             applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userPrincipal));
         }

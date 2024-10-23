@@ -53,7 +53,7 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
     }
 
     @Override
-    protected void handleMessage(MsgSendMessageDTO message) throws Exception {
+    protected void handleMessage(MsgSendMessageDTO message) {
         MessageDomain messageDomain = messageCache.getMsg(message.getMsgId());
         RoomDomain roomDomain = roomCache.get(messageDomain.getRoomId());
         ChatMessageResp msgResp = chatService.getMsgResp(messageDomain);
@@ -71,7 +71,6 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
             if(Objects.equals(roomDomain.getType(), RoomTypeEnum.FRIEND.getType())){
                 log.info("单聊信息，对好友进行推送");
             }
-
             pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp), memberUidList);
         }
     }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WSLoginSuccess {
-    private Long uid;
+    private Long uId;
     private String avatar;
     private String token;
     private String name;

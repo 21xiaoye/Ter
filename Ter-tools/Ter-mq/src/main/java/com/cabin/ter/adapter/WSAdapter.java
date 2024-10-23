@@ -67,7 +67,7 @@ public class WSAdapter {
                 .avatar(userPrincipal.getUserAvatar())
                 .name(userPrincipal.getUsername())
                 .token(token)
-                .uid(userPrincipal.getUId())
+                .uId(userPrincipal.getUserId())
                 .build();
         wsBaseResp.setData(wsLoginSuccess);
         return wsBaseResp;

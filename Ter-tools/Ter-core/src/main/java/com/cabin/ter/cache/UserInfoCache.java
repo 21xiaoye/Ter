@@ -33,6 +33,6 @@ public class UserInfoCache extends AbstractRedisStringCache<Long, UserDomain> {
     @Override
     protected Map<Long, UserDomain> load(List<Long> uidList) {
         List<UserDomain> needLoadUserList = userDomainMapper.listByIds(uidList);
-        return needLoadUserList.stream().collect(Collectors.toMap(UserDomain::getUId, Function.identity()));
+        return needLoadUserList.stream().collect(Collectors.toMap(UserDomain::getUserId, Function.identity()));
     }
 }

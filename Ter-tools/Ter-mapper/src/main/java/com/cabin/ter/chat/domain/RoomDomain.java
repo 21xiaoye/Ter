@@ -22,7 +22,10 @@ public class RoomDomain implements Serializable {
      * id
      */
     private Long id;
-
+    /**
+     * 创建者uid
+     */
+    private Long uId;
     /**
      * 房间类型 1群聊 2单聊
      */
@@ -36,7 +39,7 @@ public class RoomDomain implements Serializable {
     /**
      * 群最后消息的更新时间（热点群不需要写扩散，更新这里就行）
      */
-    private Date activeTime;
+    private Long activeTime;
 
     /**
      * 最后一条消息id

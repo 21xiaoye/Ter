@@ -22,10 +22,8 @@ public interface RoomInfoService {
 
     /**
      * 获取会话列表
-     *
-     * @param request   请求游标
      * @param uid       请求用户Uid
      * @return
      */
-    CursorPageBaseResp<ChatRoomResp> getContactPage(CursorPageBaseReq request, Long uid);
+    CursorPageBaseResp<ChatRoomResp> getUserContactPage(Long uid);
 }

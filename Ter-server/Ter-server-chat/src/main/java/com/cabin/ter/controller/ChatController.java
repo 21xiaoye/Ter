@@ -30,7 +30,7 @@ public class ChatController {
     public ApiResponse senMsg(@Valid @RequestBody ChatMessageReq chatMessageReq){
         Long uid = RequestHolderUtil.get().getUid();
         log.info("收到用户{}信息{}",uid, chatMessageReq);
-        Long msgId = chatService.senMsg(chatMessageReq, uid);
+        Long msgId = chatService.sendMsg(chatMessageReq, uid);
         return ApiResponse.ofSuccess(chatService.getMsgResp(msgId));
     }
 }

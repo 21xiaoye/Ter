@@ -33,6 +33,6 @@ public class UserOnlineListener {
     @EventListener(classes = UserOnlineEvent.class)
     public void saveRedisAndPush(UserOnlineEvent event) {
         UserPrincipal user = event.getUserPrincipal();
-        userCache.online(user.getUId(), user.getLastOptTime());
+        userCache.online(user.getUserId(), user.getLastOptTime());
     }
 }

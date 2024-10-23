@@ -91,16 +91,16 @@ public class UserCache {
         List<String> keys = uids.stream().map(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a)).collect(Collectors.toList());
         //批量get
         List<UserDomain> mget = redisCache.mget(keys, UserDomain.class);
-        Map<Long, UserDomain> map = mget.stream().filter(Objects::nonNull).collect(Collectors.toMap(UserDomain::getUId, Function.identity()));
+        Map<Long, UserDomain> map = mget.stream().filter(Objects::nonNull).collect(Collectors.toMap(UserDomain::getUserId, Function.identity()));
         //发现差集——还需要load更新的uid
         List<Long> needLoadUidList = uids.stream().filter(a -> !map.containsKey(a)).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(needLoadUidList)) {
             //批量load
             List<UserDomain> needLoadUserList = userDomainMapper.listByIds(needLoadUidList);
-            Map<String, UserDomain> redisMap = needLoadUserList.stream().collect(Collectors.toMap(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a.getUId()), Function.identity()));
+            Map<String, UserDomain> redisMap = needLoadUserList.stream().collect(Collectors.toMap(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a.getUserId()), Function.identity()));
             redisCache.mset(redisMap, 5 * 60);
             //加载回redis
-            map.putAll(needLoadUserList.stream().collect(Collectors.toMap(UserDomain::getUId, Function.identity())));
+            map.putAll(needLoadUserList.stream().collect(Collectors.toMap(UserDomain::getUserId, Function.identity())));
         }
         return map;
     }

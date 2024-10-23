@@ -33,8 +33,8 @@ public class RoomController {
     @PostMapping("/group")
     @Operation(description = "新增群组")
     public ApiResponse addGroup(@Valid @RequestBody GroupAddReq groupAddReq){
-        Long uid = RequestHolderUtil.get().getUid();
-        Long roomId = roomInfoService.addGroup(uid, groupAddReq);
+        Long uId = RequestHolderUtil.get().getUid();
+        Long roomId = roomInfoService.addGroup(uId, groupAddReq);
         return ApiResponse.ofSuccess(IdRespVO.id(roomId));
     }
 

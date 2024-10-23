@@ -34,10 +34,6 @@ public class UserDomain implements Serializable {
      */
     private Long userId;
     /**
-     * 用户uid
-     */
-    private Long uId;
-    /**
      * 用户性别
      */
     private char sex;

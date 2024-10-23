@@ -19,21 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CursorPageBaseResp<T> {
-
-    @Schema(name = "cursor", description = "游标（下次翻页带上这参数）")
-    private String cursor;
-
-    @Schema(name = "isLast",description = "是否最后一页")
-    private Boolean isLast = Boolean.FALSE;
-
     @Schema(name = "list", description = "数据列表")
     private List<T> list;
 
-    public static <T> CursorPageBaseResp<T> init(CursorPageBaseResp cursorPage, List<T> list) {
+    public static <T> CursorPageBaseResp<T> init(List<T> list) {
         CursorPageBaseResp<T> cursorPageBaseResp = new CursorPageBaseResp<T>();
-        cursorPageBaseResp.setIsLast(cursorPage.getIsLast());
         cursorPageBaseResp.setList(list);
-        cursorPageBaseResp.setCursor(cursorPage.getCursor());
         return cursorPageBaseResp;
     }
 
@@ -42,11 +33,11 @@ public class CursorPageBaseResp<T> {
         return CollectionUtil.isEmpty(list);
     }
 
-    public static <T> CursorPageBaseResp<T> empty() {
-        CursorPageBaseResp<T> cursorPageBaseResp = new CursorPageBaseResp<T>();
-        cursorPageBaseResp.setIsLast(true);
-        cursorPageBaseResp.setList(new ArrayList<T>());
-        return cursorPageBaseResp;
-    }
+//    public static <T> CursorPageBaseResp<T> empty() {
+//        CursorPageBaseResp<T> cursorPageBaseResp = new CursorPageBaseResp<T>();
+//        cursorPageBaseResp.setIsLast(true);
+//        cursorPageBaseResp.setList(new ArrayList<T>());
+//        return cursorPageBaseResp;
+//    }
 
 }

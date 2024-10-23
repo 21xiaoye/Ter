@@ -51,7 +51,6 @@ public class TextMsgHandler extends AbstractMsgHandler<TextMsgReq> {
     MessageTypeEnum getMsgTypeEnum() {
         return MessageTypeEnum.TEXT;
     }
-
     @Override
     protected void checkMsg(TextMsgReq body, Long roomId, Long uid) {
         if(Objects.nonNull(body.getReplyMsgId())){
@@ -76,7 +75,7 @@ public class TextMsgHandler extends AbstractMsgHandler<TextMsgReq> {
 //        messageDomain.setExtra(extra);
 
         if(Objects.nonNull(body.getReplyMsgId())){
-            //TODO: 这里对回复消息进行处理，这里先暂时不处理
+            //TODO: 这里对回复消息进行处理
             log.info("有回复消息");
         }
 //        if(CollectionUtil.isNotEmpty(body.getAtUidList())){

@@ -33,33 +33,27 @@ public class RoomServiceImpl implements RoomService {
     private RoomDomainMapper roomDomainMapper;
     @Autowired
     private GroupRoomDomainMapper groupRoomDomainMapper;
-    @Autowired
-    private GroupMemberDomainMapper groupMemberDomainMapper;
-    @Autowired
-    private Snowflake snowflake;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GroupRoomDomain createGroup(Long uid) {
         // 获取创建者信息
         UserDomain userDomain = userInfoCache.get(uid);
         // 创建房间基本信息
-        RoomDomain room = this.createRoom(RoomTypeEnum.GROUP);
+        RoomDomain room = this.createRoom(RoomTypeEnum.GROUP,uid);
         // 构建群组基本信息
         GroupRoomDomain groupRoomDomain = chatAdapter.buildGroupRoom(userDomain, room.getId());
         // 保存群组
         groupRoomDomainMapper.saveGroupRoom(groupRoomDomain);
         return groupRoomDomain;
     }
-
-
     /**
-     * 创建 群聊
+     * 创建群聊
      *
      * @param typeEnum 群聊类型
      * @return
      */
-    private RoomDomain createRoom(RoomTypeEnum typeEnum) {
-        RoomDomain room = chatAdapter.buildRoom(typeEnum);
+    private RoomDomain createRoom(RoomTypeEnum typeEnum,Long uid) {
+        RoomDomain room = chatAdapter.buildRoom(typeEnum, uid);
         roomDomainMapper.saveRoom(room);
         return room;
     }

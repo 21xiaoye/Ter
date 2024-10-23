@@ -26,10 +26,6 @@ public interface TopicConstant {
      * 广播推送，所有用户接受消息
      */
     String SOURCE_BROADCASTING_WIND_TAG = "rocketmq_broadcasting_wind_tag";
-
-
-
-
     /**
      * 单点推送主题
      */
@@ -42,8 +38,6 @@ public interface TopicConstant {
      * 单点推送，指定用户接受消息
      */
     String SOURCE_SINGLE_PUSH_TAG = "rocket_single_push_message_tag";
-
-
     /**
      * (授权完成后)登录信息mq
      */

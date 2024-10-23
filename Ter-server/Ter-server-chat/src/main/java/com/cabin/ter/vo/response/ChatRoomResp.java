@@ -30,7 +30,7 @@ public class ChatRoomResp {
     @Schema(name = "avatar",description = "会话头像")
     private String avatar;
     @Schema(name = "activeTime",description = "房间最后活跃时间(用来排序)")
-    private Date activeTime;
+    private Long activeTime;
     @Schema(name = "unreadCount",description = "未读数")
     private Integer unreadCount;
 }

@@ -47,7 +47,7 @@
     <select id="getUnReadCount" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM ter_message
-        WHERE room_id = #{roomId}
+        WHERE roomId = #{roomId}
         <if test="readTime != null">
             AND createTime > #{readTime}
         </if>

@@ -24,11 +24,12 @@ import java.util.stream.Collectors;
 public class ChatAdapter {
     @Autowired
     private Snowflake snowflake;
-    public RoomDomain buildRoom(RoomTypeEnum roomTypeEnum){
+    public RoomDomain buildRoom(RoomTypeEnum roomTypeEnum, Long uid){
         RoomDomain roomDomain = new RoomDomain();
         roomDomain.setType(roomTypeEnum.getType());
         roomDomain.setHotFlag(HotFlagEnum.NOT.getType());
         roomDomain.setId(snowflake.nextId());
+        roomDomain.setUId(uid);
         roomDomain.setCreateTime(System.currentTimeMillis());
         return roomDomain;
     }
@@ -84,24 +85,4 @@ public class ChatAdapter {
     public Long getFriendUid(FriendRoomDomain roomFriend, Long uid) {
         return Objects.equals(uid, roomFriend.getAUId()) ? roomFriend.getBUId() : roomFriend.getAUId();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -35,12 +35,8 @@ public abstract class AbstractRedisStringCache<IN, OUT> implements BatchCache<IN
     public OUT get(IN req) {
         return getBatch(Collections.singletonList(req)).get(req);
     }
-
     @Override
     public Map<IN, OUT> getBatch(List<IN> req) {
-        if (CollectionUtil.isEmpty(req)) {//防御性编程
-            return new HashMap<>();
-        }
         //去重
         req = req.stream().distinct().collect(Collectors.toList());
         //组装key

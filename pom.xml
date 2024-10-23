@@ -12,7 +12,7 @@
     <artifactId>Ter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ter</name>
+    <name>ter</name>E
     <description>ter</description>
     <modules>
         <module>Ter-tools</module>

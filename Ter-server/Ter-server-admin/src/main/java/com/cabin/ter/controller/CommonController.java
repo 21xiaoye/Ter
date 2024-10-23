@@ -26,19 +26,16 @@ import org.springframework.web.bind.annotation.*;
 public class CommonController {
     @Autowired
     private UserService userService;
-
     @Operation(summary = "用户登录接口")
     @PostMapping("/login")
     public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
         return userService.userLogin(loginRequest);
     }
-
     @Operation(summary = "用户注册接口")
     @PostMapping("/register")
     public ApiResponse userRegister(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
         return userService.userRegister(loginRequest);
     }
-
     @Operation(summary = "绑定邮箱接口")
     @PostMapping("/emailBinding")
     public ApiResponse emailBinding(@Valid @RequestBody EmailBindingReqMsg emailBindingReqMsg){

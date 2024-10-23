@@ -81,7 +81,7 @@ public class JwtUtil {
      */
     public String createJWT(Authentication authentication, Boolean rememberMe){
         UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
-        return createJWT(rememberMe, principal.getUId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
+        return createJWT(rememberMe, principal.getUserId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
     }
 
 

@@ -52,7 +52,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public Long senMsg(ChatMessageReq chatMessageReq, Long uid) {
+    public Long sendMsg(ChatMessageReq chatMessageReq, Long uid) {
         this.roomCheck(chatMessageReq, uid);
         AbstractMsgHandler abstractMsgHandler = MsgHandlerFactory.getStrategyNoNull(chatMessageReq.getMessageType());
         Long msgId = abstractMsgHandler.checkAndSaveMsg(chatMessageReq, uid);
@@ -73,6 +73,7 @@ public class ChatServiceImpl implements ChatService {
 
     private void roomCheck(ChatMessageReq chatMessageReq, Long uid){
         RoomDomain roomDomain = roomCache.get(chatMessageReq.getRoomId());
+        AsserUtil.isNotEmpty(roomDomain, "该群不存在");
         if(roomDomain.isHotRoom()){
             return;
         }

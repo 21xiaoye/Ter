@@ -35,13 +35,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails, Serializable {
     /**
-     * 主键Id
+     * 用户Id
      */
     private Long userId;
-    /**
-     * 用户 UID
-     */
-    private Long uId;
     /**
      * 用户名称
      */
@@ -89,7 +85,7 @@ public class UserPrincipal implements UserDetails, Serializable {
         List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
 
-        return new UserPrincipal(user.getUserId(), user.getUId(),user.getUserName(),user.getUserAvatar(), null,user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
+        return new UserPrincipal(user.getUserId(), user.getUserName(),user.getUserAvatar(), null,user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
     }
 
     @Override

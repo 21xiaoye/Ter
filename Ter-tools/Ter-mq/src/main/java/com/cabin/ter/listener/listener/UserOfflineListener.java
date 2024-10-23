@@ -27,7 +27,7 @@ public class UserOfflineListener {
     public void saveRedisAndPush(UserOfflineEvent userOfflineEvent){
         UserDomain userDomain = userOfflineEvent.getUserDomain();
         log.info("用户下线监听执行{}",userDomain);
-        userCache.offline(userDomain.getUId(), userDomain.getLastOptTime());
+        userCache.offline(userDomain.getUserId(), userDomain.getLastOptTime());
     }
 
     @Async(value = "terExecutor")

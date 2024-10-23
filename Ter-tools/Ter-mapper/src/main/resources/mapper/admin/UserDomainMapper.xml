@@ -30,9 +30,9 @@
     </insert>
 
     <select id="listByIds" resultType="com.cabin.ter.admin.domain.UserDomain" parameterType="java.util.List">
-        SELECT userAvatar, uId, userEmail, openId, userName, sex
+        SELECT userAvatar, userId, userEmail, openId, userName, sex
         FROM ter_user
-        WHERE uId IN
+        WHERE userId IN
         <foreach item="uId" index="index" collection="uIdsList" open="(" separator="," close=")">
             #{uId}
         </foreach>

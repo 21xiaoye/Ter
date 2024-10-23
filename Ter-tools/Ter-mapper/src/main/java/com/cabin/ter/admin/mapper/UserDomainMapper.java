@@ -34,7 +34,7 @@ public interface UserDomainMapper {
      * @param userEmail     用户邮箱
      * @return  UserDomain
      */
-    @Select("SELECT userId,userName, uId,userEmail,userPasswd,userAvatar,salt,userStatus FROM ter_user WHERE userEmail=#{userEmail}")
+    @Select("SELECT userId,userName,userEmail,userPasswd,userAvatar,salt,userStatus FROM ter_user WHERE userEmail=#{userEmail}")
     Optional<UserDomain> findByUsernameOrEmailOrPhone(String userEmail);
 
     /**

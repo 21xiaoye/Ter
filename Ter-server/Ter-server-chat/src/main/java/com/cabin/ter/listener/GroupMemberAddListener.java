@@ -12,6 +12,7 @@ import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.listener.event.GroupMemberAddEvent;
 import com.cabin.ter.service.ChatService;
 import com.cabin.ter.service.PushService;
+import com.cabin.ter.service.impl.ChatServiceImpl;
 import com.cabin.ter.vo.request.ChatMessageReq;
 import com.cabin.ter.vo.response.WSMemberChange;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +40,6 @@ public class GroupMemberAddListener {
     private UserInfoCache userInfoCache;
     @Autowired
     private GroupMemberCache groupMemberCache;
-
-
     @Async(value = ThreadPoolConfig.WS_EXECUTOR)
     @TransactionalEventListener(classes = GroupMemberAddEvent.class, fallbackExecution = true)
     public void sendAddMsg(GroupMemberAddEvent event){
@@ -54,9 +53,9 @@ public class GroupMemberAddListener {
         UserDomain userDomain = userInfoCache.get(inviteUid);
         // 拿到群组成员uid列表
         List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
-
-        ChatMessageReq chatMessageReq = RoomAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userInfoCache.getBatch(uidList));
-        chatService.senMsg(chatMessageReq, inviteUid);
+        Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(uidList);
+        ChatMessageReq chatMessageReq = RoomAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userDomainMap);
+        chatService.sendMsg(chatMessageReq, inviteUid);
     }
 
     @Async(value = ThreadPoolConfig.WS_EXECUTOR)
@@ -72,7 +71,7 @@ public class GroupMemberAddListener {
 
         userDomainList.forEach(user -> {
             WSBaseResp<WSMemberChange> ws = MemberAdapter.buildMemberAddWS(groupRoomDomain.getRoomId(), user);
-            pushService.sendPushMsg(ws, user.getUId());
+            pushService.sendPushMsg(ws, user.getUserId());
         });
         //移除缓存
         groupMemberCache.evictMemberUidList(groupRoomDomain.getRoomId());

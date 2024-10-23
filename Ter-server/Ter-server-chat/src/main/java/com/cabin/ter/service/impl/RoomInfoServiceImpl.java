@@ -11,11 +11,9 @@ import com.cabin.ter.chat.enums.RoomTypeEnum;
 import com.cabin.ter.chat.mapper.ContactDomainMapper;
 import com.cabin.ter.chat.mapper.GroupMemberDomainMapper;
 import com.cabin.ter.chat.mapper.MessageDomainMapper;
-import com.cabin.ter.dao.ContactDomainDao;
 import com.cabin.ter.listener.event.GroupMemberAddEvent;
 import com.cabin.ter.service.RoomInfoService;
 import com.cabin.ter.service.RoomService;
-import com.cabin.ter.constants.vo.request.CursorPageBaseReq;
 import com.cabin.ter.strategy.AbstractMsgHandler;
 import com.cabin.ter.strategy.MsgHandlerFactory;
 import com.cabin.ter.vo.request.GroupAddReq;
@@ -25,7 +23,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,7 +45,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     @Autowired
     private RoomGroupCache roomGroupCache;
     @Autowired
-    private ContactDomainDao contactDomainDao;
+    private ContactDomainMapper contactDomainMapper;
     @Autowired
     private RoomFriendCache roomFriendCache;
     @Autowired
@@ -62,47 +59,47 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     /**
      * 新建群组
      *
-     * @param uid       用户uid
+     * @param uId       用户uid
      * @param request   群组如愿uid列表
      * @return
      */
     @Override
-    public Long addGroup(Long uid, GroupAddReq request) {
-        // 群组
-        GroupRoomDomain group = roomService.createGroup(uid);
+    public Long addGroup(Long uId, GroupAddReq request) {
+        if(!request.getUidList().contains(uId)){
+            request.getUidList().add(uId);
+        }
+        // 创建群组
+        GroupRoomDomain group = roomService.createGroup(uId);
         // 构建群组要求人员基本信息
-        List<GroupMemberDomain> groupMemberDomains = chatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uid);
+        List<GroupMemberDomain> groupMemberDomains = chatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uId);
         // 保存群成员
         groupMemberDomainMapper.saveGroupMemberList(groupMemberDomains);
         // 发送群通知
-        applicationEventPublisher.publishEvent(new GroupMemberAddEvent(this, group, groupMemberDomains, uid));
+        applicationEventPublisher.publishEvent(new GroupMemberAddEvent(this, group, groupMemberDomains, uId));
         return group.getRoomId();
     }
 
     @Override
-    public CursorPageBaseResp<ChatRoomResp> getContactPage(CursorPageBaseReq request, Long uid) {
-        CursorPageBaseResp<Long> page = null;
+    public CursorPageBaseResp<ChatRoomResp> getUserContactPage(Long uid) {
+        List<ContactDomain> contactPage = null;
         if(Objects.nonNull(uid)){
-            Double hotEnd = getCursorOrNull(request.getCursor());
-            Double hotStart = null;
-            CursorPageBaseResp<ContactDomain> contactPage = contactDomainDao.getContactPage(uid, request);
-            List<Long> userContactList = contactPage.getList().stream().map(ContactDomain::getRoomId).collect(Collectors.toList());
-            page = CursorPageBaseResp.init(contactPage, userContactList);
+            contactPage = contactDomainMapper.getUserContactList(uid);
         }
-        List<ChatRoomResp> chatRoomResp = this.buildContactResp(uid, page.getList());
+        List<ChatRoomResp> chatRoomResp = this.buildContactResp(uid, contactPage);
 
-        return CursorPageBaseResp.init(page, chatRoomResp);
+        return CursorPageBaseResp.init(chatRoomResp);
     }
 
     /**
      *
      * @param uid       用户 uId
-     * @param roomIds   用户房间id列表
+     * @param contactPage   用户会话列表
      * @return
      */
 
     @NonNull
-    private List<ChatRoomResp> buildContactResp(Long uid, List<Long> roomIds){
+    private List<ChatRoomResp> buildContactResp(Long uid, List<ContactDomain> contactPage){
+        List<Long> roomIds = contactPage.stream().map(ContactDomain::getRoomId).collect(Collectors.toList());
         // 查询每个房间的基本信息
         Map<Long, RoomBaseInfo> roomBaseInfoMap = this.getRoomBaseInfoMap(uid, roomIds);
         //TODO: 这里其实有个 bug ,没有遵循 ACID 原则
@@ -115,7 +112,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(messageDomainList.stream().map(MessageDomain::getFromUid).collect(Collectors.toList()));
 
         // 消息未读数
-        Map<Long, Integer> unReadCountMap = this.getUnReadCountMap(uid, roomIds);
+        Map<Long, Integer> unReadCountMap = this.getUnReadCountMap(uid, contactPage);
         return roomBaseInfoMap.values().stream()
                 .map(room ->{
                     ChatRoomResp chatRoomResp = new ChatRoomResp();
@@ -129,7 +126,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
                     MessageDomain message = messageDomainMap.get(room.getLastMsgId());
                     if (Objects.nonNull(message)) {
                         AbstractMsgHandler strategyNoNull = MsgHandlerFactory.getStrategyNoNull(message.getType());
-                        chatRoomResp.setText(userDomainMap.get(message.getFromUid()).getUserAvatar() + ":" + strategyNoNull.showContactMsg(message));
+                        chatRoomResp.setText(strategyNoNull.showContactMsg(message));
                     }
                     chatRoomResp.setUnreadCount(unReadCountMap.getOrDefault(room.getRoomId(), 0));
                     return chatRoomResp;
@@ -140,12 +137,11 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     /**
      * 获取未读数
      */
-    private Map<Long, Integer> getUnReadCountMap(Long uid, List<Long> roomIds) {
+    private Map<Long, Integer> getUnReadCountMap(Long uid, List<ContactDomain> contactPage) {
         if (Objects.isNull(uid)) {
             return new HashMap<>();
         }
-        List<ContactDomain> contacts = contactDomainDao.getByRoomIds(roomIds, uid);
-        return contacts.parallelStream()
+        return contactPage.parallelStream()
                 .map(contact -> Pair.of(contact.getRoomId(), messageDomainMapper.getUnReadCount(contact.getRoomId(), contact.getReadTime())))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
@@ -182,7 +178,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
             roomBaseInfo.setRoomId(room.getId());
             roomBaseInfo.setType(room.getType());
             roomBaseInfo.setHotFlag(room.getHotFlag());
-            roomBaseInfo.setLastMsgId(roomBaseInfo.getLastMsgId());
+            roomBaseInfo.setLastMsgId(room.getLastMsgId());
             roomBaseInfo.setActiveTime(room.getActiveTime());
 
             // 房间为群聊
@@ -224,44 +220,14 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         Set<Long> friendUidSet = chatAdapter.getFriendUidSet(friendRoomDomainMap.values(), uid);
         // 根据好友uid集合查出好友明细信息， key为好友uid, key 为好友明细信息
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(new ArrayList<>(friendUidSet));
-
-        // 将每个房间和好友进行映射，获取到最终的Map,key 为房间id, value 为用户信息
+        // 将每个房间和好友进行映射，获取到最终的Map,key为房间id, value为用户信息
         return friendRoomDomainMap.values().stream()
                 .collect(Collectors.toMap(FriendRoomDomain::getRoomId, friendRoom->{
                     Long friendUid = chatAdapter.getFriendUid(friendRoom, uid);
                     return userDomainMap.get(friendUid);
                 }));
     }
-
     private Double getCursorOrNull(String cursor) {
         return Optional.ofNullable(cursor).map(Double::parseDouble).orElse(null);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
