@@ -1,4 +1,4 @@
-package com.cabin.ter.annotation;
+package com.cabin.ter.vo.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
@@ -24,15 +24,11 @@ import java.lang.annotation.*;
 public @interface PasswordMatches {
     // 正则表达式
     String regexp() default "";
-
-    // 校验不通过时的提示信息
     String message() default "密码格式不正确，请输入8-20位的密码，必须包含数字和字母，支持特殊符号~!@#$%^*";
-
-    // 分组
     Class<?>[] groups() default {};
-
-    // 集合校验
     Class<? extends Payload>[] payload() default {};
+    boolean required() default false;
+    String requiredMessage() default "密码字段为必填项，不能为空";
 
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
@@ -42,23 +38,26 @@ public @interface PasswordMatches {
     }
 
     class PassWordValidator implements ConstraintValidator<PasswordMatches, String> {
-
         private String regexp = "^(?![0-9]+$)(?![a-zA-Z~!@#$%^*]+$)[0-9A-Za-z~!@#$%^*]{8,20}$";
-
+        private boolean required;
+        private String requiredMessage;
         @Override
         public void initialize(PasswordMatches constraintAnnotation) {
             if (StringUtils.isNotBlank(constraintAnnotation.regexp())) {
                 this.regexp = constraintAnnotation.regexp();
             }
+            this.required = constraintAnnotation.required();
+            this.requiredMessage = constraintAnnotation.requiredMessage();
         }
-
         @Override
-        public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-            if (StringUtils.isBlank(s) || !s.matches(regexp)) {
+        public boolean isValid(String s, ConstraintValidatorContext context) {
+            if (required && StringUtils.isBlank(s)) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(requiredMessage)
+                        .addConstraintViolation();
                 return false;
             }
-            return true;
+            return s.matches(regexp);
         }
     }
-
 }
