@@ -20,7 +20,7 @@ import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
  * @date Created in 2024-05-06 21:20
  */
 @Slf4j
-public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
+public abstract class BaseMqMessageListener<T extends MQBaseMessage>{
     /**
      * 默认重试次数
      */
@@ -40,7 +40,7 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
      * @param message 待处理消息
      * @throws Exception 消费异常
      */
-    protected abstract void handleMessage(T message) throws Exception;
+    protected abstract void handleMessage(T message);
 
     /**
      * 超过重试次数消息，需要启用isRetry
@@ -100,7 +100,7 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
         log.info("[{}]消费者收到消息[{}]",ConsumerName(),JSONUtil.toJsonStr(message));
 
         if (filter(message)) {
-            log.info("消息id{}不满足消费条件，已过滤。",message.getKey());
+            log.info("消息id{}不满足消费条件，已过滤。",message.getTraceId());
             return;
         }
         // 超过最大重试次数时调用子类方法处理
@@ -112,9 +112,9 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
             long now = System.currentTimeMillis();
             handleMessage(message);
             long costTime = System.currentTimeMillis() - now;
-            log.info("消息{}消费成功，耗时[{}ms]", message.getKey(),costTime);
+            log.info("消息{}消费成功，耗时[{}ms]", message.getTraceId(),costTime);
         } catch (Exception e) {
-            log.error("消息{}消费异常", message.getKey(),e);
+            log.error("消息{}消费异常", message.getTraceId(),e);
             // 是捕获异常还是抛出，由子类决定
             if (throwException()) {
                 //抛出异常，由DefaultMessageListenerConcurrently类处理
@@ -134,9 +134,9 @@ public abstract class BaseMqMessageListener<T extends MQBaseMessage> {
             return;
         }
         //重新构建消息体
-        String messageSource = message.getSource();
+        String messageSource = message.getSource().getSource();
         if(!messageSource.startsWith(SourceEnum.CHAT_SOURCE_RETRY.getSource())){
-            message.setSource(SourceEnum.CHAT_SOURCE_RETRY.getSource() + messageSource);
+            message.setSource(SourceEnum.CHAT_SOURCE_RETRY);
         }
         message.setRetryTimes(message.getRetryTimes() + 1);
 

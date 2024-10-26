@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -18,8 +19,6 @@ import java.io.Serializable;
  * @date Created in 2024-05-20 10:13
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class EmailBindingDTO extends MQBaseMessage implements Serializable {
     /**
      * 推送的uid

@@ -15,6 +15,7 @@
             <if test="createTime != null">createTime,</if>
             <if test="sex != null">sex,</if>
             <if test="userAvatar != null">userAvatar,</if>
+            <if test="roleId != null">roleId</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -26,6 +27,7 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="sex != null">#{sex},</if>
             <if test="userAvatar != null">#{userAvatar},</if>
+            <if test="roleId != null">#{roleId},</if>
         </trim>
     </insert>
 

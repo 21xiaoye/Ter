@@ -29,7 +29,6 @@ public class ScanSuccessConsumer implements RocketMQListener<ScanSuccessMessageD
 
     @Override
     public void onMessage(ScanSuccessMessageDTO scanSuccessMessageDTO) {
-        webSocketService.scanSuccess(scanSuccessMessageDTO.getCode());
+        webSocketService.scanSuccess(scanSuccessMessageDTO.getLoginCode());
     }
-
 }

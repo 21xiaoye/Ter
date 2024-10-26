@@ -1,7 +1,5 @@
 package com.cabin.ter.vo.response;
 
-import com.cabin.ter.admin.domain.UserDomain;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,8 +13,8 @@ import lombok.Data;
 @Data
 @Schema(description = "用户详情")
 public class UserInfoResp {
-    @Schema(description = "用户id",name = "uid")
-    private Long uId;
+    @Schema(description = "用户id",name = "userId")
+    private Long userId;
     @Schema(description = "用户昵称",name = "name")
     private String userName;
 
@@ -29,6 +27,9 @@ public class UserInfoResp {
     @Schema(description = "性别 1为男性，2为女性",name = "sex")
     private Integer sex;
 
-    @Schema(description = "用户 openId", name = "openId")
+    @Schema(description = "用户openId", name = "openId")
     private String openId;
+
+    @Schema(description = "用户角色 40001:管理员 40002:普通用户", name = "roleId")
+    private Integer roleId;
 }

@@ -60,21 +60,51 @@ public class AsserUtil {
     }
 
     /**
-     * 不是非空对象，抛出异常
+     * 如果是空对象，则抛异常
+     *
+     * @param obj   需要检测的对象
+     * @param msg   需要抛抛出的错误信息
      */
-    public static void isNotEmpty(Object obj, String msg){
+    public static void isEmpty(Object obj, String msg){
         if((isEmpty(obj))){
             throwException(msg);
         }
     }
-    //如果不是非空对象，则抛异常
-    public static void isNotEmpty(Object obj, IStatus errorEnum, Object... args) {
+    /**
+     * 如果是空对象，则抛异常
+     *
+     * @param obj       需要检测对象
+     * @param errorEnum 需要抛出的错误状态信息
+     * @param args      其余信息
+     */
+    public static void isEmpty(Object obj, IStatus errorEnum, Object... args) {
         if (isEmpty(obj)) {
             throwException(errorEnum, args);
         }
     }
+    /**
+     * 如果提供的对象是null,则返回true,否则返回false
+     *
+     * @param obj 需要检测的对象
+     * @return  true:如果提供的对象是null false:不是null
+     */
+    public static boolean isEmpty(Object obj){
+        return ObjectUtil.isEmpty(obj);
+    }
+
+    /**
+     * 需要检测的对象不是非空对象，则抛出异常
+     * @param obj 需要检测的对象
+     * @param status    需要返回的错误状态信息
+     * @param args  其它信息
+     */
+    public static void nonEmpty(Object obj, IStatus status, Object... args){
+        if(!isEmpty(obj)){
+            throwException(status,args);
+        }
+    }
     public static void equal(Object o1, Object o2, String msg) {
-        if (!ObjectUtil.equal(o1, o2)) {
+        if ((o1 == null && o2 == null) || !ObjectUtil.equal(o1, o2)) {
             throwException(msg);
         }
     }
@@ -83,9 +113,7 @@ public class AsserUtil {
             throwException(msg);
         }
     }
-    public static boolean isEmpty(Object obj){
-        return ObjectUtil.isEmpty(obj);
-    }
+
     private static void throwException(String msg){
         throwException(null, msg);
     }
@@ -93,7 +121,6 @@ public class AsserUtil {
         if (Objects.isNull(status)) {
             throw new BaseException(Status.SUCCESS, arg);
         }
-        status = Status.PARAM_NOT_MATCH;
         throw new BaseException(status.getStatus(), MessageFormat.format(status.getMessage(), arg));
     }
 }

@@ -6,6 +6,7 @@ import com.cabin.ter.constants.participant.constant.MessageFormatConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -18,14 +19,7 @@ import java.io.Serializable;
  * @date Created in 2024-05-05 12:26
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class WebSocketWideParticipant extends MQBaseMessage implements MessageParticipant, Serializable {
-    /**
-     * 推送方式 (邮箱广播推送，短信推送，微信公众号推送......)
-     * @see MessagePushMethodEnum
-     */
-    private MessagePushMethodEnum pushMethod;
+public class WebSocketWideParticipant extends MQBaseMessage implements Serializable {
     /**
      * 消息格式
      * @see MessageFormatConstants

@@ -73,16 +73,16 @@ public class ChatServiceImpl implements ChatService {
 
     private void roomCheck(ChatMessageReq chatMessageReq, Long uid){
         RoomDomain roomDomain = roomCache.get(chatMessageReq.getRoomId());
-        AsserUtil.isNotEmpty(roomDomain, "该群不存在");
+        AsserUtil.isEmpty(roomDomain, "该群不存在");
         if(roomDomain.isHotRoom()){
             return;
         }
         if(roomDomain.isRoomGroup()){
             // 查询群组成员
             List<Long> uidList = groupMemberCache.getMemberUidList(chatMessageReq.getRoomId());
-            AsserUtil.isNotEmpty(uidList, "该群已解散");
+            AsserUtil.isEmpty(uidList, "该群已解散");
             if(!uidList.contains(uid)){
-                AsserUtil.isNotEmpty(null, "您已经被移除该群");
+                AsserUtil.isEmpty(null, "您已经被移除该群");
             }
         }
     }

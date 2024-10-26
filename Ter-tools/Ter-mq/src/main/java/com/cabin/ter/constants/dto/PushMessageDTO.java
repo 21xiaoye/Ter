@@ -1,13 +1,10 @@
 package com.cabin.ter.constants.dto;
 
-import com.cabin.ter.constants.enums.WSPushTypeEnum;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,8 +13,6 @@ import java.util.List;
  * Date: 2023-08-12
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PushMessageDTO extends MQBaseMessage implements Serializable {
     /**
      * 推送的ws消息
@@ -28,23 +23,5 @@ public class PushMessageDTO extends MQBaseMessage implements Serializable {
      */
     private List<Long> uidList;
 
-
     private Integer pushType;
-
-    public PushMessageDTO(Long uid, WSBaseResp<?> wsBaseMsg) {
-        this.uidList = Collections.singletonList(uid);
-        this.wsBaseMsg = wsBaseMsg;
-        this.pushType = WSPushTypeEnum.USER.getType();
-    }
-
-    public PushMessageDTO(List<Long> uidList, WSBaseResp<?> wsBaseMsg) {
-        this.uidList = uidList;
-        this.wsBaseMsg = wsBaseMsg;
-        this.pushType = WSPushTypeEnum.USER.getType();
-    }
-
-    public PushMessageDTO(WSBaseResp<?> wsBaseMsg) {
-        this.wsBaseMsg = wsBaseMsg;
-        this.pushType = WSPushTypeEnum.ALL.getType();
-    }
 }

@@ -13,9 +13,9 @@ import com.cabin.ter.vo.response.UserInfoResp;
  * @date Created in 2024-05-28 16:00
  */
 public class UserAdapter {
-    public static UserInfoResp buildUserInfoResp(UserDomain userInfo) {
+    public static UserInfoResp buildUserInfoResp(UserDomain userDomain) {
         UserInfoResp userInfoResp = new UserInfoResp();
-        BeanUtil.copyProperties(userInfo, userInfoResp);
+        BeanUtil.copyProperties(userDomain, userInfoResp);
         return userInfoResp;
     }
 }

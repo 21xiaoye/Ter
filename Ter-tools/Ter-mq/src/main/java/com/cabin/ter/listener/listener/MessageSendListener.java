@@ -1,9 +1,9 @@
 package com.cabin.ter.listener.listener;
 
-import com.cabin.ter.constants.dto.MsgSendMessageDTO;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
 import com.cabin.ter.listener.event.MessageSendEvent;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class MessageSendListener {
     public void messageRoute(MessageSendEvent event) {
         Long msgId = event.getMsgId();
 
-        rocketMQEnhanceTemplate.sendSecureMsg(TopicConstant.SEND_MSG_TOPIC, new MsgSendMessageDTO(msgId));
+        rocketMQEnhanceTemplate.sendSecureMsg(TopicConstant.SEND_MSG_TOPIC, MQMessageBuilderAdapter.buildMsgSendMessage(msgId));
     }
 
 }

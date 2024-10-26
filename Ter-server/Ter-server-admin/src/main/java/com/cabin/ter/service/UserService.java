@@ -1,8 +1,9 @@
 package com.cabin.ter.service;
 
+import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.domain.OssReq;
-import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
-import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.vo.enums.OperateEnum;
+import com.cabin.ter.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.vo.response.UserInfoResp;
 
@@ -24,23 +25,15 @@ public interface UserService {
      * @param loginRequest
      * @return
      */
-    ApiResponse userRegister(LoginAndRegisterRequest loginRequest);
+    UserDomain userRegister(LoginAndRegisterRequest loginRequest);
 
     /**
      * 发送邮箱验证码
      *
-     * @param emailBindingReqMsg
-     * @return
+     * @param userEmail     目标用户
+     * @param operationType   邮件操作用途
      */
-    ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg);
-
-    /**
-     * 绑定邮箱
-     *
-     * @param emailBindingReqMsg
-     * @return
-     */
-    ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg);
+    void sendMailCode(String userEmail, Integer operationType);
     /**
      * 上传头像
      *
@@ -55,4 +48,10 @@ public interface UserService {
      * @return
      */
     UserInfoResp getUserInfo(Long uid);
+
+    /**
+     * 保存用户
+     * @param userDomain 需要保存的用户
+     */
+    void saveUser(UserDomain userDomain);
 }

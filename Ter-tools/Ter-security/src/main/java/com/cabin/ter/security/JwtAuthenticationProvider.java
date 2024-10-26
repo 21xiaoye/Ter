@@ -1,39 +1,37 @@
 package com.cabin.ter.security;
 
-import com.cabin.ter.service.CustomUserDetailService;
+import com.cabin.ter.admin.domain.PermissionDomain;
+import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.PermissionDomainMapper;
 import com.cabin.ter.vo.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
+import java.util.List;
 
 
 @Slf4j
 public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Autowired
-    private CustomUserDetailService userDetailsService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private MyPasswordEncoder myPasswordEncoder;
+    private PermissionDomainMapper permissionDomainMapper;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String userEmail = String.valueOf(authentication.getPrincipal());
-        String userPasswd = String.valueOf(authentication.getCredentials());
 
-        UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(userEmail);
-        String salt = userDetails.getSalt();
-        userPasswd = myPasswordEncoder.passwdEncryption(userPasswd, salt);
+        UserDomain userDomain = (UserDomain)authentication.getPrincipal();
+        Integer roleId = userDomain.getRoleId();
 
-        if(passwordEncoder.matches(userPasswd,userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(userDetails, userPasswd, userDetails.getAuthorities());
-        }
+        // 根据角色Id查询用户权限
+        List<Long> permissionIds = permissionDomainMapper.findPermissionIdsByRoleId(roleId);
+        List<PermissionDomain> permissions = permissionDomainMapper.selectPermissionsByPermissionIds(permissionIds);
+        UserPrincipal userPrincipal = UserPrincipal.create(userDomain, permissions);
 
-        throw new BadCredentialsException("Error!!");
+        return new UsernamePasswordAuthenticationToken(userPrincipal , null, userPrincipal.getAuthorities());
     }
 
     @Override

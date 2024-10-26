@@ -8,24 +8,20 @@ import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.adapter.TxObjectStorageAdapter;
 import com.cabin.ter.adapter.UserAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.admin.mapper.RoleDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
 
 import com.cabin.ter.cache.RedisCache;
+import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.constants.domain.OssReq;
-import com.cabin.ter.constants.dto.LoginMessageDTO;
-import com.cabin.ter.constants.enums.MessagePushMethodEnum;
-import com.cabin.ter.constants.enums.SourceEnum;
+import com.cabin.ter.constants.enums.*;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
-import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
-import com.cabin.ter.constants.vo.request.EmailBindingReqMsg;
-import com.cabin.ter.cache.UserCache;
+import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
-import com.cabin.ter.constants.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
+import com.cabin.ter.vo.enums.OperateEnum;
+import com.cabin.ter.vo.request.LoginAndRegisterRequest;
 import com.cabin.ter.security.MyPasswordEncoder;
-import com.cabin.ter.constants.enums.Status;
-import com.cabin.ter.constants.enums.RoleEnum;
 import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.factory.MyPasswordEncoderFactory;
 import com.cabin.ter.service.UserService;
@@ -33,24 +29,20 @@ import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.util.VerifyUtil;
 import com.cabin.ter.constants.vo.response.JwtResponse;
 import com.cabin.ter.constants.vo.response.ApiResponse;
-import com.cabin.ter.constants.enums.EncryptionEnum;
 import com.cabin.ter.util.AsserUtil;
 import com.cabin.ter.vo.response.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,11 +55,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Snowflake snowflake;
     @Autowired
-    private UserDomainMapper userMapper;
-    @Autowired
-    private RoleDomainMapper roleMapper;
+    private UserDomainMapper userDomainMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private MyPasswordEncoder myPasswordEncoder;
     @Autowired
@@ -75,96 +67,66 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
-    private TemplateEngine templateEngine;
-    @Autowired
     private RedisCache redisCache;
     @Autowired
     private TxObjectStorageAdapter txObjectStorageAdapter;
     @Autowired
-    private UserCache userCache;
-
+    private UserInfoCache userInfoCache;
     @Override
-    public ApiResponse userLogin(LoginAndRegisterRequest loginRequest) {
-        AsserUtil.fastFailValidate(loginRequest);
-
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getUserPasswd()));
+    public ApiResponse userLogin(LoginAndRegisterRequest request) {
+        String userEmail = request.getUserEmail();
+        UserDomain userDomain = userInfoCache.getUserInfoBatch(userEmail);
+        AsserUtil.isEmpty(userDomain, Status.USER_NO_OCCUPY);
+        if (OperateEnum.of(request.getType()).equals(OperateEnum.USER_LOGIN)) {
+            String salt = userDomain.getSalt();
+            String userPasswd = request.getUserPasswd();
+            userPasswd = myPasswordEncoder.passwdEncryption(userPasswd, salt);
+            if(!passwordEncoder.matches(userPasswd, userDomain.getUserPasswd())){
+                throw new BaseException(Status.USERNAME_PASSWORD_ERROR);
+            }
+        }
+        if (OperateEnum.of(request.getType()).equals(OperateEnum.USER_CODE)) {
+            String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, request.getUserEmail()),String.class);
+            log.info("[{}]验证码为=[{}]",request.getUserEmail(),code);
+            AsserUtil.equal(request.getCode(), code, "验证码错误");
+        }
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String jwt = jwtUtil.createJWT(authenticate, loginRequest.getRememberMe());
+        String jwt = jwtUtil.createJWT(authenticate, request.getRememberMe());
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
 
-
     @Override
-    public ApiResponse userRegister(LoginAndRegisterRequest loginRequest) {
-        AsserUtil.fastFailValidate(loginRequest);
-
-        UserDomain userDomain = userMapper.findByUserEmail(loginRequest.getUserEmail());
-
-        if(Objects.nonNull(userDomain)){
-            throw new BaseException(Status.USER_OCCUPY);
-        }
-
-        UserDomain user = this.createUserWithRoles(loginRequest);
-        userMapper.insertTerUser(user);
-        roleMapper.insertUserRole(user);
-
-        this.buildEmailMessage(loginRequest.getUserEmail(), "欢迎来到 Ter",SourceEnum.TEST_SOURCE.getSource());
-
-        return ApiResponse.ofSuccess();
-    }
-
-    @Override
-    public ApiResponse sendEmailCode(EmailBindingReqMsg emailBindingReqMsg) {
-        String code = VerifyUtil.generateCode(8);
-        this.sendMailAsync(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId(), code);
-        return ApiResponse.ofSuccess("验证码已发送");
-    }
-    // TODO: 这里还没有写完整，应该返回用户token，用户权限范围
-    @Override
-    public ApiResponse emailBiding(EmailBindingReqMsg emailBindingReqMsg) {
-        AsserUtil.fastFailValidate(emailBindingReqMsg);
-
-        String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, emailBindingReqMsg.getOpenId()),String.class);
-        log.info("[{}]验证码为=[{}]",emailBindingReqMsg.getEmail(),code);
-        if(emailBindingReqMsg.getCode().equals(code)){
-            UserDomain userDomain = userMapper.findByUserEmail(emailBindingReqMsg.getEmail());
-            WxOAuth2UserInfo userInfo = redisCache.get(RedisKey.getKey(RedisKey.AUTHORIZE_WX, emailBindingReqMsg.getOpenId()), WxOAuth2UserInfo.class);
-            // 微信用户再此之前未进行邮箱注册
-            if(!Objects.nonNull(userDomain)){
-                UserDomain user = UserDomain.builder()
-                        .openId(emailBindingReqMsg.getOpenId())
-                        .userEmail(emailBindingReqMsg.getEmail())
-                        .userId(snowflake.nextId())
-                        .userName(userInfo.getNickname())
-                        .userAvatar(userInfo.getHeadImgUrl())
-                        .build();
-                this.validateAndSetRoles(user, null);
-                userMapper.insertTerUser(user);
-                roleMapper.insertUserRole(user);
-            }else{
-                userMapper.updateUserOpenId(emailBindingReqMsg.getEmail(), emailBindingReqMsg.getOpenId());
-            }
-            Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, emailBindingReqMsg.getOpenId()), Integer.class);
-            rocketMQEnhanceTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(emailBindingReqMsg.getOpenId(), emailBindingReqMsg.getEmail(), loginCode));
-            return ApiResponse.ofSuccess();
-        }
-        return ApiResponse.ofSuccess("验证码错误");
+    public UserDomain userRegister(LoginAndRegisterRequest request) {
+        UserDomain userDomain = userInfoCache.getUserInfoBatch(request.getUserEmail());
+        AsserUtil.nonEmpty(userDomain, Status.USER_OCCUPY);
+        String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, request.getUserEmail()), String.class);
+        AsserUtil.equal(request.getCode(), code, "验证码错误");
+        return createUser(request);
     }
     @Async
-    public void sendMailAsync(String email, String openId,String code) {
-        redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,openId),code,60, TimeUnit.SECONDS);
-        // 将验证码放到thymeleaf页面中
-        Context context  = new Context();
-        context.setVariable("code", Arrays.asList(code.split("")));
-        // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
-        String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
-        this.buildEmailMessage(email, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE.getSource());
+    public void sendMailCode(String userEmail,Integer operationType) {
+        String code = VerifyUtil.generateCode(6);
+//        Context context  = new Context();
+//        context.setVariable("code", Arrays.asList(code.split("")));
+//        // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
+//        String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
+        redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,userEmail),code,60, TimeUnit.SECONDS);
+
+        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageParticipant(OperateEnum.of(operationType).getMessage(), userEmail, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE);
+        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
+    }
+    @Override
+    public UserInfoResp getUserInfo(Long userId) {
+        UserDomain userInfo =userInfoCache.getUserInfo(userId);
+        return UserAdapter.buildUserInfoResp(userInfo);
     }
 
+    @Transactional
     @Override
-    public UserInfoResp getUserInfo(Long uid) {
-        UserDomain userInfo = userCache.getUserInfo(uid);
-        return UserAdapter.buildUserInfoResp(userInfo);
+    public void saveUser(UserDomain userDomain){
+        userDomainMapper.insertTerUser(userDomain);
+        redisCache.mset(RedisKey.getKey(RedisKey.USER_ONLINE_INFO, userDomain.getUserId()), userDomain,5*60);
     }
 
     public ApiResponse uploadAvatar(OssReq ossReq){
@@ -183,93 +145,24 @@ public class UserServiceImpl implements UserService {
         String yearAndMonth = DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN);
         return req.getFilePath() + StrUtil.SLASH + yearAndMonth + StrUtil.SLASH + uid + StrUtil.SLASH + uuid + StrUtil.DOT + suffix;
     }
-
-    // TODO: 这里我觉得可以使用责任链模式来进行优化，检查用户是否存在-> 加盐哈希加密 -> 权限分配 -> 存储用户信息
-    private UserDomain createUserWithRoles(LoginAndRegisterRequest loginRequest) {
+    private UserDomain createUser(LoginAndRegisterRequest request){
         String salt = myPasswordEncoder.generateSalt();
-        String encryptedPassword = this.encryptPassword(loginRequest.getUserPasswd(), salt);
-        UserDomain user = this.buildUser(loginRequest, salt, encryptedPassword);
-        this.validateAndSetRoles(user, loginRequest.getRoleId());
-        return user;
-    }
-
-    /**
-     * 构建邮箱消息
-     *
-     * @param email
-     * @param content
-     */
-
-    private void buildEmailMessage(String email, String content, String source) {
-        WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
-        webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
-        webSocketSingleParticipant.setSource(source);
-        webSocketSingleParticipant.setContent(content);
-        webSocketSingleParticipant.setSendTime(LocalDateTime.now());
-        webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.EMAIL_MESSAGE);
-        webSocketSingleParticipant.setToAddress(email);
-
-        CompletableFuture.runAsync(() ->
-                rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC, TopicConstant.SOURCE_SINGLE_PUSH_TAG, webSocketSingleParticipant)
-        );
-    }
-
-    /**
-     * 密码加盐加密
-     *
-     * @param password
-     * @param salt
-     * @return
-     */
-    private String encryptPassword(String password, String salt) {
-        String saltEncode = myPasswordEncoder.passwdEncryption(password, salt);
-        return MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
-    }
-
-    /**
-     * 构建用户
-     *
-     * @param request
-     * @param salt
-     * @param password
-     * @return
-     */
-    private UserDomain buildUser(LoginAndRegisterRequest request, String salt, String password) {
-        return UserDomain.builder()
+        String userPasswd = request.getUserPasswd();
+        String saltEncode = myPasswordEncoder.passwdEncryption(userPasswd, salt);
+        String encodePasswd = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
+        UserDomain userDomain = UserDomain.builder()
                 .userId(snowflake.nextId())
                 .userEmail(request.getUserEmail())
-                .userPasswd(password)
+                .userPasswd(encodePasswd)
                 .userName(request.getUserEmail())
                 .salt(salt)
                 .createTime(System.currentTimeMillis())
+                .roleId(Objects.isNull(request.getRoleId()) ? RoleEnum.ORDINARY.getStatus() : RoleEnum.ADMIN.getStatus())
+                .sex('1')
                 .build();
-    }
-
-    /**
-     * 角色权限分配
-     *
-     * @param user
-     * @param roleId
-     */
-    private void validateAndSetRoles(UserDomain user, Integer roleId) {
-        // 默认用户角色为普通用户
-        if(roleId == null){
-            roleId = RoleEnum.ORDINARY.getStatus();
+        if (request.getRoleId() != null) {
+            userDomain.setRoleId(request.getRoleId());
         }
-        RoleEnum role = RoleEnum.of(roleId);
-        if (Objects.isNull(role)) {
-            throw new BaseException(Status.PARAM_NOT_MATCH);
-        }
-        switch (role){
-            case ADMIN :
-                user.setRoleIdList(Arrays.asList(RoleEnum.ADMIN.getStatus(),RoleEnum.ORDINARY.getStatus()));
-                break;
-            case ORDINARY:
-                user.setRoleIdList(Arrays.asList(RoleEnum.ORDINARY.getStatus()));
-                break;
-            default:
-                log.error("未知角色");
-                throw new BaseException(Status.PARAM_NOT_MATCH);
-        }
+        return userDomain;
     }
 }

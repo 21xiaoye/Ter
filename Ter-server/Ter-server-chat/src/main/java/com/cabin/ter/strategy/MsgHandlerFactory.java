@@ -24,7 +24,7 @@ public class MsgHandlerFactory {
 
     public static AbstractMsgHandler getStrategyNoNull(Integer code){
         AbstractMsgHandler abstractMsgHandler = STRATEGY_MAP.get(code);
-        AsserUtil.isNotEmpty(abstractMsgHandler, CommonErrorEnum.PARAM_VALID.getMessage());
+        AsserUtil.isEmpty(abstractMsgHandler, CommonErrorEnum.PARAM_VALID.getMessage());
         return abstractMsgHandler;
     }
 

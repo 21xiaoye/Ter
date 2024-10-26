@@ -9,11 +9,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Description:
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
- * Date: 2023-07-29
- */
 @AllArgsConstructor
 @Getter
 public enum WSPushTypeEnum {

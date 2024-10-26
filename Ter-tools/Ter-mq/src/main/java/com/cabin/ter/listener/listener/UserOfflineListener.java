@@ -2,7 +2,7 @@ package com.cabin.ter.listener.listener;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.listener.event.UserOfflineEvent;
-import com.cabin.ter.cache.UserCache;
+import com.cabin.ter.cache.UserInfoCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserOfflineListener {
     @Autowired
-    private UserCache userCache;
+    private UserInfoCache userCache;
     // TODO: 这里在用户下线之后做一些操作，我这里有些犹豫是将用户的状态记录到mysql还是记录到redis当中
 
     @Async(value = "terExecutor")

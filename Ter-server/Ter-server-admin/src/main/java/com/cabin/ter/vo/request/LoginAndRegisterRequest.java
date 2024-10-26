@@ -1,9 +1,8 @@
-package com.cabin.ter.constants.vo.request;
+package com.cabin.ter.vo.request;
 
-import com.cabin.ter.annotation.PasswordMatches;
+import com.cabin.ter.vo.annotation.PasswordMatches;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -23,18 +22,19 @@ public class LoginAndRegisterRequest {
     @Email
     private String userEmail;
 
-
     @Schema(name = "userPasswd",description = "用户密码")
     @PasswordMatches
     private String userPasswd;
 
     @Schema(name = "code",description = "用户验证码")
-    @Min(value = 0,message = "验证码错误")
-    private Integer code;
+    private String code;
 
     @Schema(name = "roleId",description = "创建角色id 40001-管理员 40002-普通用户,默认创建普通用户")
     private Integer roleId;
 
     @Schema(name = "rememberMe",description = "是否记住我")
     private Boolean rememberMe = false;
+
+    @Schema(name = "type", description = "操作类型 1001:用户注册 1002:账号密码登录")
+    private Integer type;
 }

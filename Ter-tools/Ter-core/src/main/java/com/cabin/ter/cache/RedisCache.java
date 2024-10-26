@@ -151,6 +151,11 @@ public class RedisCache {
             this.expire(key, time);
         });
     }
+    public <T> void mset(String key, T value, long time){
+        String toStr = objToStr(value);
+        redisTemplate.opsForValue().set(key, toStr);
+        this.expire(key, time);
+    }
     public  Boolean expire(String key, long time) {
         try {
             if (time > 0) {

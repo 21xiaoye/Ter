@@ -1,10 +1,7 @@
 package com.cabin.ter.constants.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 
 /**
  * <p>
@@ -15,12 +12,7 @@ import java.io.Serializable;
  * @date Created in 2024-05-11 11:11
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class LoginMessageDTO extends MQBaseMessage implements Serializable  {
-
-    private static final long serialVersionUID = 1L;
-
+public class LoginMessageDTO extends MQBaseMessage  {
     private String openId;
     private String loginEmail;
     private Integer logonCode;

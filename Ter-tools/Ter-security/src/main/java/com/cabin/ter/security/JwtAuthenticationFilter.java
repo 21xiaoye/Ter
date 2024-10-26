@@ -1,14 +1,17 @@
 package com.cabin.ter.security;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
+import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.constants.dto.RequestInfoDTO;
 import com.cabin.ter.exception.SecurityException;
-import com.cabin.ter.service.CustomUserDetailService;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.util.RequestHolderUtil;
 import com.cabin.ter.util.ResponseUtil;
+import com.cabin.ter.vo.JwtPrincipal;
+import com.cabin.ter.vo.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,9 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final static String AUTH_HEADER_TYPE = "Bearer";
 
     @Autowired
-    private CustomUserDetailService customUserDetailService;
-    @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private UserInfoCache userInfoCache;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTH_HEADER);
@@ -54,16 +57,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StrUtil.isNotBlank(jwt)) {
             try {
-                String username = jwtUtil.getUsernameFromJWT(jwt);
-                Long uidFromJWT = jwtUtil.getUIDFromJWT(jwt);
+                JwtPrincipal jwtInfo = jwtUtil.getJwtInfo(jwt);
 
-                RequestInfoDTO requestInfoDTO = new RequestInfoDTO();
-                requestInfoDTO.setIp(request.getRemoteAddr());
-                requestInfoDTO.setUid(uidFromJWT);
+                RequestInfoDTO requestInfoDTO = RequestInfoDTO.builder()
+                        .ip(request.getRemoteAddr())
+                        .uid(jwtInfo.getId()).build();
+
                 RequestHolderUtil.set(requestInfoDTO);
-                //TODO: 这里未来采用 二级缓存,用户权限是很少发生改变的
-                UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UserDomain userDomain = userInfoCache.getUserInfoBatch(jwtInfo.getSubject());
+                UserPrincipal userPrincipal = UserPrincipal.create(userDomain, null);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

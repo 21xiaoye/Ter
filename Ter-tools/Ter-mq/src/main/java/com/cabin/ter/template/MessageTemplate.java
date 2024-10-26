@@ -1,5 +1,6 @@
 package com.cabin.ter.template;
 
+import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.participant.msg.MessageParticipant;
 import com.cabin.ter.service.MessageProcessing;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date Created in 2024-05-01 12:55
  */
 @Slf4j
-public abstract class MessageTemplate {
+public abstract class MessageTemplate{
     private MessageProcessing messageProcessing;
     public MessageTemplate(){
     }
@@ -41,7 +42,7 @@ public abstract class MessageTemplate {
      * @param message
      * @param <T>
      */
-    public <T extends MessageParticipant>  void messageTemplate(MessageParticipant message)  {
+    public <T extends MQBaseMessage>  void messageTemplate(T message)  {
         this.messageRisk(message);
         this.initMessage(message);
     }
@@ -52,7 +53,7 @@ public abstract class MessageTemplate {
      * @param message
      * @param <T>
      */
-    protected <T extends MessageParticipant> void initMessage(MessageParticipant message){}
+    protected <T extends MQBaseMessage> void initMessage(T message){}
 
     /**
      * 审核消息内容，具体实现由子类完成
@@ -60,13 +61,13 @@ public abstract class MessageTemplate {
      * @param message
      * @param <T>
      */
-    protected <T extends MessageParticipant> void messageRisk(MessageParticipant message){}
+    protected <T extends MQBaseMessage> void messageRisk(T message){}
 
     /**
      * 执行消息推送
      *
      * @return
      */
-    protected abstract <T extends MessageParticipant> Boolean messageSend(MessageParticipant message);
+    protected abstract <T extends MQBaseMessage> Boolean messageSend(T message);
 
 }

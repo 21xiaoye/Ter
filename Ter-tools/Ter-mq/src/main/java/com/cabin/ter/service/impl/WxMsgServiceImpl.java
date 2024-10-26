@@ -5,12 +5,11 @@ import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.constants.RedisKey;
-import com.cabin.ter.constants.dto.EmailBindingDTO;
-import com.cabin.ter.constants.dto.LoginMessageDTO;
-import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
+import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.participant.constant.TopicConstant;
 import com.cabin.ter.service.WxMsgService;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -52,16 +51,16 @@ public class WxMsgServiceImpl implements WxMsgService {
      */
     @Override
     public WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage)  {
-        String openid = wxMpXmlMessage.getFromUser();
+        String openId = wxMpXmlMessage.getFromUser();
         Integer loginCode = Integer.parseInt(getEventKey(wxMpXmlMessage));
 
-        UserDomain userDomain = userDomainMapper.findByUserOpenId(openid);
+        UserDomain userDomain = userDomainMapper.findByUserOpenId(openId);
 
         /**
          * 数据库有用户 openId 记录，直接通知登录成功，无需授权
          */
         if (Objects.nonNull(userDomain)) {
-            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, new LoginMessageDTO(openid,userDomain.getUserEmail(), loginCode));
+            rocketMQTemplate.send(TopicConstant.LOGIN_MSG_TOPIC, MQMessageBuilderAdapter.buildLoginMessage(openId, userDomain.getUserEmail(), loginCode, SourceEnum.WX_SCAN_CODE_SOURCE));
             log.info("用户扫码登录成功");
             return null;
         }
@@ -69,9 +68,9 @@ public class WxMsgServiceImpl implements WxMsgService {
         /**
          * 通知用户进行授权
          */
-        redisCache.set(RedisKey.getKey(RedisKey.OPEN_ID_STRING, openid), loginCode, 60, TimeUnit.MINUTES);
+        redisCache.set(RedisKey.getKey(RedisKey.OPEN_ID_STRING, openId), loginCode, 60, TimeUnit.MINUTES);
 
-        rocketMQTemplate.send(TopicConstant.SCAN_MSG_TOPIC, new ScanSuccessMessageDTO(loginCode,openid));
+        rocketMQTemplate.send(TopicConstant.SCAN_MSG_TOPIC, MQMessageBuilderAdapter.buildScanSuccessMessage(openId, loginCode));
 
         String skipUrl = String.format(URL,  wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode( callback+"/wx/portal/public/callBack"));
         WxMpXmlOutMessage.TEXT().build();
@@ -91,7 +90,7 @@ public class WxMsgServiceImpl implements WxMsgService {
     @Override
     public void authorize(WxOAuth2UserInfo userInfo) {
 
-        Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
+//        Integer loginCode = redisCache.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
         /**
          * 用户授权成功，保存用户信息
          */
@@ -100,6 +99,6 @@ public class WxMsgServiceImpl implements WxMsgService {
         /**
          * 通知用户进行邮箱绑定
          */
-        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(loginCode, userInfo.getOpenid()));
+//        rocketMQTemplate.send(TopicConstant.EMAIL_BINDING_TOPIC,new EmailBindingDTO(loginCode, userInfo.getOpenid()));
     }
 }

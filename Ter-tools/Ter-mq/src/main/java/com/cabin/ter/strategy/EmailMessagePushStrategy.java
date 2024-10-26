@@ -1,10 +1,9 @@
-package com.cabin.ter.service.impl;
+package com.cabin.ter.strategy;
 
 import com.cabin.ter.config.MailSenderConfig;
-import com.cabin.ter.constants.participant.msg.EmailParticipant;
-import com.cabin.ter.constants.participant.msg.MessageParticipant;
+import com.cabin.ter.constants.dto.EmailMessageDTO;
+import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
-import com.cabin.ter.service.BaseMessageStrategyService;
 import com.cabin.ter.template.MessageTemplate;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -26,22 +25,29 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class EmailStrategyServiceImpl extends MessageTemplate
-        implements BaseMessageStrategyService {
+public class EmailMessagePushStrategy extends MessageTemplate
+        implements MessageStrategyBase {
     @Autowired
     private MailSenderConfig mailSenderConfig;
 
     @Override
-    protected <T extends MessageParticipant> Boolean messageSend(MessageParticipant message) {
-
+    public <T extends MQBaseMessage> Boolean messageStrategy(T message) {
+        return this.messageSend(message);
+    }
+    @Override
+    public MessagePushMethodEnum getSource() {
+        return MessagePushMethodEnum.EMAIL_MESSAGE;
+    }
+    @Override
+    protected <T extends MQBaseMessage> Boolean messageSend(T message) {
         JavaMailSenderImpl sender = mailSenderConfig.getSender();
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
-            EmailParticipant emailParticipant =(EmailParticipant) message;
+            EmailMessageDTO emailParticipant =(EmailMessageDTO) message;
             System.out.println("消费的消息内容为"+emailParticipant);
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setText(emailParticipant.getContent(),true);
-            helper.setTo(emailParticipant.getTo());
+            helper.setTo(emailParticipant.getToAddress());
             helper.setSubject(emailParticipant.getSubject());
 
             helper.setFrom(Objects.requireNonNull(sender.getUsername()));
@@ -50,15 +56,5 @@ public class EmailStrategyServiceImpl extends MessageTemplate
         }
         sender.send(mimeMessage);
         return Boolean.TRUE;
-    }
-
-    @Override
-    public MessagePushMethodEnum getSource() {
-        return MessagePushMethodEnum.EMAIL_MESSAGE;
-    }
-
-    @Override
-    public <T extends MessageParticipant> Boolean messageStrategy(MessageParticipant message)  {
-        return this.messageSend(message);
     }
 }

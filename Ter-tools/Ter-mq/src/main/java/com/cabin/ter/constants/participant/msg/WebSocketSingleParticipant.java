@@ -2,6 +2,7 @@ package com.cabin.ter.constants.participant.msg;
 
 import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
+import com.cabin.ter.constants.enums.SourceEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  *  <p>
@@ -20,8 +23,7 @@ import java.io.Serializable;
  * @author xiaoye
  * @date Created in 2024-05-02 21:44
  */
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 @Schema(name = "WebSocketSingleParticipant",description = "推送数据")
 public class WebSocketSingleParticipant extends MQBaseMessage implements Serializable {
@@ -42,9 +44,4 @@ public class WebSocketSingleParticipant extends MQBaseMessage implements Seriali
      */
     @Schema(name = "content",description = "消息主体")
     private String content;
-
-    public WebSocketSingleParticipant(String toAddress, String content) {
-        this.toAddress = toAddress;
-        this.content = content;
-    }
 }

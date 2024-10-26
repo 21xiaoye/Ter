@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +44,7 @@ public interface UserDomainMapper {
      * @param userEmail 用户邮箱
      * @return  UserDomain
      */
-    @Select("SELECT uId,userEmail FROM ter_user WHERE userEmail=#{userEmail}")
+    @Select("SELECT userId,userName,userEmail,userPasswd,userAvatar,salt,roleId, userStatus  FROM ter_user WHERE userEmail=#{userEmail}")
     UserDomain findByUserEmail(String userEmail);
     /**
      * 插入用户

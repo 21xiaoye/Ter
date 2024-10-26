@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cabin.ter.annotation.SecureInvoke;
 import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.participant.constant.RocketMqSysConstant;
+import com.cabin.ter.constants.participant.msg.MessageParticipant;
 import com.cabin.ter.constants.participant.msg.RocketEnhanceProperties;
 import jakarta.annotation.Resource;
 import lombok.Data;
@@ -57,13 +58,11 @@ public class RocketMQEnhanceTemplate {
      * 发送同步消息
      */
     public <T extends MQBaseMessage> SendResult send(String topic, String tag, T message) {
-        // 注意分隔符
         return send(buildDestination(topic,tag), message);
     }
 
-
     public  <T extends MQBaseMessage> SendResult send(String topic, T message) {
-        Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getKey()).build();
+        Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getTraceId()).build();
         SendResult sendResult = rocketMQTemplate.syncSend(topic, sendMessage);
 
         log.info("[{}]同步消息[{}]发送结果[{}]", topic, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
@@ -78,7 +77,7 @@ public class RocketMQEnhanceTemplate {
     }
 
     public <T extends MQBaseMessage> SendResult send(String topic, T message, int delayLevel) {
-        Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getKey()).build();
+        Message<T> sendMessage = MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.KEYS, message.getTraceId()).build();
         SendResult sendResult = rocketMQTemplate.syncSend(topic, sendMessage, 3000, delayLevel);
         log.info("[{}]延迟等级[{}]消息[{}]发送结果[{}]", topic, delayLevel, JSONObject.toJSON(message), JSONObject.toJSON(sendResult));
         return sendResult;

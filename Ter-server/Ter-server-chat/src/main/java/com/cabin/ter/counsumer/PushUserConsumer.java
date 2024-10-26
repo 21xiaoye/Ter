@@ -26,7 +26,7 @@ public class PushUserConsumer extends BaseMqMessageListener<PushMessageDTO> impl
     }
 
     @Override
-    protected void handleMessage(PushMessageDTO message) throws Exception {
+    protected void handleMessage(PushMessageDTO message) {
         WSPushTypeEnum wsPushTypeEnum = WSPushTypeEnum.of(message.getPushType());
         switch (wsPushTypeEnum) {
             case USER:

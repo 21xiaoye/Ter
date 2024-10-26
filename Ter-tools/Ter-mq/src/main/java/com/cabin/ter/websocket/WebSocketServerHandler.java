@@ -2,14 +2,13 @@ package com.cabin.ter.websocket;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.adapter.WSAdapter;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.request.WsReqMsg;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.CacheUtil;
-import com.cabin.ter.util.MsgUtil;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.util.NettyUtil;
 import com.cabin.ter.util.RedisUtil;
 import io.netty.channel.Channel;
@@ -153,7 +152,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
 
         String str = "通知客户端链接建立成功" + " " + new Date() + " " + channel.localAddress().getHostString() + "\r\n";
-        ctx.writeAndFlush(MsgUtil.buildMsg(channel.id().toString(), str));
+        ctx.writeAndFlush(MQMessageBuilderAdapter.buildMsg(channel.id().toString(), str));
     }
 
 

@@ -4,8 +4,10 @@ package com.cabin.ter.util;
 import cn.hutool.core.date.DateUtil;
 
 import cn.hutool.core.util.StrUtil;
+import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.config.JwtConfig;
 import com.cabin.ter.exception.SecurityException;
+import com.cabin.ter.vo.JwtPrincipal;
 import com.cabin.ter.vo.UserPrincipal;
 import com.cabin.ter.config.ConstantPool;
 import com.cabin.ter.constants.enums.Status;
@@ -51,15 +53,15 @@ public class JwtUtil {
      * @param rememberMe    记住我
      * @param id            用户id
      * @param subject       用户名
-     * @param roles         用户角色
+     * @param roleId        用户角色
      * @param authorities   用户权限
      * @return  JWT
      */
-    public String createJWT(Boolean rememberMe, Long id, String subject, List<Integer> roles, Collection<? extends GrantedAuthority> authorities){
+    public String createJWT(Boolean rememberMe, Long id, String subject, Integer roleId, Collection<? extends GrantedAuthority> authorities){
         Date nowTime = new Date();
         JwtBuilder jwtBuilder = Jwts.builder().setId(id.toString()).setSubject(subject).setIssuedAt(nowTime)
                 .signWith(SignatureAlgorithm.HS256, jwtConfig.getKey())
-                .claim("roles", roles)
+                .claim("role", roleId)
                 .claim("authorities", authorities);
         Long ttl = rememberMe ? jwtConfig.getRemember() : jwtConfig.getTtl();
 
@@ -80,8 +82,8 @@ public class JwtUtil {
      * @return  JWT
      */
     public String createJWT(Authentication authentication, Boolean rememberMe){
-        UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
-        return createJWT(rememberMe, principal.getUserId(), principal.getUserEmail(),principal.getRoles(),principal.getAuthorities());
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return createJWT(rememberMe, userPrincipal.getUserId(), userPrincipal.getUserEmail(),userPrincipal.getRoleId(),userPrincipal.getAuthorities());
     }
 
 
@@ -128,7 +130,11 @@ public class JwtUtil {
         }
     }
 
-
+    /**
+     * 校验token
+     * @param jwt 需要校验的token
+     * @return  true:token正常,否则false
+     */
     public boolean verityToken(String jwt){
         Claims claims = Jwts.parser().setSigningKey(jwtConfig.getKey()).parseClaimsJws(jwt).getBody();
 
@@ -140,7 +146,6 @@ public class JwtUtil {
         if (Objects.isNull(expire) || expire <= 0) {
             return false;
         }
-
         // 校验redis中的JWT是否与当前的一致，不一致则代表用户已注销/用户在不同设备登录，均代表JWT已过期
         String redisToken = stringRedisTemplate.opsForValue().get(redisKey);
         if (!StrUtil.equals(jwt, redisToken)) {
@@ -182,6 +187,19 @@ public class JwtUtil {
         return Long.parseLong(claims.getId());
     }
 
+    /**
+     * 获取jwt中的用户信息
+     * @param jwt   用户Jwt
+     * @return  用户jwt信息
+     */
+    public JwtPrincipal  getJwtInfo(String jwt){
+        Claims claims = parseJWT(jwt);
+        JwtPrincipal jwtPrincipal = JwtPrincipal.builder()
+                .Id(Long.parseLong(claims.getId()))
+                .subject(claims.getSubject())
+                .build();
+        return jwtPrincipal;
+    }
     /**
      * 从 request 的 header 中获取 JWT
      *

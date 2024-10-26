@@ -15,13 +15,12 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum SourceEnum    {
-    CHAT_SOURCE_RETRY("SOURCE_RETRY","重试消息"),
-    TEST_SOURCE("MESSAGE_TEST","消息测试"),
-    EMAIL_BINDING_SEND_CODE_SOURCE("email_binding_send_code","邮箱绑定验证码发送"),
-    MSG_SEND_MESSAGE_SOURCE(TopicConstant.SEND_MSG_TOPIC, "用户聊天消息");
-
-
+public enum SourceEnum{
+    CHAT_SOURCE_RETRY("SOURCE_RETRY"),
+    TEST_SOURCE("MESSAGE_TEST"),
+    USER_REGISTER("USER_REGISTER"),
+    EMAIL_BINDING_SEND_CODE_SOURCE("email_binding_send_code"),
+    SYSTEM_CLIENT_CONNECTION_SOURCE("system_client_connection"),
+    WX_SCAN_CODE_SOURCE("wx_scan_code_source");
     private final String source;
-    private final String description;
 }

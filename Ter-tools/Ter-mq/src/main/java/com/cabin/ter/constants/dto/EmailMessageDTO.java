@@ -1,11 +1,6 @@
-package com.cabin.ter.constants.participant.msg;
+package com.cabin.ter.constants.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * <p>
@@ -15,12 +10,8 @@ import java.io.Serializable;
  * @author xiaoye
  * @date Created in 2024-05-01 16:40
  */
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
-public class EmailParticipant  implements MessageParticipant, Serializable {
+public class EmailMessageDTO extends MQBaseMessage {
     /**
      * 消息主题
      */
@@ -36,5 +27,5 @@ public class EmailParticipant  implements MessageParticipant, Serializable {
     /**
      * 消息接收者
      */
-    private String to;
+    private String toAddress;
 }

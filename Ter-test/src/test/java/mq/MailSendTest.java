@@ -1,9 +1,9 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
-import com.cabin.ter.constants.participant.msg.EmailParticipant;
+import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
-import com.cabin.ter.service.MessageStrategyServiceFactory;
+import com.cabin.ter.strategy.MessageStrategyFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,12 @@ public class MailSendTest {
 
         String emailTemplate = templateEngine.process("test", context);
 
-        EmailParticipant message = EmailParticipant.builder()
-                .to("zouye0113@gmail.com")
+        EmailMessageDTO message = EmailMessageDTO.builder()
+                .toAddress("zouye0113@gmail.com")
                 .subject("测试")
                 .content(emailTemplate)
                 .build();
-        MessageStrategyServiceFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
+        MessageStrategyFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
     }
 
 

@@ -22,8 +22,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(PasswordMatches.List.class)
 public @interface PasswordMatches {
-    // 正则表达式
     String regexp() default "";
+
+    // 校验不通过时的提示信息
     String message() default "密码格式不正确，请输入8-20位的密码，必须包含数字和字母，支持特殊符号~!@#$%^*";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
@@ -51,6 +52,9 @@ public @interface PasswordMatches {
         }
         @Override
         public boolean isValid(String s, ConstraintValidatorContext context) {
+            if (!required && StringUtils.isBlank(s)) {
+                return true;
+            }
             if (required && StringUtils.isBlank(s)) {
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(requiredMessage)

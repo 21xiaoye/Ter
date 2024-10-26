@@ -91,7 +91,11 @@ public enum Status implements IStatus {
     /**
      * 用户已被占用
      */
-    USER_OCCUPY(5005,"用户已存在");
+    USER_OCCUPY(5005,"用户已存在"),
+    /**
+     * 用户不存在
+     */
+    USER_NO_OCCUPY(5006,"用户不存在");
     /**
      * 状态码
      */

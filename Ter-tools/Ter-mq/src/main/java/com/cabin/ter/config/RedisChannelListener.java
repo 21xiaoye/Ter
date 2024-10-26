@@ -4,7 +4,7 @@ package com.cabin.ter.config;
 import com.alibaba.fastjson.JSON;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.util.CacheUtil;
-import com.cabin.ter.util.MsgUtil;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import jakarta.annotation.Nullable;
@@ -35,7 +35,7 @@ public class RedisChannelListener implements MessageListener{
             return;
         }
         // 发送消息
-        channel.writeAndFlush(new TextWebSocketFrame(MsgUtil.obj2Json(msgAgreement) + "  redis listener lalalalala "));
+        channel.writeAndFlush(new TextWebSocketFrame(MQMessageBuilderAdapter.obj2Json(msgAgreement) + "  redis listener lalalalala "));
     }
 
 }

@@ -64,15 +64,4 @@ public class WebSocketController {
         }
     }
 
-    @GetMapping("/mq")
-    public ApiResponse mqTest(){
-        WebSocketSingleParticipant webSocketSingleParticipant = new WebSocketSingleParticipant();
-        webSocketSingleParticipant.setKey(UUID.randomUUID().toString());
-        webSocketSingleParticipant.setSource(SourceEnum.TEST_SOURCE.getSource());
-        webSocketSingleParticipant.setContent("这里是消息的主要内容");
-        webSocketSingleParticipant.setSendTime(LocalDateTime.now());
-        webSocketSingleParticipant.setPushMethod(MessagePushMethodEnum.USER_WEB_MESSAGE);
-        rocketMQEnhanceTemplate.send(TopicConstant.ROCKETMQ_BROADCASTING_PUSH_MESSAGE_TOPIC,TopicConstant.SOURCE_BROADCASTING_WIND_TAG, webSocketSingleParticipant);
-        return ApiResponse.ofSuccess();
-    }
 }

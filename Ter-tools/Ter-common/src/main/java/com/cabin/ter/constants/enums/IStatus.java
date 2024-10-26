@@ -1,6 +1,7 @@
 package com.cabin.ter.constants.enums;
 
 public interface IStatus {
+
     /**
      * 状态码
      *

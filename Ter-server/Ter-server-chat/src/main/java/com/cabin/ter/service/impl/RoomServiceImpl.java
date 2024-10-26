@@ -1,15 +1,11 @@
 package com.cabin.ter.service.impl;
 
-import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.adapter.ChatAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.cache.UserInfoCache;
-import com.cabin.ter.chat.domain.GroupMemberDomain;
 import com.cabin.ter.chat.domain.GroupRoomDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
-import com.cabin.ter.chat.enums.GroupRoleEnum;
 import com.cabin.ter.chat.enums.RoomTypeEnum;
-import com.cabin.ter.chat.mapper.GroupMemberDomainMapper;
 import com.cabin.ter.chat.mapper.GroupRoomDomainMapper;
 import com.cabin.ter.chat.mapper.RoomDomainMapper;
 import com.cabin.ter.service.RoomService;

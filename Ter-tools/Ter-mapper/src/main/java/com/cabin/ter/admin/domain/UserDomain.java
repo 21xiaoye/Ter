@@ -7,8 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class UserDomain implements Serializable {
+public class UserDomain {
     private static final long serialVersionUID = 1L;
 
     public static Long UID_SYSTEM = 1L;//系统uid
@@ -59,9 +63,9 @@ public class UserDomain implements Serializable {
      */
     private String openId;
     /**
-     * 角色列表
+     * 角色
      */
-    private List<Integer> roleIdList;
+    private Integer roleId;
     /**
      * 用户最后上下线时间
      */
@@ -84,6 +88,5 @@ public class UserDomain implements Serializable {
      * 更新时间
      */
     private Long updateTime;
-
 }
 

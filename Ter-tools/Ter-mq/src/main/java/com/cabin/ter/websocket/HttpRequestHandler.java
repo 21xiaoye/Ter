@@ -2,17 +2,13 @@ package com.cabin.ter.websocket;
 
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
-import com.cabin.ter.adapter.WSAdapter;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.service.WebSocketPublicService;
-import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.util.NettyUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;

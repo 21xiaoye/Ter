@@ -1,7 +1,7 @@
 package com.cabin.ter.listener.listener;
 
 import com.cabin.ter.listener.event.UserOnlineEvent;
-import com.cabin.ter.cache.UserCache;
+import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.vo.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserOnlineListener {
     @Autowired
-    private UserCache userCache;
+    private UserInfoCache userCache;
 
 
     /**

@@ -1,9 +1,9 @@
 package com.cabin.ter.vo;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.admin.domain.PermissionDomain;
-import com.cabin.ter.admin.domain.RoleDomain;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.config.ConstantPool;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -70,24 +70,22 @@ public class UserPrincipal implements UserDetails, Serializable {
     @JsonIgnore
     private String salt;
     /**
-     * 用户角色列表
+     * 用户角色
      */
-    private List<Integer> roles;
-
+    private Integer roleId;
     /**
      * 用户权限列表
      */
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserPrincipal create(UserDomain user, List<RoleDomain> roles, List<PermissionDomain> permissions){
-        List<Integer> roleIdsList = roles.stream().map(RoleDomain::getRoleId).collect(Collectors.toList());
-
+    public static UserPrincipal create(UserDomain userDomain,  List<PermissionDomain> permissions) {
         List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
-
-        return new UserPrincipal(user.getUserId(), user.getUserName(),user.getUserAvatar(), null,user.getUserEmail(),user.getUserPasswd(),user.getUserStatus(), user.getSalt(), roleIdsList, authorities);
+        UserPrincipal userPrincipal = new UserPrincipal();
+        BeanUtil.copyProperties(userDomain, userPrincipal);
+        userPrincipal.setAuthorities(authorities);
+        return userPrincipal;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

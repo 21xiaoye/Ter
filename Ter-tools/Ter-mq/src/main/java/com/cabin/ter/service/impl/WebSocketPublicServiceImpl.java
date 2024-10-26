@@ -3,8 +3,9 @@ package com.cabin.ter.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.adapter.WSAdapter;
+import com.cabin.ter.adapter.WebSocketMessageBuilderAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.config.ThreadPoolConfig;
 import com.cabin.ter.constants.RedisKey;
@@ -14,12 +15,10 @@ import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.listener.event.UserOfflineEvent;
 import com.cabin.ter.listener.event.UserOnlineEvent;
-import com.cabin.ter.service.CustomUserDetailService;
 import com.cabin.ter.service.WebSocketPublicService;
-import com.cabin.ter.cache.UserCache;
+import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.vo.response.JwtResponse;
-import com.cabin.ter.util.NettyUtil;
 import com.cabin.ter.vo.UserPrincipal;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -33,6 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -76,17 +79,18 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     @Autowired
     private WxMpService wxMpService;
     @Autowired
-    private CustomUserDetailService userDetailsService;
-    @Autowired
     private JwtUtil jwtUtil;
     @Autowired
     @Qualifier(ThreadPoolConfig.WS_EXECUTOR)
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
-    private UserCache userCache;
+    private UserInfoCache userCache;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserInfoCache userInfoCache;
     /**
      * 返回用户登录二维码
      * @param channel
@@ -97,7 +101,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             int code = generateLoginCode(channel);
             WxMpQrCodeTicket wxMpQrCodeTicket =  wxMpService.getQrcodeService().qrCodeCreateTmpTicket(code, (int) EXPIRE_TIME.getSeconds());
             log.info(channel.id()+"生成二维码"+wxMpQrCodeTicket);
-            sendMsg(channel, WSAdapter.buildLoginResp(wxMpQrCodeTicket));
+            sendMsg(channel, WebSocketMessageBuilderAdapter.buildLoginResp(wxMpQrCodeTicket));
         }catch (WxErrorException e){
             throw new RuntimeException("二维码生成失败"+e);
         }
@@ -139,7 +143,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
      * @param uidOptional
      * @return
      */
-    // TODO: 这里没有清空则自己手动清空，但是按理来说是自动清空的，因为离西安自动调用remote方法
+    // TODO: 这里没有清空则自己手动清空，但是按理来说是自动清空的，因为离线自动调用remote方法
     private boolean offline(Channel channel, Optional<Long> uidOptional){
         ONLINE_WS_MAP.remove(channel);
         if(uidOptional.isPresent()){
@@ -162,7 +166,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         boolean b = jwtUtil.verityToken(wsAuthorize.getToken());
         // 通知前端 token 失效
         if(!b){
-            sendMsg(channel, WSAdapter.buildInvalidateTokenResp());
+            sendMsg(channel, WebSocketMessageBuilderAdapter.buildInvalidateTokenResp());
         }else{
             this.online(channel,jwtUtil.getUIDFromJWT(wsAuthorize.getToken()));
         }
@@ -176,11 +180,12 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             return Boolean.FALSE;
         }
         WAIT_LOGIN_MAP.invalidate(loginCode);
-
-        UserPrincipal userDetails = (UserPrincipal)userDetailsService.loadUserByUsername(loginEmail);
-        String jwt = jwtUtil.createJWT(true, userDetails.getUserId(), userDetails.getUserEmail(), userDetails.getRoles(), userDetails.getAuthorities());
+        UserDomain userDomain = userInfoCache.getUserInfoBatch(loginEmail);
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String jwt = jwtUtil.createJWT(authenticate, true);
         JwtResponse jwtResponse = new JwtResponse(jwt);
-        this.loginSuccess(channel,userDetails, jwtResponse);
+        this.loginSuccess(channel,userDomain, jwtResponse);
         return Boolean.TRUE;
     }
 
@@ -188,7 +193,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     public Boolean scanSuccess(Integer loginCode) {
         Channel channel = checkLoginCode(loginCode);
         if(Objects.nonNull(channel)){
-            sendMsg(channel, WSAdapter.buildScanSuccessResp());
+            sendMsg(channel, WebSocketMessageBuilderAdapter.buildScanSuccessResp());
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -198,7 +203,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     public Boolean emailBinding(EmailBindingDTO emailBindingDTO) {
         Channel channel = checkLoginCode(emailBindingDTO.getCode());
         if(Objects.nonNull(channel)){
-            sendMsg(channel,WSAdapter.buildEmailBindingResp(emailBindingDTO));
+            sendMsg(channel, WebSocketMessageBuilderAdapter.buildEmailBindingResp(emailBindingDTO));
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -235,8 +240,8 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     /**
      * (channel必在本地)登录成功，并更新状态
      */
-    private void loginSuccess(Channel channel, UserPrincipal user, JwtResponse token) {
-        sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token.getToken()));
+    private void loginSuccess(Channel channel, UserDomain user, JwtResponse token) {
+        sendMsg(channel, WebSocketMessageBuilderAdapter.buildLoginSuccessResp(user, token.getToken()));
         this.online(channel, user.getUserId());
     }
 

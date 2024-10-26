@@ -3,6 +3,7 @@ package com.cabin.ter.constants.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -15,13 +16,11 @@ import java.io.Serializable;
  * @date Created in 2024-05-11 11:31
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ScanSuccessMessageDTO extends MQBaseMessage implements Serializable {
     /**
      * 推送的uid
      */
-    private Integer code;
+    private Integer loginCode;
     private String openId;
 
 }

@@ -12,7 +12,6 @@ import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.listener.event.GroupMemberAddEvent;
 import com.cabin.ter.service.ChatService;
 import com.cabin.ter.service.PushService;
-import com.cabin.ter.service.impl.ChatServiceImpl;
 import com.cabin.ter.vo.request.ChatMessageReq;
 import com.cabin.ter.vo.response.WSMemberChange;
 import lombok.extern.slf4j.Slf4j;
