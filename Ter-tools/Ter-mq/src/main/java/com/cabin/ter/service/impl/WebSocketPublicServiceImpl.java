@@ -293,23 +293,3 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(wsBaseResp)));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

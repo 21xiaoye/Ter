@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         String userEmail = request.getUserEmail();
         UserDomain userDomain = userInfoCache.getUserInfoBatch(userEmail);
         AsserUtil.isEmpty(userDomain, Status.USER_NO_OCCUPY);
-        if (OperateEnum.of(request.getType()).equals(OperateEnum.USER_LOGIN)) {
+        if (OperateEnum.of(request.getOperationType()).equals(OperateEnum.USER_LOGIN)) {
             String salt = userDomain.getSalt();
             String userPasswd = request.getUserPasswd();
             userPasswd = myPasswordEncoder.passwdEncryption(userPasswd, salt);
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
                 throw new BaseException(Status.USERNAME_PASSWORD_ERROR);
             }
         }
-        if (OperateEnum.of(request.getType()).equals(OperateEnum.USER_CODE)) {
+        if (OperateEnum.of(request.getOperationType()).equals(OperateEnum.USER_CODE)) {
             String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, request.getUserEmail()),String.class);
             log.info("[{}]验证码为=[{}]",request.getUserEmail(),code);
             AsserUtil.equal(request.getCode(), code, "验证码错误");
@@ -93,6 +93,7 @@ public class UserServiceImpl implements UserService {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String jwt = jwtUtil.createJWT(authenticate, request.getRememberMe());
+
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
 
@@ -102,18 +103,18 @@ public class UserServiceImpl implements UserService {
         AsserUtil.nonEmpty(userDomain, Status.USER_OCCUPY);
         String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, request.getUserEmail()), String.class);
         AsserUtil.equal(request.getCode(), code, "验证码错误");
-        return createUser(request);
+
+        String salt = myPasswordEncoder.generateSalt();
+        String userPasswd = request.getUserPasswd();
+        String saltEncode = myPasswordEncoder.passwdEncryption(userPasswd, salt);
+        String encodePasswd = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
+        return UserAdapter.buildUserDomain(request, snowflake.nextId(), encodePasswd, salt);
     }
     @Async
     public void sendMailCode(String userEmail,Integer operationType) {
         String code = VerifyUtil.generateCode(6);
-//        Context context  = new Context();
-//        context.setVariable("code", Arrays.asList(code.split("")));
-//        // TODO: 文件太大，超过MQ 消息最大限制，需要进行压缩或者改变 MQ 消息最大限制，这里我暂时不做考虑，直接发送验证码
-//        String emailCodeContext = templateEngine.process("EmailMediaCodec", context);
         redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,userEmail),code,60, TimeUnit.SECONDS);
-
-        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageParticipant(OperateEnum.of(operationType).getMessage(), userEmail, code, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE);
+        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(OperateEnum.of(operationType).getMessage(), userEmail, code, EmailTypeEnum.SYSTEM_VERIFICATION_CODE,SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE);
         rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
     }
     @Override
@@ -121,12 +122,13 @@ public class UserServiceImpl implements UserService {
         UserDomain userInfo =userInfoCache.getUserInfo(userId);
         return UserAdapter.buildUserInfoResp(userInfo);
     }
-
     @Transactional
     @Override
     public void saveUser(UserDomain userDomain){
         userDomainMapper.insertTerUser(userDomain);
         redisCache.mset(RedisKey.getKey(RedisKey.USER_ONLINE_INFO, userDomain.getUserId()), userDomain,5*60);
+        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(OperateEnum.of(1004).getMessage(), userDomain.getUserEmail(), userDomain.getUserName(), EmailTypeEnum.SYSTEM_WEL_COME,SourceEnum.SYSTEM_WEL_COME_SOURCE);
+        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
     }
 
     public ApiResponse uploadAvatar(OssReq ossReq){
@@ -144,25 +146,5 @@ public class UserServiceImpl implements UserService {
         String suffix = FileNameUtil.getSuffix(req.getFileName());
         String yearAndMonth = DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN);
         return req.getFilePath() + StrUtil.SLASH + yearAndMonth + StrUtil.SLASH + uid + StrUtil.SLASH + uuid + StrUtil.DOT + suffix;
-    }
-    private UserDomain createUser(LoginAndRegisterRequest request){
-        String salt = myPasswordEncoder.generateSalt();
-        String userPasswd = request.getUserPasswd();
-        String saltEncode = myPasswordEncoder.passwdEncryption(userPasswd, salt);
-        String encodePasswd = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
-        UserDomain userDomain = UserDomain.builder()
-                .userId(snowflake.nextId())
-                .userEmail(request.getUserEmail())
-                .userPasswd(encodePasswd)
-                .userName(request.getUserEmail())
-                .salt(salt)
-                .createTime(System.currentTimeMillis())
-                .roleId(Objects.isNull(request.getRoleId()) ? RoleEnum.ORDINARY.getStatus() : RoleEnum.ADMIN.getStatus())
-                .sex('1')
-                .build();
-        if (request.getRoleId() != null) {
-            userDomain.setRoleId(request.getRoleId());
-        }
-        return userDomain;
     }
 }

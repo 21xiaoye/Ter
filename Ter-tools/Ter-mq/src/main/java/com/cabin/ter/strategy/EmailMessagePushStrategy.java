@@ -2,7 +2,6 @@ package com.cabin.ter.strategy;
 
 import com.cabin.ter.config.MailSenderConfig;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
-import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.template.MessageTemplate;
 import jakarta.mail.MessagingException;
@@ -12,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -25,13 +27,14 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class EmailMessagePushStrategy extends MessageTemplate
-        implements MessageStrategyBase {
+public class EmailMessagePushStrategy extends MessageTemplate<EmailMessageDTO>
+        implements MessageStrategyBase<EmailMessageDTO> {
     @Autowired
     private MailSenderConfig mailSenderConfig;
-
+    @Autowired
+    private TemplateEngine templateEngine;
     @Override
-    public <T extends MQBaseMessage> Boolean messageStrategy(T message) {
+    public  Boolean messageStrategy(EmailMessageDTO message) {
         return this.messageSend(message);
     }
     @Override
@@ -39,17 +42,28 @@ public class EmailMessagePushStrategy extends MessageTemplate
         return MessagePushMethodEnum.EMAIL_MESSAGE;
     }
     @Override
-    protected <T extends MQBaseMessage> Boolean messageSend(T message) {
+    protected Boolean messageSend(EmailMessageDTO message) {
         JavaMailSenderImpl sender = mailSenderConfig.getSender();
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
-            EmailMessageDTO emailParticipant =(EmailMessageDTO) message;
-            System.out.println("消费的消息内容为"+emailParticipant);
+            Context context  = new Context();
+            String content = null;
+            switch (message.getEmailType()){
+                case SYSTEM_VERIFICATION_CODE -> {
+                    context.setVariable("code", Arrays.asList(message.getContent().split("")));
+                    content = templateEngine.process("EmailVerificationCodePage", context);
+                }
+                case SYSTEM_WEL_COME -> {
+                    context.setVariable("name", message.getContent());
+                    content = templateEngine.process("WelComePage", context);
+                }
+                default ->
+                    throw new RuntimeException("该邮件类型不支持");
+            }
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setText(emailParticipant.getContent(),true);
-            helper.setTo(emailParticipant.getToAddress());
-            helper.setSubject(emailParticipant.getSubject());
-
+            helper.setText(content,true);
+            helper.setTo(message.getToAddress());
+            helper.setSubject(message.getSubject());
             helper.setFrom(Objects.requireNonNull(sender.getUsername()));
         }catch (MessagingException exception){
             throw new RuntimeException("邮件发送失败"+exception);

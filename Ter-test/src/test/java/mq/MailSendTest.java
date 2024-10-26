@@ -1,8 +1,11 @@
 package mq;
 
 import com.cabin.ter.TerApplication;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
+import com.cabin.ter.constants.enums.EmailTypeEnum;
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
+import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.strategy.MessageStrategyFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +40,8 @@ public class MailSendTest {
         context.setVariable("url", "https://github.com/xkcoding/spring-boot-demo");
 
         String emailTemplate = templateEngine.process("test", context);
+        EmailMessageDTO message = MQMessageBuilderAdapter.buildEmailMessageDTO("测试", "zouye0113@gmail.com", emailTemplate, EmailTypeEnum.SYSTEM_VERIFICATION_CODE ,SourceEnum.TEST_SOURCE);
 
-        EmailMessageDTO message = EmailMessageDTO.builder()
-                .toAddress("zouye0113@gmail.com")
-                .subject("测试")
-                .content(emailTemplate)
-                .build();
         MessageStrategyFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
     }
 

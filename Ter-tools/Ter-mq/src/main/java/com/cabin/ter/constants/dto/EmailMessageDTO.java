@@ -1,5 +1,6 @@
 package com.cabin.ter.constants.dto;
 
+import com.cabin.ter.constants.enums.EmailTypeEnum;
 import lombok.Data;
 
 /**
@@ -28,4 +29,8 @@ public class EmailMessageDTO extends MQBaseMessage {
      * 消息接收者
      */
     private String toAddress;
+    /**
+     * 邮件类型
+     */
+    private EmailTypeEnum emailType;
 }

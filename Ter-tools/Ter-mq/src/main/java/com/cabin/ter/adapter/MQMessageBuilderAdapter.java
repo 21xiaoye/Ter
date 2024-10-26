@@ -5,6 +5,7 @@ import com.cabin.ter.constants.dto.LoginMessageDTO;
 import com.cabin.ter.constants.dto.MsgSendMessageDTO;
 import com.cabin.ter.constants.dto.PushMessageDTO;
 import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
+import com.cabin.ter.constants.enums.EmailTypeEnum;
 import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
@@ -55,11 +56,12 @@ public class MQMessageBuilderAdapter {
         msgSendMessageDTO.setMsgId(msgId);
         return msgSendMessageDTO;
     }
-    public static EmailMessageDTO buildEmailMessageParticipant(String subject, String address, String content, SourceEnum source){
+    public static EmailMessageDTO buildEmailMessageDTO(String subject, String address, String content, EmailTypeEnum emailType, SourceEnum source){
         EmailMessageDTO emailMessageParticipant = new EmailMessageDTO();
         emailMessageParticipant.setSubject(subject);
         emailMessageParticipant.setContent(content);
         emailMessageParticipant.setToAddress(address);
+        emailMessageParticipant.setEmailType(emailType);
         emailMessageParticipant.setSource(source);
         return emailMessageParticipant;
     }

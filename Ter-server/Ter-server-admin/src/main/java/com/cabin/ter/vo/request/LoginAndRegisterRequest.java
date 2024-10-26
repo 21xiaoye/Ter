@@ -35,6 +35,6 @@ public class LoginAndRegisterRequest {
     @Schema(name = "rememberMe",description = "是否记住我")
     private Boolean rememberMe = false;
 
-    @Schema(name = "type", description = "操作类型 1001:用户注册 1002:账号密码登录")
-    private Integer type;
+    @Schema(name = "operationType", description = "操作类型 1001:用户注册 1002:账号密码登录 1003:验证码登录")
+    private Integer operationType;
 }

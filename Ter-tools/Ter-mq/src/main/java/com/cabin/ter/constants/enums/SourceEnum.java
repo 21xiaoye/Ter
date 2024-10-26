@@ -21,6 +21,7 @@ public enum SourceEnum{
     USER_REGISTER("USER_REGISTER"),
     EMAIL_BINDING_SEND_CODE_SOURCE("email_binding_send_code"),
     SYSTEM_CLIENT_CONNECTION_SOURCE("system_client_connection"),
+    SYSTEM_WEL_COME_SOURCE("system_wel_come"),
     WX_SCAN_CODE_SOURCE("wx_scan_code_source");
     private final String source;
 }

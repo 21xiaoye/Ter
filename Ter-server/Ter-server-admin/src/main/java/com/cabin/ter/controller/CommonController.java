@@ -43,8 +43,8 @@ public class CommonController {
         return ApiResponse.ofSuccess("验证码发送......");
     }
 
-    @Operation(summary = "用户登录接口")
-    @GetMapping("/login")
+    @Operation(summary = "用户登录接口",description = "operationType参数 账户密码登录1002,验证码登录1003")
+    @PostMapping("/login")
     public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
         AsserUtil.fastFailValidate(loginRequest);
         return userService.userLogin(loginRequest);
