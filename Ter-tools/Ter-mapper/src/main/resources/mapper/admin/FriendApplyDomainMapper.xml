@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cabin.ter.admin.mapper.FriendApplyDomainMapper">
+    <insert id="saveFriendApplyRecord" parameterType="FriendApplyDomain">
+        INSERT INTO ter_friend_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyId != null">applyId,</if>
+            <if test="userId != null">userId,</if>
+            <if test="targetId != null">targetId,</if>
+            <if test="applyStatus != null">applyStatus,</if>
+            <if test="applyMessage != null">applyMessage,</if>
+            <if test="createTime != null">createTime,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="applyId != null">applyId,</if>
+            <if test="userId != null">userId,</if>
+            <if test="targetId != null">targetId,</if>
+            <if test="applyStatus != null">applyStatus,</if>
+            <if test="applyMessage != null">applyMessage,</if>
+            <if test="createTime != null">createTime,</if>
+        </trim>
+    </insert>
+</mapper>
