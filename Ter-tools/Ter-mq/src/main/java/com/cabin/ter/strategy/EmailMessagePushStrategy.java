@@ -47,7 +47,7 @@ public class EmailMessagePushStrategy extends MessageTemplate<EmailMessageDTO>
         MimeMessage mimeMessage = sender.createMimeMessage();
         try {
             Context context  = new Context();
-            String content = null;
+            String content;
             switch (message.getEmailType()){
                 case SYSTEM_VERIFICATION_CODE -> {
                     context.setVariable("code", Arrays.asList(message.getContent().split("")));
