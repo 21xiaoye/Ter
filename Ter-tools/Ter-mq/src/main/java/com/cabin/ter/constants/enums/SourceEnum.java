@@ -1,7 +1,5 @@
 package com.cabin.ter.constants.enums;
 
-import com.cabin.ter.constants.RedisKey;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.cabin.ter.service.impl;
 
 import com.cabin.ter.constants.enums.WSPushTypeEnum;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.service.PushService;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;

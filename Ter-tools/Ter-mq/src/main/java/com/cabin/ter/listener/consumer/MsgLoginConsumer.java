@@ -1,9 +1,8 @@
 package com.cabin.ter.listener.consumer;
 
 import com.cabin.ter.constants.dto.LoginMessageDTO;
-import com.cabin.ter.constants.dto.MQBaseMessage;
 import com.cabin.ter.constants.participant.constant.ConsumerNameConstant;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.listener.BaseMqMessageListener;
 import com.cabin.ter.service.WebSocketPublicService;
 import lombok.extern.slf4j.Slf4j;

@@ -2,10 +2,8 @@ package com.cabin.ter.adapter;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.constants.enums.EncryptionEnum;
 import com.cabin.ter.constants.enums.RoleEnum;
-import com.cabin.ter.factory.MyPasswordEncoderFactory;
-import com.cabin.ter.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.vo.request.LoginAndRegisterReq;
 import com.cabin.ter.vo.response.UserInfoResp;
 
 import java.util.Objects;
@@ -24,7 +22,7 @@ public class UserAdapter {
         BeanUtil.copyProperties(userDomain, userInfoResp);
         return userInfoResp;
     }
-    public static UserDomain buildUserDomain(LoginAndRegisterRequest request, Long userId, String userPasswd,String salt){
+    public static UserDomain buildUserDomain(LoginAndRegisterReq request, Long userId, String userPasswd, String salt){
         UserDomain userDomain = UserDomain.builder()
                 .userId(userId)
                 .userEmail(request.getUserEmail())

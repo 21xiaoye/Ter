@@ -1,26 +1,18 @@
 package com.cabin.ter.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.cabin.ter.constants.enums.MessagePushMethodEnum;
-import com.cabin.ter.constants.enums.SourceEnum;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
-import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.participant.ws.ServerInfo;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.util.RedisUtil;
-import com.cabin.ter.constants.vo.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/test")

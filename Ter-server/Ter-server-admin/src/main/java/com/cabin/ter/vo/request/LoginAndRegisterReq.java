@@ -14,9 +14,9 @@ import lombok.Data;
  * @author xiaoye
  * @date Created in 2024-04-28 11:11
  */
-@Schema(name = "登录-注册请求参数")
+@Schema(name = "登录-注册请求参数信息")
 @Data
-public class LoginAndRegisterRequest {
+public class LoginAndRegisterReq {
     @Schema(name = "userEmail",description = "用户邮箱")
     @NotBlank(message = "邮箱不能为空")
     @Email

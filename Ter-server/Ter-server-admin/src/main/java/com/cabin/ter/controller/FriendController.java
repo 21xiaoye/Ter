@@ -3,14 +3,12 @@ package com.cabin.ter.controller;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.service.FriendService;
 import com.cabin.ter.util.RequestHolderUtil;
-import com.cabin.ter.vo.response.FriendApplyReq;
+import com.cabin.ter.vo.request.ApprovalFriendReq;
+import com.cabin.ter.vo.request.FriendApplyReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,10 +19,23 @@ public class FriendController {
     @Autowired
     private FriendService friendService;
     @Operation(summary = "好友申请接口")
-    @PutMapping("/apply")
+    @PostMapping("/apply")
     public ApiResponse friendApply(@Valid @RequestBody FriendApplyReq friendApplyReq){
         Long uid = RequestHolderUtil.get().getUid();
         friendService.apply(uid,friendApplyReq);
         return ApiResponse.ofSuccess();
+    }
+
+    @GetMapping("/apply/page")
+    @Operation(summary = "好友申请列表")
+    public ApiResponse friendApplyPage() {
+        Long uId = RequestHolderUtil.get().getUid();
+        return ApiResponse.ofSuccess(friendService.getFriendApplyRecord(uId));
+    }
+
+    @PostMapping("/apply/approval")
+    @Operation(summary = "审批好友申请")
+    public ApiResponse approvalFriendApplyRecord(@RequestBody ApprovalFriendReq approvalFriendReq){
+        return friendService.approvalFriendApplyRecord(approvalFriendReq);
     }
 }

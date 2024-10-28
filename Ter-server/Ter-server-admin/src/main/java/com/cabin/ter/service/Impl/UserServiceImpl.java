@@ -15,12 +15,12 @@ import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.enums.*;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.vo.enums.OperateEnum;
-import com.cabin.ter.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.vo.request.LoginAndRegisterReq;
 import com.cabin.ter.security.MyPasswordEncoder;
 import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.factory.MyPasswordEncoderFactory;
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserInfoCache userInfoCache;
     @Override
-    public ApiResponse userLogin(LoginAndRegisterRequest request) {
+    public ApiResponse userLogin(LoginAndRegisterReq request) {
         String userEmail = request.getUserEmail();
         UserDomain userDomain = userInfoCache.getUserInfoBatch(userEmail);
         AsserUtil.isEmpty(userDomain, Status.USER_NO_OCCUPY);
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDomain userRegister(LoginAndRegisterRequest request) {
+    public UserDomain userRegister(LoginAndRegisterReq request) {
         UserDomain userDomain = userInfoCache.getUserInfoBatch(request.getUserEmail());
         AsserUtil.nonEmpty(userDomain, Status.USER_OCCUPY);
         String code = redisCache.get(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE, request.getUserEmail()), String.class);
@@ -110,12 +110,11 @@ public class UserServiceImpl implements UserService {
         String encodePasswd = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
         return UserAdapter.buildUserDomain(request, snowflake.nextId(), encodePasswd, salt);
     }
-    @Async
+    @Override
     public void sendMailCode(String userEmail,Integer operationType) {
         String code = VerifyUtil.generateCode(6);
         redisCache.set(RedisKey.getKey(RedisKey.SAVE_EMAIL_CODE,userEmail),code,60, TimeUnit.SECONDS);
-        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(OperateEnum.of(operationType).getMessage(), userEmail, code, EmailTypeEnum.SYSTEM_VERIFICATION_CODE,SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE);
-        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
+        sendMail(userEmail, code, OperateEnum.of(operationType),EmailTypeEnum.SYSTEM_VERIFICATION_CODE, SourceEnum.EMAIL_BINDING_SEND_CODE_SOURCE);
     }
     @Override
     public UserInfoResp getUserInfo(Long userId) {
@@ -127,7 +126,12 @@ public class UserServiceImpl implements UserService {
     public void saveUser(UserDomain userDomain){
         userDomainMapper.insertTerUser(userDomain);
         redisCache.mset(RedisKey.getKey(RedisKey.USER_ONLINE_INFO, userDomain.getUserId()), userDomain,5*60);
-        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(OperateEnum.of(1004).getMessage(), userDomain.getUserEmail(), userDomain.getUserName(), EmailTypeEnum.SYSTEM_WEL_COME,SourceEnum.SYSTEM_WEL_COME_SOURCE);
+        sendMail(userDomain.getUserEmail(), userDomain.getUserName(), OperateEnum.WEL_COME, EmailTypeEnum.SYSTEM_WEL_COME, SourceEnum.TEST_SOURCE);
+    }
+
+    @Async
+    public void sendMail(String email, String content, OperateEnum operateEnum,EmailTypeEnum emailType, SourceEnum source){
+        EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(operateEnum.getMessage(), email, content, emailType,source);
         rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
     }
 

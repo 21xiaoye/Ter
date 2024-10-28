@@ -1,6 +1,6 @@
 package com.cabin.ter.listener.listener;
 
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.listener.event.MessageSendEvent;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;

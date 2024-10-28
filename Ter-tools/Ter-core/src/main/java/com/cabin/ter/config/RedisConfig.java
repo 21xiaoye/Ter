@@ -1,6 +1,6 @@
 package com.cabin.ter.config;
 
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +26,6 @@ import java.util.Objects;
  */
 @Configuration
 public class RedisConfig {
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-
     /**
      * redis 序列化配置
      * @param redisConnectionFactory
@@ -50,27 +47,6 @@ public class RedisConfig {
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
-    }
-
-    /**
-     * redis 监听器配置
-     * @return
-     */
-    @Bean("myRedisMessageListenerContainer")
-    public RedisMessageListenerContainer redisMessageListenerContainer(){
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(this.redisConnectionFactory);
-        container.addMessageListener(messageListenerAdapter(),channelTopic());
-        return container;
-    }
-
-    @Bean
-    public MessageListenerAdapter messageListenerAdapter() {
-        return new MessageListenerAdapter(redisChannelListener());
-    }
-    @Bean
-    public  RedisChannelListener redisChannelListener() {
-        return new RedisChannelListener();
     }
     @Bean
     ChannelTopic channelTopic() {
@@ -95,7 +71,6 @@ public class RedisConfig {
             }
             return super.serialize(source);
         }
-
         /**
          * 反序列化
          * @param source
@@ -118,19 +93,3 @@ public class RedisConfig {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

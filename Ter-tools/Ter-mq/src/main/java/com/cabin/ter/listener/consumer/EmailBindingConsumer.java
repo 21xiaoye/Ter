@@ -1,9 +1,7 @@
 package com.cabin.ter.listener.consumer;
 
 import com.cabin.ter.constants.dto.EmailBindingDTO;
-import com.cabin.ter.constants.dto.MQBaseMessage;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
-import com.cabin.ter.listener.BaseMqMessageListener;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.service.WebSocketPublicService;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;

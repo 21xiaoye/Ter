@@ -1,7 +1,8 @@
 package com.cabin.ter.constants.enums;
 
+import com.cabin.ter.constants.vo.response.WSApplyUserInfoResp;
 import com.cabin.ter.constants.vo.response.WSLoginSuccess;
-import com.cabin.ter.constants.vo.response.WsLoginUrl;
+import com.cabin.ter.constants.vo.response.WsLoginUrlResp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,12 +22,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 public enum WSRespTypeEnum {
-    LOGIN_URL(1, "登录二维码返回", WsLoginUrl.class),
+    LOGIN_URL(1, "登录二维码返回", WsLoginUrlResp.class),
     LOGIN_SCAN_SUCCESS(2, "用户扫描成功等待授权", null),
     LOGIN_EMAIL_BINDING(3,"用户扫描成功，未绑定邮箱，进行邮箱绑定完成注册",null),
     LOGIN_SUCCESS(4, "用户登录成功返回用户信息", WSLoginSuccess.class),
     INVALIDATE_TOKEN(5, "使前端的token失效，意味着前端需要重新登录", null),
     MESSAGE(6, "新消息", null),
+    APPLY(10, "好友申请", WSApplyUserInfoResp.class),
     MEMBER_CHANGE(11, "成员变动", null);
     private final Integer type;
     private final String desc;

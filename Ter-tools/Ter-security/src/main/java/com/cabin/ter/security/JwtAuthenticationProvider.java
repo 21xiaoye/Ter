@@ -31,7 +31,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         List<PermissionDomain> permissions = permissionDomainMapper.selectPermissionsByPermissionIds(permissionIds);
         UserPrincipal userPrincipal = UserPrincipal.create(userDomain, permissions);
 
-        return new UsernamePasswordAuthenticationToken(userPrincipal , null, userPrincipal.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userPrincipal , null, null);
     }
 
     @Override

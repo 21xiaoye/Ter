@@ -1,9 +1,5 @@
 package com.cabin.ter.constants.enums;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public enum EmailTypeEnum implements IStatus{
     SYSTEM_VERIFICATION_CODE(1001,"系统验证码邮件"),

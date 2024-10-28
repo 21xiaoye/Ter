@@ -79,8 +79,11 @@ public class UserPrincipal implements UserDetails, Serializable {
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(UserDomain userDomain,  List<PermissionDomain> permissions) {
-        List<GrantedAuthority> authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
+        List<GrantedAuthority> authorities = null;
+        if(Objects.nonNull(permissions)){
+            authorities = permissions.stream().filter(permission -> StrUtil.isNotBlank(permission.getPermission()))
+                    .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toList());
+        }
         UserPrincipal userPrincipal = new UserPrincipal();
         BeanUtil.copyProperties(userDomain, userPrincipal);
         userPrincipal.setAuthorities(authorities);

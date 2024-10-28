@@ -4,10 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.cache.MessageCache;
-import com.cabin.ter.cache.UserCache;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.chat.domain.MessageDomain;
-import com.cabin.ter.chat.domain.msg.BaseFileDTO;
 import com.cabin.ter.chat.domain.msg.MessageExtra;
 import com.cabin.ter.chat.enums.MessageStatusEnum;
 import com.cabin.ter.chat.enums.YesOrNoEnum;
@@ -20,12 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +38,7 @@ public class TextMsgHandler extends AbstractMsgHandler<TextMsgReq> {
     @Autowired
     private UserInfoCache userInfoCache;
     @Autowired
-    private UserCache userCache;
+    private UserInfoCache userCache;
     @Autowired
     private MessageCache messageCache;
     @Autowired

@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 public class UserOfflineListener {
     @Autowired
     private UserInfoCache userCache;
-    // TODO: 这里在用户下线之后做一些操作，我这里有些犹豫是将用户的状态记录到mysql还是记录到redis当中
-
     @Async(value = "terExecutor")
     @EventListener(classes = UserOfflineEvent.class)
     public void saveRedisAndPush(UserOfflineEvent userOfflineEvent){

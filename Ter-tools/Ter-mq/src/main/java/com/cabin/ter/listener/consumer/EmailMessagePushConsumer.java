@@ -2,7 +2,7 @@ package com.cabin.ter.listener.consumer;
 
 import com.cabin.ter.constants.enums.MessagePushMethodEnum;
 import com.cabin.ter.constants.participant.constant.ConsumerNameConstant;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.listener.BaseMqMessageListener;
 import com.cabin.ter.strategy.MessageStrategyBase;

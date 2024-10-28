@@ -3,7 +3,7 @@ package com.cabin.ter.controller;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.enums.Status;
-import com.cabin.ter.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.vo.request.LoginAndRegisterReq;
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 
@@ -45,13 +45,13 @@ public class CommonController {
 
     @Operation(summary = "用户登录接口",description = "operationType参数 账户密码登录1002,验证码登录1003")
     @PostMapping("/login")
-    public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
+    public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterReq loginRequest){
         AsserUtil.fastFailValidate(loginRequest);
         return userService.userLogin(loginRequest);
     }
     @Operation(summary = "用户注册接口")
     @PostMapping("/register")
-    public ApiResponse userRegister(@Valid @RequestBody LoginAndRegisterRequest loginRequest){
+    public ApiResponse userRegister(@Valid @RequestBody LoginAndRegisterReq loginRequest){
         AsserUtil.fastFailValidate(loginRequest);
         UserDomain userDomain = userService.userRegister(loginRequest);
         AsserUtil.isEmpty(userDomain, "注册失败");

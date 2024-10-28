@@ -1,7 +1,9 @@
 package com.cabin.ter.security;
 
 import cn.hutool.core.util.StrUtil;
+import com.cabin.ter.admin.domain.PermissionDomain;
 import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.admin.mapper.PermissionDomainMapper;
 import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.constants.dto.RequestInfoDTO;
@@ -16,6 +18,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -46,8 +50,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
     @Autowired
     private UserInfoCache userInfoCache;
+    @Autowired
+    private PermissionDomainMapper permissionDomainMapper;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTH_HEADER);
         if (Objects.isNull(authHeader) || !authHeader.startsWith(AUTH_HEADER_TYPE)){
             filterChain.doFilter(request,response);
@@ -65,8 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 RequestHolderUtil.set(requestInfoDTO);
                 UserDomain userDomain = userInfoCache.getUserInfoBatch(jwtInfo.getSubject());
-                UserPrincipal userPrincipal = UserPrincipal.create(userDomain, null);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
+
+                Integer roleId = userDomain.getRoleId();
+
+                // 根据角色Id查询用户权限
+                List<Long> permissionIds = permissionDomainMapper.findPermissionIdsByRoleId(roleId);
+                List<PermissionDomain> permissions = permissionDomainMapper.selectPermissionsByPermissionIds(permissionIds);
+                UserPrincipal userPrincipal = UserPrincipal.create(userDomain, permissions);
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

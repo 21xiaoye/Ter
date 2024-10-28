@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class WsLoginUrl {
+public class WsLoginUrlResp {
     private String loginUrl;
 
 }

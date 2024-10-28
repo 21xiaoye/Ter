@@ -2,10 +2,12 @@ package com.cabin.ter.adapter;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.dto.EmailBindingDTO;
+import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
+import com.cabin.ter.constants.vo.response.WSApplyUserInfoResp;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.constants.vo.response.WSLoginSuccess;
-import com.cabin.ter.constants.vo.response.WsLoginUrl;
+import com.cabin.ter.constants.vo.response.WsLoginUrlResp;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.stereotype.Component;
 
@@ -24,10 +26,10 @@ public class WebSocketMessageBuilderAdapter {
      * @param wxMpQrCodeTicket
      * @return
      */
-    public static WSBaseResp<Object> buildLoginResp(WxMpQrCodeTicket wxMpQrCodeTicket ){
-        WSBaseResp<Object> wsBaseResp = new WSBaseResp<>();
+    public static WSBaseResp<WsLoginUrlResp> buildLoginResp(WxMpQrCodeTicket wxMpQrCodeTicket ){
+        WSBaseResp<WsLoginUrlResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_URL.getType());
-        wsBaseResp.setData(WsLoginUrl.builder().loginUrl(wxMpQrCodeTicket.getUrl()).build());
+        wsBaseResp.setData(WsLoginUrlResp.builder().loginUrl(wxMpQrCodeTicket.getUrl()).build());
         return wsBaseResp;
     }
 
@@ -35,8 +37,8 @@ public class WebSocketMessageBuilderAdapter {
      * 用户扫码成功
      * @return
      */
-    public static WSBaseResp buildScanSuccessResp() {
-        WSBaseResp wsBaseResp = new WSBaseResp();
+    public static WSBaseResp<ScanSuccessMessageDTO> buildScanSuccessResp() {
+        WSBaseResp<ScanSuccessMessageDTO> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
         return wsBaseResp;
     }
@@ -46,8 +48,8 @@ public class WebSocketMessageBuilderAdapter {
      * @param emailBindingDTO
      * @return
      */
-    public static WSBaseResp buildEmailBindingResp(EmailBindingDTO emailBindingDTO){
-        WSBaseResp wsBaseResp = new WSBaseResp();
+    public static WSBaseResp<EmailBindingDTO> buildEmailBindingResp(EmailBindingDTO emailBindingDTO){
+        WSBaseResp<EmailBindingDTO> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_EMAIL_BINDING.getType());
         wsBaseResp.setData(emailBindingDTO);
         return wsBaseResp;
@@ -59,7 +61,7 @@ public class WebSocketMessageBuilderAdapter {
      * @param token
      * @return
      */
-    public static WSBaseResp buildLoginSuccessResp(UserDomain userPrincipal, String token){
+    public static WSBaseResp<WSLoginSuccess> buildLoginSuccessResp(UserDomain userPrincipal, String token){
         WSBaseResp<WSLoginSuccess> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SUCCESS.getType());
         WSLoginSuccess wsLoginSuccess = WSLoginSuccess.builder()
@@ -75,6 +77,12 @@ public class WebSocketMessageBuilderAdapter {
     public static WSBaseResp<WSLoginSuccess> buildInvalidateTokenResp() {
         WSBaseResp<WSLoginSuccess> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.INVALIDATE_TOKEN.getType());
+        return wsBaseResp;
+    }
+    public static WSBaseResp<WSApplyUserInfoResp> buildApplyUserInfoResp(WSApplyUserInfoResp applyUserInfoResp){
+        WSBaseResp<WSApplyUserInfoResp> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.APPLY.getType());
+        wsBaseResp.setData(applyUserInfoResp);
         return wsBaseResp;
     }
 }

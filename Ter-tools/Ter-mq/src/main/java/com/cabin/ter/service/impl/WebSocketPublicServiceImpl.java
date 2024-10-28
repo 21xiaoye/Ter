@@ -216,7 +216,6 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             log.info("用户：{}不在线",uid);
             return;
         }
-        // TODO:这里对一个用户所有连接推送，会导致一个用户被推送多次
         channels.forEach(channel -> {
             threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
         });

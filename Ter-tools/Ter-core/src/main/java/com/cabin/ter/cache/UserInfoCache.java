@@ -31,46 +31,34 @@ public class UserInfoCache extends AbstractRedisStringCache<Long, UserDomain>{
     }
 
     /**
-     * 移除用户
-     *
-     * @param uid
-     */
-
-    public void remote(Long uid){
-        String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
-        String offlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
-
-        redisCache.zRemove(offlineKey, uid);
-        redisCache.zRemove(onlineKey, uid);
-    }
-
-    /**
      * 用户上线
      *
-     * @param uid
+     * @param uId
      * @param optTime
      */
-    public void online(Long uid, Date optTime){
+    public void online(Long uId, Date optTime){
         String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
         String offlineKey = RedisKey.getKey(RedisKey.OFFLINE_UID_ZET);
 
-        redisCache.zRemove(offlineKey, uid);
-        redisCache.zAdd(onlineKey, uid, optTime.getTime());
+        redisCache.zRemove(offlineKey, uId);
+        redisCache.zRemove(onlineKey, uId);
+        redisCache.zAdd(onlineKey, uId, optTime.getTime());
     }
 
     /**
      * 用户下线
      *
-     * @param uid
+     * @param uId
      * @param optTime
      */
-    public void offline(Long uid, Long optTime) {
+    public void offline(Long uId, Long optTime) {
         String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
         String offlineKey = RedisKey.getKey(RedisKey.OFFLINE_UID_ZET);
         //移除上线线表
-        redisCache.zRemove(onlineKey, uid);
+        redisCache.zRemove(offlineKey, uId);
+        redisCache.zRemove(onlineKey, uId);
         //更新上线表
-        redisCache.zAdd(offlineKey, uid, optTime);
+        redisCache.zAdd(offlineKey, uId, optTime);
     }
 
     public boolean isOnline(Long uid) {

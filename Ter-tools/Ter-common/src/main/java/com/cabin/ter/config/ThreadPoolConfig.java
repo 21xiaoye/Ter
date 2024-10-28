@@ -29,26 +29,26 @@ public class ThreadPoolConfig implements AsyncConfigurer, SecureInvokeConfigurer
     public static final String WS_EXECUTOR = "websocketExecutor";
 
 
-    public static final String AICHAT_EXECUTOR = "aichatExecutor";
+    public static final String AI_CHAT_EXECUTOR = "aiChatExecutor";
 
     @Override
     public Executor getAsyncExecutor() {
-        return mallchatExecutor();
+        return terChatExecutor();
     }
 
     @Override
     public Executor getSecureInvokeExecutor() {
-        return mallchatExecutor();
+        return terChatExecutor();
     }
 
     @Bean(TER_EXECUTOR)
     @Primary
-    public ThreadPoolTaskExecutor mallchatExecutor() {
+    public ThreadPoolTaskExecutor terChatExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(200);
-        executor.setThreadNamePrefix("mallchat-executor-");
+        executor.setThreadNamePrefix("ter-executor-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());//满了调用线程执行，认为重要任务
         executor.setThreadFactory(new MyThreadFactory(executor));
         executor.initialize();
@@ -56,7 +56,7 @@ public class ThreadPoolConfig implements AsyncConfigurer, SecureInvokeConfigurer
     }
 
     @Bean(WS_EXECUTOR)
-    public ThreadPoolTaskExecutor websocketExecutor() {
+    public ThreadPoolTaskExecutor webSocketExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(16);
         executor.setMaxPoolSize(16);
@@ -68,13 +68,13 @@ public class ThreadPoolConfig implements AsyncConfigurer, SecureInvokeConfigurer
         return executor;
     }
 
-    @Bean(AICHAT_EXECUTOR)
+    @Bean(AI_CHAT_EXECUTOR)
     public ThreadPoolTaskExecutor chatAiExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(15);
-        executor.setThreadNamePrefix("aichat-executor-");
+        executor.setThreadNamePrefix("aiChat-executor-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());//满了直接丢弃，默认为不重要消息推送
         executor.setThreadFactory(new MyThreadFactory(executor));
         return executor;

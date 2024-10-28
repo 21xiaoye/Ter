@@ -6,7 +6,7 @@ import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.constants.enums.SourceEnum;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.service.WxMsgService;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;

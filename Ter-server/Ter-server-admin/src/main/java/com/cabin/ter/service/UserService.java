@@ -2,8 +2,7 @@ package com.cabin.ter.service;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.domain.OssReq;
-import com.cabin.ter.vo.enums.OperateEnum;
-import com.cabin.ter.vo.request.LoginAndRegisterRequest;
+import com.cabin.ter.vo.request.LoginAndRegisterReq;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.vo.response.UserInfoResp;
 
@@ -18,14 +17,14 @@ public interface UserService {
      * @param loginRequest
      * @return
      */
-    ApiResponse userLogin(LoginAndRegisterRequest loginRequest);
+    ApiResponse userLogin(LoginAndRegisterReq loginRequest);
 
     /**
      * 用户注册
      * @param loginRequest
      * @return
      */
-    UserDomain userRegister(LoginAndRegisterRequest loginRequest);
+    UserDomain userRegister(LoginAndRegisterReq loginRequest);
 
     /**
      * 发送邮箱验证码

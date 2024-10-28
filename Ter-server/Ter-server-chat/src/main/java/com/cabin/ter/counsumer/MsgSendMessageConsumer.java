@@ -9,7 +9,7 @@ import com.cabin.ter.chat.domain.RoomDomain;
 import com.cabin.ter.chat.enums.RoomTypeEnum;
 import com.cabin.ter.constants.dto.MsgSendMessageDTO;
 import com.cabin.ter.constants.participant.constant.ConsumerNameConstant;
-import com.cabin.ter.constants.participant.constant.TopicConstant;
+import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.listener.BaseMqMessageListener;
 import com.cabin.ter.service.ChatService;
 import com.cabin.ter.service.PushService;
