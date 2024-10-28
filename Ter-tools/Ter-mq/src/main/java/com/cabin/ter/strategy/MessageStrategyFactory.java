@@ -7,6 +7,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 
@@ -28,16 +29,16 @@ public class MessageStrategyFactory implements ApplicationContextAware{
     @Autowired
     private ListableBeanFactory beanFactory;
     private static final Object lock = new Object();
-    private volatile  static Map<MessagePushMethodEnum, MessageStrategyBase> MAP;
+    private volatile  static Map<MessagePushMethodEnum, MessageStrategyBase<?>> MAP;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         if (Objects.isNull(MAP)) {
             synchronized (lock) {
                 if (Objects.isNull(MAP)) {
                     MAP = new HashMap<>();
-                    Map<String, MessageStrategyBase> beansOfType = beanFactory.getBeansOfType(MessageStrategyBase.class);
-                    beansOfType.values().forEach(strategy -> MAP.put(strategy.getSource(), strategy));
+                    Map<String, ?> beansOfType = beanFactory.getBeansOfType(MessageStrategyBase.class);
+                    beansOfType.values().forEach(strategy -> MAP.put(((MessageStrategyBase<?>) strategy).getSource(), (MessageStrategyBase<?>) strategy));
                 }
             }
         }
@@ -49,7 +50,7 @@ public class MessageStrategyFactory implements ApplicationContextAware{
      * @param messageType 消息策略类型参数
      * @return  消息策略
      */
-    public static MessageStrategyBase getStrategy(MessagePushMethodEnum messageType) {
+    public static MessageStrategyBase<?> getStrategy(MessagePushMethodEnum messageType) {
         return MAP.get(messageType);
     }
 
@@ -61,23 +62,27 @@ public class MessageStrategyFactory implements ApplicationContextAware{
      * @param messageType   消息策略类型参数
      * @return  Boolean
      */
-    public Boolean getAwardResult(MQBaseMessage message, MessagePushMethodEnum messageType) {
+    public void getAwardResult(MQBaseMessage message, MessagePushMethodEnum messageType) {
         try {
-            MessageStrategyBase strategy = getStrategy(messageType);
+            MessageStrategyBase<?> strategy = getStrategy(messageType);
             if (Objects.isNull(strategy)) {
                 throw new RuntimeException("获取消息策略异常,策略加载失败");
             }
-            return strategy.messageStrategy(message);
-        }catch (Exception e){
-            throw new RuntimeException("获取消息策略异常"+e);
+            @SuppressWarnings("unchecked")
+            MessageStrategyBase<MQBaseMessage> castedStrategy = (MessageStrategyBase<MQBaseMessage>) strategy;
+            castedStrategy.messageStrategy(message);
+        } catch (Exception e) {
+            throw new RuntimeException("获取消息策略异常" + e);
         }
     }
+
+
 
     /**
      * 创建单例工厂对象
      */
     private static class CreateFactorySingleton{
-        private static MessageStrategyFactory messageStrategyServiceFactory = new MessageStrategyFactory();
+        private static final MessageStrategyFactory messageStrategyServiceFactory = new MessageStrategyFactory();
 
     }
 
