@@ -15,13 +15,14 @@ import lombok.Data;
 public class UserInfoResp {
     @Schema(description = "用户id",name = "userId")
     private Long userId;
-    @Schema(description = "用户昵称",name = "name")
+
+    @Schema(description = "用户昵称",name = "userName")
     private String userName;
 
-    @Schema(description = "用户头像", name = "avatar")
+    @Schema(description = "用户头像", name = "userAvatar")
     private String userAvatar;
 
-    @Schema(description = "用户邮箱", name = "email")
+    @Schema(description = "用户邮箱", name = "userEmail")
     private String userEmail;
 
     @Schema(description = "性别 1为男性，2为女性",name = "sex")

@@ -1,6 +1,7 @@
 package com.cabin.ter.listener;
 
 import com.cabin.ter.adapter.MemberAdapter;
+import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.adapter.RoomAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.cache.GroupMemberCache;
@@ -53,7 +54,7 @@ public class GroupMemberAddListener {
         // 拿到群组成员uid列表
         List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(uidList);
-        ChatMessageReq chatMessageReq = RoomAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userDomainMap);
+        ChatMessageReq chatMessageReq = MessageAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userDomainMap);
         chatService.sendMsg(chatMessageReq, inviteUid);
     }
 

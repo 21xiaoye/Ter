@@ -69,18 +69,17 @@ public class UserInfoCache extends AbstractRedisStringCache<Long, UserDomain>{
     public UserDomain getUserInfo(Long uid){
         return getUserInfoBatch(Collections.singleton(uid)).get(uid);
     }
-
     /**
      * 获取用户信息，盘路缓存模式
      */
-    public Map<Long, UserDomain> getUserInfoBatch(Set<Long> uids) {
+    private Map<Long, UserDomain> getUserInfoBatch(Set<Long> uIds) {
         //批量组装key
-        List<String> keys = uids.stream().map(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a)).collect(Collectors.toList());
+        List<String> keys = uIds.stream().map(a -> RedisKey.getKey(RedisKey.USER_ONLINE_INFO, a)).collect(Collectors.toList());
         //批量get
         List<UserDomain> userDomainsCache = redisCache.mget(keys, UserDomain.class);
         Map<Long, UserDomain> map = userDomainsCache.stream().filter(Objects::nonNull).collect(Collectors.toMap(UserDomain::getUserId, Function.identity()));
         //发现差集——还需要load更新的uid
-        List<Long> needLoadUidList = uids.stream().filter(a -> !map.containsKey(a)).collect(Collectors.toList());
+        List<Long> needLoadUidList = uIds.stream().filter(a -> !map.containsKey(a)).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(needLoadUidList)) {
             //批量load
             List<UserDomain> needLoadUserList = userDomainMapper.listByIds(needLoadUidList);

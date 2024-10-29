@@ -1,7 +1,9 @@
 package com.cabin.ter.admin.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 好友申请
@@ -10,7 +12,13 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FriendApplyDomain {
+    public static final Integer REJECT_APPLY = 0;
+    public static final Integer PENDING_APPROVAL = 1;
+    public static final Integer AGREE_APPLY = 2;
+    public static final Integer DELETE_APPLY = 3;
     /**
      * 申请记录id
      */

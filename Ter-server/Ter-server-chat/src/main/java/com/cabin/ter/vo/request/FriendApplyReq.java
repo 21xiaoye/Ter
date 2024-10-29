@@ -18,14 +18,11 @@ import javax.validation.constraints.NotNull;
  * @date Created in 2024-05-27 10:20
  */
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Schema(description = "好友申请请求参数信息")
+@Schema(name ="FriendApplyReq",description = "好友申请请求参数信息")
 public class FriendApplyReq {
 
     @NotBlank
-    @Schema(name = "msg",description = "申请信息")
+    @Schema(name = "applyMessage",description = "申请信息")
     private String applyMessage;
 
     @NotNull

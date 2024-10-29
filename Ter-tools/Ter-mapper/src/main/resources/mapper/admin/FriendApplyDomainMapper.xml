@@ -14,12 +14,12 @@
             <if test="createTime != null">createTime,</if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
-            <if test="applyId != null">applyId,</if>
-            <if test="userId != null">userId,</if>
-            <if test="targetId != null">targetId,</if>
-            <if test="applyStatus != null">applyStatus,</if>
-            <if test="applyMessage != null">applyMessage,</if>
-            <if test="createTime != null">createTime,</if>
+            <if test="applyId != null">#{applyId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="targetId != null">#{targetId},</if>
+            <if test="applyStatus != null">#{applyStatus},</if>
+            <if test="applyMessage != null">#{applyMessage},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
 </mapper>

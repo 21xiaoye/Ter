@@ -32,12 +32,4 @@ public class CursorPageBaseResp<T> {
     public Boolean isEmpty() {
         return CollectionUtil.isEmpty(list);
     }
-
-//    public static <T> CursorPageBaseResp<T> empty() {
-//        CursorPageBaseResp<T> cursorPageBaseResp = new CursorPageBaseResp<T>();
-//        cursorPageBaseResp.setIsLast(true);
-//        cursorPageBaseResp.setList(new ArrayList<T>());
-//        return cursorPageBaseResp;
-//    }
-
 }
