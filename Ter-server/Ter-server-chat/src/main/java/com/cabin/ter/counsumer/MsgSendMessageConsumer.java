@@ -58,17 +58,15 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
         if(roomDomain.isHotRoom()){
             pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp));
         }else{
-            List<Long> memberUidList = new ArrayList<>();
-
             // 群聊则获取所有群聊成员
             if(Objects.equals(roomDomain.getType(), RoomTypeEnum.GROUP.getType())){
-                memberUidList = groupMemberCache.getMemberUidList(roomDomain.getId());
+                List<Long> memberUidList = groupMemberCache.getMemberUidList(roomDomain.getId());
+                pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp), memberUidList);
             }
             // 单聊，对好友进行推送
             if(Objects.equals(roomDomain.getType(), RoomTypeEnum.FRIEND.getType())){
                 log.info("单聊信息，对好友进行推送");
             }
-            pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp), memberUidList);
         }
     }
 

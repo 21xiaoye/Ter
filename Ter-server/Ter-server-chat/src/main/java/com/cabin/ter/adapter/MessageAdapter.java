@@ -12,6 +12,7 @@ import com.cabin.ter.constants.vo.response.WSBaseResp;
 import com.cabin.ter.strategy.AbstractMsgHandler;
 import com.cabin.ter.strategy.MsgHandlerFactory;
 import com.cabin.ter.vo.request.ChatMessageReq;
+import com.cabin.ter.vo.request.TextMsgReq;
 import com.cabin.ter.vo.response.ChatMessageResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -126,4 +127,13 @@ public class MessageAdapter {
         return wsBaseResp;
     }
 
+    public static ChatMessageReq buildAgreeMsg(Long roomId) {
+        ChatMessageReq chatMessageReq = new ChatMessageReq();
+        chatMessageReq.setRoomId(roomId);
+        chatMessageReq.setMessageType(MessageTypeEnum.TEXT.getStatus());
+        TextMsgReq textMsgReq = new TextMsgReq();
+        textMsgReq.setContent("我们已经成为好友了，开始聊天吧");
+        chatMessageReq.setBody(textMsgReq);
+        return chatMessageReq;
+    }
 }

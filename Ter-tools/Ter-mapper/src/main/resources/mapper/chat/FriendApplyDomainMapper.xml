@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cabin.ter.admin.mapper.FriendApplyDomainMapper">
+<mapper namespace="com.cabin.ter.chat.mapper.FriendApplyDomainMapper">
     <insert id="saveFriendApplyRecord" parameterType="FriendApplyDomain">
         INSERT INTO ter_friend_apply
         <trim prefix="(" suffix=")" suffixOverrides=",">

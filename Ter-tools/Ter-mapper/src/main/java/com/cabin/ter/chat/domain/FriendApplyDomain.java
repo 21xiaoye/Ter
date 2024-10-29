@@ -1,5 +1,7 @@
-package com.cabin.ter.admin.domain;
+package com.cabin.ter.chat.domain;
 
+import cn.hutool.system.UserInfo;
+import com.cabin.ter.admin.domain.UserDomain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

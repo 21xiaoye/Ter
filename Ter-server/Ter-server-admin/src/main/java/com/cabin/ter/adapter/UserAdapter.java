@@ -31,7 +31,7 @@ public class UserAdapter {
                 .salt(salt)
                 .createTime(System.currentTimeMillis())
                 .roleId(Objects.isNull(request.getRoleId()) ? RoleEnum.ORDINARY.getStatus() : RoleEnum.ADMIN.getStatus())
-                .sex('1')
+                .sex(UserDomain.SEX_MALE)
                 .build();
         if (request.getRoleId() != null) {
             userDomain.setRoleId(request.getRoleId());

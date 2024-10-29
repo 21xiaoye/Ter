@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -29,10 +30,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class UserDomain {
+public class UserDomain implements Serializable {
+    public static final Integer SEX_MALE = 1;
+    public static final Integer SEX_FEMALE = 0;
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    public static Long UID_SYSTEM = 1L;//系统uid
+    public static Long UID_SYSTEM = 1L;
     /**
      * 主键
      */
@@ -40,7 +44,7 @@ public class UserDomain {
     /**
      * 用户性别
      */
-    private char sex;
+    private Integer sex;
     /**
      * 用户名
      */

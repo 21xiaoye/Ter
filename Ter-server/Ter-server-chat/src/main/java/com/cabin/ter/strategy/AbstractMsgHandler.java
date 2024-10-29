@@ -34,6 +34,7 @@ public abstract class AbstractMsgHandler<Req> {
     /**
      * 初始化消息处理类
      */
+    @SuppressWarnings("unchecked")
     @PostConstruct
     private void init(){
         ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();

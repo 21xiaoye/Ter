@@ -20,28 +20,8 @@ import java.util.stream.Collectors;
  * @author xiaoye
  * @date Created in 2024-05-29 15:09
  */
-@Component
 public class ChatAdapter {
-    @Autowired
-    private Snowflake snowflake;
-    public RoomDomain buildRoom(RoomTypeEnum roomTypeEnum, Long uid){
-        RoomDomain roomDomain = new RoomDomain();
-        roomDomain.setType(roomTypeEnum.getType());
-        roomDomain.setHotFlag(HotFlagEnum.NOT.getType());
-        roomDomain.setId(snowflake.nextId());
-        roomDomain.setUId(uid);
-        roomDomain.setCreateTime(System.currentTimeMillis());
-        return roomDomain;
-    }
-
-    public GroupRoomDomain buildGroupRoom(UserDomain userDomain, Long roomId){
-        GroupRoomDomain groupRoomDomain = new GroupRoomDomain();
-        groupRoomDomain.setRoomId(roomId);
-        groupRoomDomain.setRoomName(userDomain.getUserName()+"的群组");
-        groupRoomDomain.setRoomAvatar(userDomain.getUserAvatar());
-        groupRoomDomain.setCreateTime(System.currentTimeMillis());
-        return groupRoomDomain;
-    }
+    private static final Snowflake snowflake = new Snowflake();
 
     /**
      * 创建群成员列表
@@ -83,6 +63,6 @@ public class ChatAdapter {
      * 获取好友uid
      */
     public Long getFriendUid(FriendRoomDomain roomFriend, Long uid) {
-        return Objects.equals(uid, roomFriend.getAUId()) ? roomFriend.getBUId() : roomFriend.getAUId();
+        return Objects.equals(uid, roomFriend.getUserId()) ? roomFriend.getTargetId() : roomFriend.getUserId();
     }
 }

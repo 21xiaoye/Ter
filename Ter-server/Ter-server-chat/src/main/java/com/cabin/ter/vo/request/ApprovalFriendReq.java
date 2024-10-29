@@ -16,6 +16,8 @@ import lombok.Data;
 public class ApprovalFriendReq {
     @Schema(name = "applyId", description = "申请记录Id")
     private Long applyId;
+    @Schema(name = "targetId", description = "申请者Id")
+    private Long targetId;
     @Schema(name = "applyStatus", description = "审批状态 0拒绝好友申请 1待审批 2同意好友申请 3删除好友申请记录")
     private Integer applyStatus;
 }

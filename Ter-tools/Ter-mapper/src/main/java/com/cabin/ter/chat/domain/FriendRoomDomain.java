@@ -1,6 +1,7 @@
 package com.cabin.ter.chat.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,21 +10,26 @@ import lombok.NoArgsConstructor;
  * @date Created in 204-05-30 17:03
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRoomDomain {
     /**
-     * 唯一标识
+     * 恢复好哟关系
      */
-    private Long id;
+    public static final Integer FRIENDSHIP_RECOVER = 0;
+    /**
+     * 拉黑好友
+     */
+    public static final Integer FRIENDSHIP_BLOCK = 1;
     /**
      * 申请者uid
      */
-    private Long aUId;
+    private Long userId;
     /**
      * 被申请者uid
      */
-    private Long bUId;
+    private Long targetId;
     /**
      * 房间id
      */
@@ -31,7 +37,7 @@ public class FriendRoomDomain {
     /**
      * 房间key
      */
-    private String roomKey;
+    private String roomName;
     /**
      * 好友状态
      */

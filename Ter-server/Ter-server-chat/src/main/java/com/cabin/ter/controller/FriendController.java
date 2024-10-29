@@ -1,7 +1,5 @@
 package com.cabin.ter.controller;
 
-import com.cabin.ter.admin.domain.FriendApplyDomain;
-import com.cabin.ter.annotation.NullToEmpty;
 import com.cabin.ter.constants.vo.response.ApiResponse;
 import com.cabin.ter.service.FriendService;
 import com.cabin.ter.util.RequestHolderUtil;
@@ -13,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/user/friend")
@@ -40,11 +36,13 @@ public class FriendController {
     @PostMapping("/apply/approval")
     @Operation(summary = "审批好友申请")
     public ApiResponse approvalFriendApplyRecord(@RequestBody ApprovalFriendReq approvalFriendReq){
-        return friendService.operateFriendApplyRecord(approvalFriendReq);
+        friendService.operateFriendApplyRecord(approvalFriendReq,RequestHolderUtil.get().getUid());
+        return ApiResponse.ofSuccess();
     }
     @DeleteMapping("/apply/friendApply")
     @Operation(summary = "删除好友申请")
     public ApiResponse deleteFriendApply(@RequestBody ApprovalFriendReq approvalFriendReq){
-        return friendService.operateFriendApplyRecord(approvalFriendReq);
+        friendService.operateFriendApplyRecord(approvalFriendReq, RequestHolderUtil.get().getUid());
+        return ApiResponse.ofSuccess();
     }
 }

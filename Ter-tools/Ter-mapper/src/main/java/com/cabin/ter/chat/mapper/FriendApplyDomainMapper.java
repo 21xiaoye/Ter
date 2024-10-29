@@ -1,8 +1,6 @@
-package com.cabin.ter.admin.mapper;
+package com.cabin.ter.chat.mapper;
 
-import com.cabin.ter.admin.domain.FriendApplyDomain;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
+import com.cabin.ter.chat.domain.FriendApplyDomain;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 

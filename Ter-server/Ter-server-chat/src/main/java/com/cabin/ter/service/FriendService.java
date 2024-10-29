@@ -33,6 +33,7 @@ public interface FriendService {
     /**
      * 审批好友申请
      * @param approvalFriendReq 审批好友请求参数
+     * @param userId 申请者Id
      */
-    ApiResponse operateFriendApplyRecord(ApprovalFriendReq approvalFriendReq);
+    void operateFriendApplyRecord(ApprovalFriendReq approvalFriendReq, Long userId);
 }

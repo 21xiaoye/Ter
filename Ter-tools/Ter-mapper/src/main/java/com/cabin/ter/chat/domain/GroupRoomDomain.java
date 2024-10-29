@@ -1,7 +1,6 @@
 package com.cabin.ter.chat.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +10,9 @@ import java.util.Date;
  * @date Created in 2024-05-28 20:05
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class GroupRoomDomain implements Serializable{
     private static final long serialVersionUID = 1L;
