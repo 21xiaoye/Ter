@@ -8,6 +8,7 @@ import com.cabin.ter.exception.BaseException;
 import com.qcloud.cos.exception.CosClientException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -64,6 +65,9 @@ public class GlobalException {
         } else if (e instanceof BaseException) {
             log.error("【全局异常拦截】DataManagerException: 状态码 {}, 异常信息 {}", ((BaseException) e).getCode(), e.getMessage());
             return ApiResponse.ofException((BaseException) e);
+        }else if(e instanceof MyBatisSystemException){
+            log.error("【全局异常拦截】MyBatisSystemException: 错误信息 {}", e.getCause().getMessage());
+            return ApiResponse.ofStatus(Status.ERROR,e.getCause().getMessage());
         }
 
         log.error("【全局异常拦截】: 异常信息 {} ", e.getMessage());

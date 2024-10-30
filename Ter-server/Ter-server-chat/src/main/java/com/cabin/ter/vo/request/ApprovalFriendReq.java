@@ -20,4 +20,6 @@ public class ApprovalFriendReq {
     private Long targetId;
     @Schema(name = "applyStatus", description = "审批状态 0拒绝好友申请 1待审批 2同意好友申请 3删除好友申请记录")
     private Integer applyStatus;
+    @Schema(name = "remark", description = "备注")
+    private String remark;
 }

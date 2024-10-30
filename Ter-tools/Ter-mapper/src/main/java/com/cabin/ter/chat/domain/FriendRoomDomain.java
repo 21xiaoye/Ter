@@ -23,13 +23,25 @@ public class FriendRoomDomain {
      */
     public static final Integer FRIENDSHIP_BLOCK = 1;
     /**
+     * 删除好友
+     */
+    public static final Integer FRIENDSHIP_DELETE = 2;
+    /**
+     * 置顶好友关系
+     */
+    public static final Integer IS_TOP = 0;
+    /**
+     * 不置顶好友关系
+     */
+    public static final Integer NO_TOP = 1;
+    /**
      * 申请者uid
      */
     private Long userId;
     /**
      * 被申请者uid
      */
-    private Long targetId;
+    private Long friendId;
     /**
      * 房间id
      */
@@ -41,7 +53,7 @@ public class FriendRoomDomain {
     /**
      * 好友状态
      */
-    private Integer status;
+    private Integer roomStatus;
     /**
      * 是否置顶
      */

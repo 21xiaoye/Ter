@@ -24,11 +24,9 @@ import java.util.stream.Collectors;
  * @author xiaoye
  * @date Created in 2024-05-29 15:10
  */
-@Component
 public class MessageAdapter {
     public static final int CAN_CALLBACK_GAP_COUNT = 100;
-    @Autowired
-    private Snowflake snowflake;
+    private static final Snowflake snowflake = new Snowflake();
     /**
      * 构建一条消息持久化实体对象
      *
@@ -36,7 +34,7 @@ public class MessageAdapter {
      * @param uid   发送者uId
      * @return  返回消息持久化实体对象
      */
-    public MessageDomain buildMsgSave(ChatMessageReq request, Long uid){
+    public static MessageDomain buildMsgSave(ChatMessageReq request, Long uid){
         return MessageDomain.builder()
                 .id(snowflake.nextId())
                 .fromUid(uid)
@@ -52,11 +50,11 @@ public class MessageAdapter {
      * @param messages  需要响应消息实体对象列表
      * @return  消息响应对象列表
      */
-    public  List<ChatMessageResp> buildMsgResp(List<MessageDomain> messages) {
+    public static List<ChatMessageResp> buildMsgResp(List<MessageDomain> messages) {
         return messages.stream().map(a -> {
                     ChatMessageResp resp = new ChatMessageResp();
-                    resp.setFromUser(this.buildFromUser(a.getFromUid()));
-                    resp.setMessage(this.buildMessage(a));
+                    resp.setFromUser(buildFromUser(a.getFromUid()));
+                    resp.setMessage(buildMessage(a));
                     return resp;
                 })
                 .sorted(Comparator.comparing(a -> a.getMessage().getSendTime()))//帮前端排好序，更方便它展示
@@ -69,7 +67,7 @@ public class MessageAdapter {
      * @param message   需要响应的消息实体对象
      * @return  返回构建消息响应对象中消息对象信息
      */
-    private  ChatMessageResp.Message buildMessage(MessageDomain message) {
+    private static ChatMessageResp.Message buildMessage(MessageDomain message) {
         ChatMessageResp.Message messageVO = new ChatMessageResp.Message();
         BeanUtil.copyProperties(message, messageVO);
         messageVO.setSendTime(message.getCreateTime());
@@ -85,7 +83,7 @@ public class MessageAdapter {
      * @param fromUid   消息发送者uId
      * @return  返回消息响应对象那个中发送者的对象信息
      */
-    private  ChatMessageResp.UserInfo buildFromUser(Long fromUid) {
+    private static ChatMessageResp.UserInfo buildFromUser(Long fromUid) {
         ChatMessageResp.UserInfo userInfo = new ChatMessageResp.UserInfo();
         userInfo.setUid(fromUid);
         return userInfo;
@@ -120,7 +118,7 @@ public class MessageAdapter {
      * @param msgResp   需要推送给前端的消息数据
      * @return  返回WebSocket推送响应对象
      */
-    public WSBaseResp<ChatMessageResp> buildMsgSend(ChatMessageResp msgResp) {
+    public static WSBaseResp<ChatMessageResp> buildMsgSend(ChatMessageResp msgResp) {
         WSBaseResp<ChatMessageResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.MESSAGE.getType());
         wsBaseResp.setData(msgResp);

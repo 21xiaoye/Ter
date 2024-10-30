@@ -17,22 +17,19 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class RoomDomain implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class RoomDomain {
     /**
      * id
      */
-    private Long id;
+    private Long roomId;
     /**
      * 创建者uid
      */
-    private Long uId;
+    private Long userId;
     /**
      * 房间类型 1群聊 2单聊
      */
-    private Integer type;
+    private Integer roomType;
 
     /**
      * 是否全员展示 0否 1是
@@ -72,11 +69,11 @@ public class RoomDomain implements Serializable {
 
     @JsonIgnore
     public boolean isRoomFriend() {
-        return RoomTypeEnum.of(this.type) == RoomTypeEnum.FRIEND;
+        return RoomTypeEnum.of(this.roomType) == RoomTypeEnum.FRIEND;
     }
 
     @JsonIgnore
     public boolean isRoomGroup() {
-        return RoomTypeEnum.of(this.type) == RoomTypeEnum.GROUP;
+        return RoomTypeEnum.of(this.roomType) == RoomTypeEnum.GROUP;
     }
 }

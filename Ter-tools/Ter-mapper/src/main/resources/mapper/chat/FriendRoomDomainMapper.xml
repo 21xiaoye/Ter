@@ -4,11 +4,28 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.chat.mapper.FriendRoomDomainMapper">
     <select id="listByIds" resultType="com.cabin.ter.chat.domain.FriendRoomDomain" parameterType="java.util.List">
-        SELECT id, aUId, bUId, roomId, roomKey, isTop,status
+        SELECT id, userId, friendId, roomId, roomKey, isTop,status
         FROM ter_room_friend
         WHERE roomId IN
         <foreach item="aUid" index="index" collection="roomIdsList" open="(" separator="," close=")">
             #{roomId}
         </foreach>
     </select>
+
+    <insert id="saveFriendship" parameterType="java.util.List">
+        INSERT INTO ter_room_friend (roomId, userId, friendId, roomName, createTime)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roomId}, #{item.userId}, #{item.friendId}, #{item.roomName}, #{item.createTime})
+        </foreach>
+    </insert>
+
+    <update id="pullBackWhitePage">
+        UPDATE ter_room_friend
+        SET roomStatus = 0
+        WHERE userId = #{userId} AND friendId IN
+        <foreach item="friendId" index="index" collection="friendList" open="(" separator="," close=")">
+            #{friendId}
+        </foreach>
+    </update>
 </mapper>

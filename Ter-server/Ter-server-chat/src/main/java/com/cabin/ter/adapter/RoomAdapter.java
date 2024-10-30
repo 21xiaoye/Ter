@@ -23,10 +23,10 @@ public class RoomAdapter {
      */
     public static RoomDomain buildRoom(RoomTypeEnum roomTypeEnum, Long uId){
         return RoomDomain.builder()
-                .type(roomTypeEnum.getType())
+                .roomType(roomTypeEnum.getType())
                 .hotFlag(HotFlagEnum.NOT.getType())
-                .id(snowflake.nextId())
-                .uId(uId)
+                .roomId(snowflake.nextId())
+                .userId(uId)
                 .createTime(System.currentTimeMillis())
                 .build();
     }
@@ -94,7 +94,7 @@ public class RoomAdapter {
         return FriendRoomDomain.builder()
                 .roomId(roomId)
                 .userId(userId)
-                .targetId(targetId)
+                .friendId(targetId)
                 .roomName(roomName)
                 .build();
     }

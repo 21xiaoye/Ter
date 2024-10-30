@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(name = "FriendApplyResp",description = "好友申请详情")
 public class FriendApplyResp {
     public static final Integer USER_APPLY  = 1;
@@ -34,6 +37,7 @@ public class FriendApplyResp {
 
     @Schema(name = "applyStatus", description = "申请状态")
     private Integer applyStatus;
-    @Schema(name = "applyType", description = "好友申请类型 1:其它用户发出的好友申请 2:用户发出的好友申请")
+
+    @Schema(name = "applyType", description = "好友申请类型 1:用户发出的好友申请 2:其它用户发出的好友申请")
     private Integer applyType;
 }

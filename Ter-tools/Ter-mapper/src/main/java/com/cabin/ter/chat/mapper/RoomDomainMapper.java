@@ -17,8 +17,8 @@ public interface RoomDomainMapper {
      * @param roomDomain
      * @return
      */
-    @Insert("INSERT INTO ter_room(id, uId,type, hotFlag, createTime) VALUES(#{roomDomain.id},#{roomDomain.uId} ,#{roomDomain.type}, #{roomDomain.hotFlag}, #{roomDomain.createTime})")
-    Integer saveRoom(@Param("roomDomain") RoomDomain roomDomain);
+    @Insert("INSERT INTO ter_room(roomId, userId, roomType, hotFlag, createTime) VALUES(#{roomId}, #{userId}, #{roomType}, #{hotFlag}, #{createTime})")
+    Integer saveRoom(RoomDomain roomDomain);
 
     /**
      * 根据roomId列表获取群列表

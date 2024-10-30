@@ -7,6 +7,7 @@ import com.cabin.ter.chat.domain.*;
 import com.cabin.ter.chat.enums.GroupRoleEnum;
 import com.cabin.ter.chat.enums.HotFlagEnum;
 import com.cabin.ter.chat.enums.RoomTypeEnum;
+import com.cabin.ter.vo.response.FriendResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class ChatAdapter {
      * @param uid       创建者id
      * @return
      */
-    public  List<GroupMemberDomain> buildGroupMemberBatch(List<Long> uidList, Long groupId, Long uid) {
+    public static List<GroupMemberDomain> buildGroupMemberBatch(List<Long> uidList, Long groupId, Long uid) {
         return uidList.stream()
                 .distinct()
                 .map(id -> {
@@ -46,6 +47,16 @@ public class ChatAdapter {
                 }).collect(Collectors.toList());
     }
 
+    public static FriendResp buildFriendResp(UserDomain userDomain, String roomName){
+        return FriendResp.builder()
+                        .userId(userDomain.getUserId())
+                        .userAvatar(userDomain.getUserAvatar())
+                        .userEmail(userDomain.getUserEmail())
+                        .userName(roomName)
+                        .sex(userDomain.getSex())
+                        .build();
+    }
+
     /**
      * 获取好友uId 集合
      *
@@ -53,16 +64,16 @@ public class ChatAdapter {
      * @param uid
      * @return
      */
-    public Set<Long> getFriendUidSet(Collection<FriendRoomDomain> values, Long uid){
+    public static Set<Long> getFriendUidSet(Collection<FriendRoomDomain> values, Long uid){
         return values.stream()
-                .map(a-> this.getFriendUid(a, uid))
+                .map(a-> getFriendUid(a, uid))
                 .collect(Collectors.toSet());
     }
 
     /**
      * 获取好友uid
      */
-    public Long getFriendUid(FriendRoomDomain roomFriend, Long uid) {
-        return Objects.equals(uid, roomFriend.getUserId()) ? roomFriend.getTargetId() : roomFriend.getUserId();
+    public static Long getFriendUid(FriendRoomDomain roomFriend, Long uid) {
+        return Objects.equals(uid, roomFriend.getUserId()) ? roomFriend.getFriendId() : roomFriend.getUserId();
     }
 }

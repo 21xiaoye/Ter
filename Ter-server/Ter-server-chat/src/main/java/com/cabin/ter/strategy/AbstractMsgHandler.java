@@ -27,8 +27,6 @@ import java.util.Objects;
 public abstract class AbstractMsgHandler<Req> {
     @Autowired
     private MessageDomainMapper messageDomainMapper;
-    @Autowired
-    private MessageAdapter messageAdapter;
     private Class<Req> bodyClass;
 
     /**
@@ -54,7 +52,7 @@ public abstract class AbstractMsgHandler<Req> {
         AsserUtil.allCheckValidateThrow(body);
         checkMsg(body, request.getRoomId(), uid);
 
-        MessageDomain messageDomain = messageAdapter.buildMsgSave(request, uid);
+        MessageDomain messageDomain = MessageAdapter.buildMsgSave(request, uid);
         messageDomainMapper.saveMessage(messageDomain);
         saveMsg(messageDomain, body);
         return messageDomain.getId();

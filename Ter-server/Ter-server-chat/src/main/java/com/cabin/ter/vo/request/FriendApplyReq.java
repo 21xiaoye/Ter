@@ -1,13 +1,9 @@
 package com.cabin.ter.vo.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 
 /**
@@ -25,8 +21,11 @@ public class FriendApplyReq {
     @Schema(name = "applyMessage",description = "申请信息")
     private String applyMessage;
 
-    @NotNull
-    @Schema(name="targetUid",description = "好友uid")
+    @NotBlank
+    @Schema(name="targetUid",description = "好友uId")
     private Long targetId;
 
+    @NotBlank
+    @Schema(name = "remark", description = "备注")
+    private String remark;
 }

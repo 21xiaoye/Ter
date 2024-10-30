@@ -1,7 +1,5 @@
 package com.cabin.ter.chat.domain;
 
-import cn.hutool.system.UserInfo;
-import com.cabin.ter.admin.domain.UserDomain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +15,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendApplyDomain {
+    /**
+     * 拒绝好友申请
+     */
     public static final Integer REJECT_APPLY = 0;
+    /**
+     * 好友申请待审核
+     */
     public static final Integer PENDING_APPROVAL = 1;
+    /**
+     * 同意好友申请
+     */
     public static final Integer AGREE_APPLY = 2;
+    /**
+     * 删除好友申请
+     */
     public static final Integer DELETE_APPLY = 3;
     /**
      * 申请记录id

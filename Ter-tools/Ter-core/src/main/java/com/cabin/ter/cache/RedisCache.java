@@ -183,6 +183,7 @@ public class RedisCache {
         return json == null ? null : JsonUtils.toObj(json, tClass);
     }
 
+
     public  Boolean zAdd(String key, String value, Long score) {
         return redisTemplate.opsForZSet().add(key, value, score);
     }

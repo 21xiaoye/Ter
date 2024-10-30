@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
+
 /**
  * @author xiaoye
  * @date Created in 2024-05-28 19:42
@@ -39,21 +43,24 @@ public class RoomServiceImpl implements RoomService {
         // 创建房间基本信息
         RoomDomain room = this.createRoom(RoomTypeEnum.GROUP,uid);
         // 构建群组基本信息
-        GroupRoomDomain groupRoomDomain = RoomAdapter.buildGroupRoom(userDomain, room.getId());
+        GroupRoomDomain groupRoomDomain = RoomAdapter.buildGroupRoom(userDomain, room.getRoomId());
         // 保存群组
         groupRoomDomainMapper.saveGroupRoom(groupRoomDomain);
         return groupRoomDomain;
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public FriendRoomDomain createFriend(Long userId, Long targetId){
-        UserDomain userDomain = userInfoCache.get(userId);
-        UserDomain targetUserDomain = userInfoCache.get(targetId);
-        RoomDomain room = this.createRoom(RoomTypeEnum.FRIEND, userId);
-        FriendRoomDomain userFriendDomain = RoomAdapter.buildFriendRoomDomain(room.getId(), userId, targetId, targetUserDomain.getUserName());
-        FriendRoomDomain targetFriendDomain = RoomAdapter.buildFriendRoomDomain(room.getId(), targetId, userId, userDomain.getUserName());
-        friendRoomDomainMapper.saveFriendship(userFriendDomain);
-        friendRoomDomainMapper.saveFriendship(targetFriendDomain);
+    public FriendRoomDomain createFriend(Long userId, Long targetId, String remark){
+        FriendRoomDomain friendship = friendRoomDomainMapper.getFriendship(targetId, userId);
+        Long roomId;
+        if (Objects.isNull(friendship)) {
+            RoomDomain room = this.createRoom(RoomTypeEnum.FRIEND, userId);
+            roomId = room.getRoomId();
+        }else{
+            roomId = friendship.getRoomId();
+        }
+        FriendRoomDomain userFriendDomain = RoomAdapter.buildFriendRoomDomain(roomId, userId, targetId,remark);
+        friendRoomDomainMapper.saveFriendship(Collections.singletonList(userFriendDomain));
         return userFriendDomain;
     }
     /**

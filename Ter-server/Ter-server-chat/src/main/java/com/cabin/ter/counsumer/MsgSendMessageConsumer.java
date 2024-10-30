@@ -41,8 +41,6 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
     @Autowired
     private GroupMemberCache groupMemberCache;
     @Autowired
-    private MessageAdapter messageAdapter;
-    @Autowired
     private PushService pushService;
     @Override
     public void onMessage(MsgSendMessageDTO msgSendMessageDTO) {
@@ -56,15 +54,15 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
         ChatMessageResp msgResp = chatService.getMsgResp(messageDomain);
 
         if(roomDomain.isHotRoom()){
-            pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp));
+            pushService.sendPushMsg(MessageAdapter.buildMsgSend(msgResp));
         }else{
             // 群聊则获取所有群聊成员
-            if(Objects.equals(roomDomain.getType(), RoomTypeEnum.GROUP.getType())){
-                List<Long> memberUidList = groupMemberCache.getMemberUidList(roomDomain.getId());
-                pushService.sendPushMsg(messageAdapter.buildMsgSend(msgResp), memberUidList);
+            if(Objects.equals(roomDomain.getRoomType(), RoomTypeEnum.GROUP.getType())){
+                List<Long> memberUidList = groupMemberCache.getMemberUidList(roomDomain.getRoomId());
+                pushService.sendPushMsg(MessageAdapter.buildMsgSend(msgResp), memberUidList);
             }
             // 单聊，对好友进行推送
-            if(Objects.equals(roomDomain.getType(), RoomTypeEnum.FRIEND.getType())){
+            if(Objects.equals(roomDomain.getRoomType(), RoomTypeEnum.FRIEND.getType())){
                 log.info("单聊信息，对好友进行推送");
             }
         }

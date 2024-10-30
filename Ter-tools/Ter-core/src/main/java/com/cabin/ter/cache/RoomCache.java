@@ -37,6 +37,6 @@ public class RoomCache extends AbstractRedisStringCache<Long, RoomDomain> {
     @Override
     protected Map<Long, RoomDomain> load(List<Long> req) {
         List<RoomDomain> roomDomainList = roomDomainMapper.listByIds(req);
-        return roomDomainList.stream().collect(Collectors.toMap(RoomDomain::getId, Function.identity()));
+        return roomDomainList.stream().collect(Collectors.toMap(RoomDomain::getRoomId, Function.identity()));
     }
 }

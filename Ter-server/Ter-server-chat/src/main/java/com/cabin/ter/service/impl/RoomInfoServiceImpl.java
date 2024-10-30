@@ -39,8 +39,6 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     @Autowired
     private RoomService roomService;
     @Autowired
-    private ChatAdapter chatAdapter;
-    @Autowired
     private RoomCache roomCache;
     @Autowired
     private RoomGroupCache roomGroupCache;
@@ -71,7 +69,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         // 创建群组
         GroupRoomDomain group = roomService.createGroup(uId);
         // 构建群组要求人员基本信息
-        List<GroupMemberDomain> groupMemberDomains = chatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uId);
+        List<GroupMemberDomain> groupMemberDomains = ChatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uId);
         // 保存群成员
         groupMemberDomainMapper.saveGroupMemberList(groupMemberDomains);
         // 发送群通知
@@ -164,7 +162,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
 
         // 根据房间类型进行分组
         Map<Integer, List<Long>> groupRoomMap = roomMap.values().stream()
-                .collect(Collectors.groupingBy(RoomDomain::getType, Collectors.mapping(RoomDomain::getId, Collectors.toList())));
+                .collect(Collectors.groupingBy(RoomDomain::getRoomType, Collectors.mapping(RoomDomain::getUserId, Collectors.toList())));
         // 获取群聊信息
         List<Long> groupRoomIds = groupRoomMap.get(RoomTypeEnum.GROUP.getType());
         Map<Long, GroupRoomDomain> groupRoomDomainMap = roomGroupCache.getBatch(groupRoomIds);
@@ -175,21 +173,21 @@ public class RoomInfoServiceImpl implements RoomInfoService {
 
         return roomMap.values().stream().map(room->{
             RoomBaseInfo roomBaseInfo = new RoomBaseInfo();
-            roomBaseInfo.setRoomId(room.getId());
-            roomBaseInfo.setType(room.getType());
+            roomBaseInfo.setRoomId(room.getUserId());
+            roomBaseInfo.setType(room.getRoomType());
             roomBaseInfo.setHotFlag(room.getHotFlag());
             roomBaseInfo.setLastMsgId(room.getLastMsgId());
             roomBaseInfo.setActiveTime(room.getActiveTime());
 
             // 房间为群聊
-            if(RoomTypeEnum.of(room.getType()) == RoomTypeEnum.GROUP){
-                GroupRoomDomain groupRoomDomain = groupRoomDomainMap.get(room.getId());
+            if(RoomTypeEnum.of(room.getRoomType()) == RoomTypeEnum.GROUP){
+                GroupRoomDomain groupRoomDomain = groupRoomDomainMap.get(room.getRoomId());
                 roomBaseInfo.setName(groupRoomDomain.getRoomName());
                 roomBaseInfo.setAvatar(groupRoomDomain.getRoomAvatar());
             }
             // 房间为单聊
-            if(RoomTypeEnum.of(room.getType()) == RoomTypeEnum.FRIEND){
-                UserDomain userDomain = friendRoomMap.get(room.getId());
+            if(RoomTypeEnum.of(room.getRoomType()) == RoomTypeEnum.FRIEND){
+                UserDomain userDomain = friendRoomMap.get(room.getRoomId());
                 roomBaseInfo.setName(userDomain.getUserName());
                 roomBaseInfo.setAvatar(userDomain.getUserAvatar());
             }
@@ -217,13 +215,13 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         // 单聊房间信息
         Map<Long, FriendRoomDomain> friendRoomDomainMap = roomFriendCache.getBatch(roomIds);
         // 单聊房间有两个uid,根据用户自己的uid，找出单聊房间中好友的uid
-        Set<Long> friendUidSet = chatAdapter.getFriendUidSet(friendRoomDomainMap.values(), uid);
+        Set<Long> friendUidSet = ChatAdapter.getFriendUidSet(friendRoomDomainMap.values(), uid);
         // 根据好友uid集合查出好友明细信息， key为好友uid, key 为好友明细信息
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(new ArrayList<>(friendUidSet));
         // 将每个房间和好友进行映射，获取到最终的Map,key为房间id, value为用户信息
         return friendRoomDomainMap.values().stream()
                 .collect(Collectors.toMap(FriendRoomDomain::getRoomId, friendRoom->{
-                    Long friendUid = chatAdapter.getFriendUid(friendRoom, uid);
+                    Long friendUid = ChatAdapter.getFriendUid(friendRoom, uid);
                     return userDomainMap.get(friendUid);
                 }));
     }

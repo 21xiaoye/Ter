@@ -42,8 +42,6 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private RoomCache roomCache;
     @Autowired
-    private MessageAdapter messageAdapter;
-    @Autowired
     private MessageCache messageCache;
     @Autowired
     private GroupMemberCache groupMemberCache;
@@ -91,6 +89,6 @@ public class ChatServiceImpl implements ChatService {
         if (CollectionUtil.isEmpty(messages)) {
             return new ArrayList<>();
         }
-        return messageAdapter.buildMsgResp(messages);
+        return MessageAdapter.buildMsgResp(messages);
     }
 }

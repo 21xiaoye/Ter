@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.chat.mapper.RoomDomainMapper">
     <select id="listByIds" resultType="com.cabin.ter.chat.domain.RoomDomain" parameterType="java.util.List">
-        SELECT id, type, hotFlag, activeTime, lastMsgId, extJson,createTime
+        SELECT roomId,userId,roomType, hotFlag, activeTime, lastMsgId, extJson,createTime
         FROM ter_room
-        WHERE id IN
-        <foreach item="id" index="index" collection="roomIdsList" open="(" separator="," close=")">
-            #{id}
+        WHERE roomId IN
+        <foreach item="roomId" index="index" collection="roomIdsList" open="(" separator="," close=")">
+            #{roomId}
         </foreach>
     </select>
 </mapper>

@@ -22,6 +22,7 @@ public interface RoomService {
      *
      * @param userId    申请者uId
      * @param targetId  被申请者uId
+     * @param remark    备注
      */
-    FriendRoomDomain createFriend(Long userId, Long targetId);
+    FriendRoomDomain createFriend(Long userId, Long targetId, String remark);
 }
