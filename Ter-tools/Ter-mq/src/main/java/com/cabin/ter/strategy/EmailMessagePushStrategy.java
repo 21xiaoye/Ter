@@ -34,8 +34,8 @@ public class EmailMessagePushStrategy extends MessageTemplate<EmailMessageDTO>
     @Autowired
     private TemplateEngine templateEngine;
     @Override
-    public  Boolean messageStrategy(EmailMessageDTO message) {
-        return this.messageSend(message);
+    public void messageStrategy(EmailMessageDTO message) {
+        this.messageSend(message);
     }
     @Override
     public MessagePushMethodEnum getSource() {

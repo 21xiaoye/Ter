@@ -12,6 +12,6 @@ import com.cabin.ter.constants.enums.MessagePushMethodEnum;
  * @date Created in 2024-05-01 12:55
  */
 public interface MessageStrategyBase<T extends MQBaseMessage> {
-    Boolean messageStrategy(T message);
+    void messageStrategy(T message);
     MessagePushMethodEnum getSource();
 }

@@ -35,9 +35,8 @@ public class EmailMessagePushConsumer extends BaseMqMessageListener<EmailMessage
 
     @Override
     protected void handleMessage(EmailMessageDTO message) {
-        log.info("收到消息[{]]",message);
-        MessageStrategyBase emailStrategy = MessageStrategyFactory.getStrategy(MessagePushMethodEnum.EMAIL_MESSAGE);
-        emailStrategy.messageStrategy(message);
+        log.info("收到消息[{}]", message);
+        MessageStrategyFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
     }
 
     @Override
