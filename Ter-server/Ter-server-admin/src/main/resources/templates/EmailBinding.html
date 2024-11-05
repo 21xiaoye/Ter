@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ter</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .card__content {
+            font-size: 13px;
+            line-height: 18px;
+            color: #333;
+            margin: 10px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6A5ACD, #4169E1);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(135deg, #5A4ACD, #3159E1);
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .button-secondary {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff7f50, #ff6347);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: 100%; /* 使按钮高度与输入框对齐 */
+        }
+        .button-secondary:hover {
+            background: linear-gradient(135deg, #ff6f40, #ff5237);
+        }
+        .button-secondary:disabled {
+            background: #bbb;
+            cursor: not-allowed;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch; /* 使输入框和按钮高度对齐 */
+        }
+        .button-group input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p class="card__content">
+        你正在使用微信登录Ter<br>初次登录请完成邮箱绑定完成登录
+    </p>
+    <form id="emailForm">
+        <input type="hidden" id="openId" th:value="${openId}">
+        <input type="email" id="email" class="form-input" placeholder="请输入您的邮箱地址" required>
+
+        <div class="button-group">
+            <input type="text" id="code" class="form-input" placeholder="请输入验证码" required>
+            <button type="button" id="sendCodeButton" class="button-secondary" onclick="sendVerificationCode()">发送验证码</button>
+        </div>
+
+        <button type="submit" class="button">提交</button>
+    </form>
+</div>
+
+
+<script>
+    let countdown = 60;
+    const sendCodeButton = document.getElementById("sendCodeButton");
+
+    // 发送验证码
+    function sendVerificationCode() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert("请输入您的邮箱地址！");
+            return;
+        }
+
+        // 禁用按钮并启动倒计时
+        sendCodeButton.disabled = true;
+        sendCodeButton.innerText = `发送中...`;
+
+        fetch(`http://192.168.92.254:6771/api/common/user/sendVerificationCode?userEmail=${encodeURIComponent(email)}&operationType=1005`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    alert("验证码已发送，请查收您的邮箱！");
+                    startCountdown();
+                } else {
+                    alert(data.message);
+                    resetSendButton();
+                }
+            })
+            .catch(error => {
+                console.error("验证码发送错误:", error);
+                alert("发送失败，请重试！");
+                resetSendButton();
+            });
+    }
+
+    // 倒计时逻辑
+    function startCountdown() {
+        countdown = 60;
+        const interval = setInterval(() => {
+            if (countdown > 0) {
+                sendCodeButton.innerText = `重新发送 (${countdown--}s)`;
+            } else {
+                clearInterval(interval);
+                resetSendButton();
+            }
+        }, 1000);
+    }
+
+    function resetSendButton() {
+        sendCodeButton.disabled = false;
+        sendCodeButton.innerText = "发送验证码";
+    }
+
+    document.getElementById('emailForm').onsubmit = function(event) {
+        event.preventDefault();
+        const openId = document.getElementById('openId').value;
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('code').value;
+
+        fetch('http://192.168.92.254:6771/wx/portal/public/emailBinding', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({openId, email, code})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    alert("邮箱绑定成功！");
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("邮箱绑定错误:", error);
+                alert("提交失败，请重试！");
+            });
+    };
+</script>
+</body>
+</html>

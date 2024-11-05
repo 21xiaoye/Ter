@@ -1,7 +1,6 @@
 package com.cabin.ter.adapter;
 
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.constants.dto.EmailBindingDTO;
 import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
 import com.cabin.ter.constants.vo.response.WSApplyUserInfoResp;
@@ -42,19 +41,6 @@ public class WebSocketMessageBuilderAdapter {
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
         return wsBaseResp;
     }
-
-    /**
-     * 用户绑定邮箱成功
-     * @param emailBindingDTO
-     * @return
-     */
-    public static WSBaseResp<EmailBindingDTO> buildEmailBindingResp(EmailBindingDTO emailBindingDTO){
-        WSBaseResp<EmailBindingDTO> wsBaseResp = new WSBaseResp<>();
-        wsBaseResp.setType(WSRespTypeEnum.LOGIN_EMAIL_BINDING.getType());
-        wsBaseResp.setData(emailBindingDTO);
-        return wsBaseResp;
-    }
-
     /**
      * 用户登录成功
      * @param userPrincipal

@@ -95,7 +95,11 @@ public enum Status implements IStatus {
     /**
      * 用户不存在
      */
-    USER_NO_OCCUPY(5006,"用户不存在");
+    USER_NO_OCCUPY(5006,"用户不存在"),
+    /**
+     * 微信oauth_code已使用
+     */
+    WX_OPENID_ALREADY_USED(5007,"当前openId已被绑定");
     /**
      * 状态码
      */

@@ -3,7 +3,6 @@ package com.cabin.ter.websocket;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
-import com.cabin.ter.constants.participant.ws.SendChannelInfo;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.request.WsReqMsg;
 import com.cabin.ter.service.WebSocketPublicService;
@@ -98,8 +97,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     }
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+        if (evt instanceof IdleStateEvent idleStateEvent) {
             // 读空闲
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
                 // 关闭用户的连接
@@ -145,10 +143,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         log.info("客户端信息完毕");
 
         this.webSocketPublicService.connect(ctx.channel());
-        SendChannelInfo userChannelInfo = new SendChannelInfo(channel.localAddress().getHostString(),
-                channel.localAddress().getPort(), channel.id().toString(), new Date());
+//        SendChannelInfo userChannelInfo = new SendChannelInfo(channel.localAddress().getHostString(),
+//                channel.localAddress().getPort(), channel.id().toString(), new Date());
 
-        redisUtil.pushObj(userChannelInfo);
+//        redisUtil.pushObj(userChannelInfo);
         CacheUtil.cacheChannel.put(channel.id().toString(), channel);
 
         String str = "通知客户端链接建立成功" + " " + new Date() + " " + channel.localAddress().getHostString() + "\r\n";

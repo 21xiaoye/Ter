@@ -3,6 +3,7 @@ package com.cabin.ter.service.impl;
 import com.cabin.ter.adapter.ChatAdapter;
 import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.adapter.RoomAdapter;
+import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.chat.domain.FriendApplyDomain;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.chat.domain.FriendRoomDomain;
@@ -51,6 +52,8 @@ public class FriendServiceImpl implements FriendService {
     private UserInfoCache userInfoCache;
     @Autowired
     private ChatService chatService;
+    @Autowired
+    private RedisCache redisCache;
     @Override
     public void apply(Long uId, FriendApplyReq request) {
         FriendRoomDomain friendship = friendRoomDomainMapper.getFriendship(uId, request.getTargetId());
@@ -79,7 +82,7 @@ public class FriendServiceImpl implements FriendService {
                             friendApply.getApplyId(),
                             friendApply.getApplyStatus(),
                             friendApply.getApplyMessage(),
-                            equals ? FriendApplyResp.USER_APPLY : FriendApplyResp.TARGET_APPLY
+                            equals ? FriendApplyResp.TARGET_APPLY : FriendApplyResp.USER_APPLY
                     );
                 })
                 .collect(Collectors.toList());
@@ -118,6 +121,7 @@ public class FriendServiceImpl implements FriendService {
         Map<Long, UserDomain> friendInfo = getFriendInfo(friendPage);
 
         return friendPage.stream().map(friendRoomDomain -> {
+            redisCache.setHashMap(String.valueOf(userId), String.valueOf(friendRoomDomain.getFriendId()),friendRoomDomain);
             UserDomain userDomain = friendInfo.get(friendRoomDomain.getFriendId());
             FriendResp friendResp = ChatAdapter.buildFriendResp(userDomain, friendRoomDomain.getRoomName());
             if(userInfoCache.isOnline(friendResp.getUserId())){

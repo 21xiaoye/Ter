@@ -1,6 +1,7 @@
 package com.cabin.ter.service;
 
 
+import com.cabin.ter.constants.req.UserEmailBindingReq;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -29,4 +30,5 @@ import java.io.UnsupportedEncodingException;
 public interface WxMsgService {
     WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage) throws UnsupportedEncodingException;
     void authorize(WxOAuth2UserInfo userInfo);
+    void emailBinding(UserEmailBindingReq userEmailBindingReq);
 }

@@ -1,5 +1,10 @@
 package com.cabin.ter.controller;
+import com.cabin.ter.constants.enums.Status;
+import com.cabin.ter.constants.req.UserEmailBindingReq;
+import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.service.WxMsgService;
+import com.cabin.ter.util.AsserUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
@@ -10,6 +15,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * <p>
@@ -28,6 +34,7 @@ public class WxPortalController {
     private final WxMpService wxMpService;
     private final WxMsgService wxMsgService;
     private final WxMpMessageRouter messageRouter;
+
 
     @GetMapping(produces = "text/plan; charset = utf-8")
     public String authGet(@RequestParam(name = "signature", required = false) String signature,
@@ -55,6 +62,7 @@ public class WxPortalController {
             wxMsgService.authorize(userInfo);
         } catch (Exception e) {
             log.error("callBack error", e);
+            throw new BaseException(Status.WX_OPENID_ALREADY_USED);
         }
         return "授权成功";
     }
@@ -100,6 +108,14 @@ public class WxPortalController {
         log.debug("\n组装回复信息：{}", out);
         return out;
     }
+
+    @PostMapping("/emailBinding")
+    public ApiResponse emailBinding(@RequestBody UserEmailBindingReq userEmailBindingReq) {
+        AsserUtil.fastFailValidate(userEmailBindingReq);
+        wxMsgService.emailBinding(userEmailBindingReq);
+        return ApiResponse.ofSuccess();
+    }
+
 
     private WxMpXmlOutMessage route(WxMpXmlMessage message) {
         try {

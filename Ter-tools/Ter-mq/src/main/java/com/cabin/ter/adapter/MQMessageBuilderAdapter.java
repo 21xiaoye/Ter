@@ -1,13 +1,9 @@
 package com.cabin.ter.adapter;
 
 import com.alibaba.fastjson.JSON;
-import com.cabin.ter.constants.dto.LoginMessageDTO;
-import com.cabin.ter.constants.dto.MsgSendMessageDTO;
-import com.cabin.ter.constants.dto.PushMessageDTO;
-import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
+import com.cabin.ter.constants.dto.*;
 import com.cabin.ter.constants.enums.EmailTypeEnum;
 import com.cabin.ter.constants.enums.SourceEnum;
-import com.cabin.ter.constants.dto.EmailMessageDTO;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
 
@@ -64,6 +60,20 @@ public class MQMessageBuilderAdapter {
         emailMessageParticipant.setEmailType(emailType);
         emailMessageParticipant.setSource(source);
         return emailMessageParticipant;
+    }
+    public static UserOfflineNotifyDTO buildUserOfflineNotifyDTO(Long userId, Long offlineTime, SourceEnum source){
+        UserOfflineNotifyDTO userOfflineNotifyDTO = new UserOfflineNotifyDTO();
+        userOfflineNotifyDTO.setUserId(userId);
+        userOfflineNotifyDTO.setOfflineTime(offlineTime);
+        userOfflineNotifyDTO.setSource(source);
+        return userOfflineNotifyDTO;
+    }
+    public static UserOnlineNotifyDTO buildUserOnlineNotifyDTO(Long userId, Long onlineTime, SourceEnum source){
+        UserOnlineNotifyDTO userOnlineNotifyDTO = new UserOnlineNotifyDTO();
+        userOnlineNotifyDTO.setUserId(userId);
+        userOnlineNotifyDTO.setOnlineTime(onlineTime);
+        userOnlineNotifyDTO.setSource(source);
+        return userOnlineNotifyDTO;
     }
     public static WebSocketSingleParticipant json2Obj(String objJsonStr) {
         return JSON.parseObject(objJsonStr, WebSocketSingleParticipant.class);

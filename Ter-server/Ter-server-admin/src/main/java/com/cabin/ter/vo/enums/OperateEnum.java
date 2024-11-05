@@ -14,7 +14,8 @@ public enum OperateEnum implements IStatus {
     USER_REGISTER(1001,"用户注册"),
     USER_LOGIN(1002,"用户登录"),
     USER_CODE(1003,"验证码登录"),
-    WEL_COME(1004, "欢迎新用户");
+    WEL_COME(1004, "欢迎新用户"),
+    USER_BINDING_EMAIL(1005,"绑定邮箱");
     private Integer status;
     private String message;
     OperateEnum(Integer status, String message){

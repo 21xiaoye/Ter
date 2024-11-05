@@ -12,6 +12,8 @@ import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.eclipse.angus.mail.smtp.SMTPSendFailedException;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,8 +37,16 @@ public class EmailMessagePushConsumer extends BaseMqMessageListener<EmailMessage
 
     @Override
     protected void handleMessage(EmailMessageDTO message) {
-        log.info("收到消息[{}]", message);
-        MessageStrategyFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
+        log.info("邮件推送消费者收到消息[{}]", message);
+        try {
+            MessageStrategyFactory.getInstance().getAwardResult(message, MessagePushMethodEnum.EMAIL_MESSAGE);
+        }catch (Exception exception){
+            if(exception instanceof SMTPSendFailedException){
+                log.info("邮件发送失败[{}]",exception.getMessage());
+                return;
+            }
+            log.info("邮件发送异常[{}]",exception.getMessage());
+        }
     }
 
     @Override

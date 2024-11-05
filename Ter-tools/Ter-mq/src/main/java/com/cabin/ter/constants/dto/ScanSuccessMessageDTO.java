@@ -1,9 +1,7 @@
 package com.cabin.ter.constants.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 

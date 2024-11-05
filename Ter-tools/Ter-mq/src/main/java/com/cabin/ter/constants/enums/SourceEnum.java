@@ -20,6 +20,8 @@ public enum SourceEnum{
     EMAIL_BINDING_SEND_CODE_SOURCE("email_binding_send_code"),
     SYSTEM_CLIENT_CONNECTION_SOURCE("system_client_connection"),
     SYSTEM_WEL_COME_SOURCE("system_wel_come"),
-    WX_SCAN_CODE_SOURCE("wx_scan_code_source");
+    WX_SCAN_CODE_SOURCE("wx_scan_code_source"),
+    USER_ONLINE_SOURCE("user_online_source"),
+    USER_OFFLINE_SOURCE("user_offline_source");
     private final String source;
 }

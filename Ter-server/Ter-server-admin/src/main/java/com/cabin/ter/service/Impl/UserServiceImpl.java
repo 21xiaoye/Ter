@@ -53,8 +53,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
-    private Snowflake snowflake;
-    @Autowired
     private UserDomainMapper userDomainMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
         String userPasswd = request.getUserPasswd();
         String saltEncode = myPasswordEncoder.passwdEncryption(userPasswd, salt);
         String encodePasswd = MyPasswordEncoderFactory.getInstance().encode(EncryptionEnum.MD5, saltEncode);
-        return UserAdapter.buildUserDomain(request, snowflake.nextId(), encodePasswd, salt);
+        return UserAdapter.buildUserDomain(request, encodePasswd, salt);
     }
     @Override
     public void sendMailCode(String userEmail,Integer operationType) {

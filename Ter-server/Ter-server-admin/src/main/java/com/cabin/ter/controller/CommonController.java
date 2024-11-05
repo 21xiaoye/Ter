@@ -37,7 +37,7 @@ public class CommonController {
             @Schema(name = "userEmail",description = "目标邮箱地址")
             String userEmail,
             @RequestParam
-            @Schema(name = "operationType", description = "邮件用途 1001:用户注册 1003:用户验证码登录")
+            @Schema(name = "operationType", description = "邮件用途 1001:用户注册 1003:用户验证码登录 1005:绑定邮箱")
             Integer operationType) {
         userService.sendMailCode(userEmail, operationType);
         return ApiResponse.ofSuccess("验证码发送......");

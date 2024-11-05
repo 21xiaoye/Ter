@@ -5,11 +5,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.cabin.ter.adapter.WebSocketMessageBuilderAdapter;
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.config.ThreadPoolConfig;
 import com.cabin.ter.constants.RedisKey;
-import com.cabin.ter.constants.dto.EmailBindingDTO;
 import com.cabin.ter.constants.dto.WSChannelExtraDTO;
 import com.cabin.ter.constants.vo.request.WSAuthorize;
 import com.cabin.ter.constants.vo.response.WSBaseResp;
@@ -19,7 +17,6 @@ import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.vo.response.JwtResponse;
-import com.cabin.ter.vo.UserPrincipal;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.netty.channel.Channel;
@@ -39,7 +36,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,11 +124,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         boolean offline = offline(channel, uidOptional);
         // 登录用户下线
         if(uidOptional.isPresent() && offline){
-            UserDomain userDomain = new UserDomain();
-            userDomain.setUserId(uidOptional.get());
-            userDomain.setLastOptTime(System.currentTimeMillis());
-
-            applicationEventPublisher.publishEvent(new UserOfflineEvent(this,userDomain));
+            applicationEventPublisher.publishEvent(new UserOfflineEvent(this,uidOptional.get(), System.currentTimeMillis()));
         }
     }
 
@@ -180,7 +172,12 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
             return Boolean.FALSE;
         }
         WAIT_LOGIN_MAP.invalidate(loginCode);
-        UserDomain userDomain = userInfoCache.getUserInfoBatch(loginEmail);
+        UserDomain userDomain;
+        // TODO:这里没有拿到用户信息就会事件消费失败，所以循环直到拿到用户数据，其实我消费失败，重新消费成功时，前端就收不到登录成功事件，只能重新扫码，以后再来解决吧
+        do {
+             userDomain = userInfoCache.getUserInfoBatch(loginEmail);
+        }while (Objects.isNull(userDomain));
+
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String jwt = jwtUtil.createJWT(authenticate, true);
@@ -198,17 +195,6 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         }
         return Boolean.FALSE;
     }
-
-    @Override
-    public Boolean emailBinding(EmailBindingDTO emailBindingDTO) {
-        Channel channel = checkLoginCode(emailBindingDTO.getCode());
-        if(Objects.nonNull(channel)){
-            sendMsg(channel, WebSocketMessageBuilderAdapter.buildEmailBindingResp(emailBindingDTO));
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
-    }
-
     @Override
     public void sendToUid(WSBaseResp<?> wsBaseResp, Long uid) {
         CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uid);
@@ -259,11 +245,8 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     public void onlineNotification(Long userId){
         boolean online = userCache.isOnline(userId);
         if(!online){
-            UserPrincipal userPrincipal = new UserPrincipal();
-            userPrincipal.setLastOptTime(new Date());
-            userPrincipal.setUserId(userId);
             log.info("发送上线事件");
-            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userPrincipal));
+            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userId, System.currentTimeMillis()));
         }
     }
     /**

@@ -4,7 +4,6 @@ package com.cabin.ter.util;
 import cn.hutool.core.date.DateUtil;
 
 import cn.hutool.core.util.StrUtil;
-import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.config.JwtConfig;
 import com.cabin.ter.exception.SecurityException;
 import com.cabin.ter.vo.JwtPrincipal;
@@ -12,7 +11,6 @@ import com.cabin.ter.vo.UserPrincipal;
 import com.cabin.ter.config.ConstantPool;
 import com.cabin.ter.constants.enums.Status;
 import io.jsonwebtoken.*;
-import io.netty.channel.Channel;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 

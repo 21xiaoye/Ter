@@ -89,6 +89,7 @@ public class SecurityConfig {
                                 "/test2",
                                 "/wx/portal/public/**",
                                 "/swagger-ui/**",
+                                "/emailBindingPage",
                                 "/templates/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())

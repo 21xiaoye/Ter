@@ -1,6 +1,7 @@
 package com.cabin.ter.adapter;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.enums.RoleEnum;
 import com.cabin.ter.vo.request.LoginAndRegisterReq;
@@ -17,14 +18,15 @@ import java.util.Objects;
  * @date Created in 2024-05-28 16:00
  */
 public class UserAdapter {
+    private static final Snowflake snowflake = new Snowflake();
     public static UserInfoResp buildUserInfoResp(UserDomain userDomain) {
         UserInfoResp userInfoResp = new UserInfoResp();
         BeanUtil.copyProperties(userDomain, userInfoResp);
         return userInfoResp;
     }
-    public static UserDomain buildUserDomain(LoginAndRegisterReq request, Long userId, String userPasswd, String salt){
+    public static UserDomain buildUserDomain(LoginAndRegisterReq request, String userPasswd, String salt){
         UserDomain userDomain = UserDomain.builder()
-                .userId(userId)
+                .userId(snowflake.nextId())
                 .userEmail(request.getUserEmail())
                 .userPasswd(userPasswd)
                 .userName(request.getUserEmail())

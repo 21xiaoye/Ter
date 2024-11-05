@@ -5,7 +5,6 @@ import com.cabin.ter.handler.LogHandler;
 import com.cabin.ter.handler.ScanHandler;
 import com.cabin.ter.handler.SubscribeHandler;
 import lombok.AllArgsConstructor;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;

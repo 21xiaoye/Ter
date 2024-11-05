@@ -36,13 +36,13 @@ public class UserInfoCache extends AbstractRedisStringCache<Long, UserDomain>{
      * @param uId
      * @param optTime
      */
-    public void online(Long uId, Date optTime){
+    public void online(Long uId, Long optTime){
         String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
         String offlineKey = RedisKey.getKey(RedisKey.OFFLINE_UID_ZET);
 
         redisCache.zRemove(offlineKey, uId);
         redisCache.zRemove(onlineKey, uId);
-        redisCache.zAdd(onlineKey, uId, optTime.getTime());
+        redisCache.zAdd(onlineKey, uId, optTime);
     }
 
     /**

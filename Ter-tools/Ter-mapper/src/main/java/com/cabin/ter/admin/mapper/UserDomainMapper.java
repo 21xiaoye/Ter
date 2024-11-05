@@ -70,8 +70,8 @@ public interface UserDomainMapper {
      * @param openId 用户 openId
      * @return Integer
      */
-    @Update("UPDATE ter_user SET openId = #{openId} WHERE userEmail = #{userEmail}")
-    Integer updateUserOpenId(String userEmail,String openId);
+    @Update("UPDATE ter_user SET openId = #{openId} WHERE userId = #{userId}")
+    Integer updateUserOpenId(Long userId,String openId);
 
     List<UserDomain> listByIds(@Param("uIdsList") List<Long> uIdsList);
 }

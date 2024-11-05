@@ -62,16 +62,12 @@ public class MessageStrategyFactory implements ApplicationContextAware {
      * @param messageType 消息策略类型参数
      * @return Boolean
      */
-    public <T extends MQBaseMessage> void getAwardResult(T message, MessagePushMethodEnum messageType) {
-        try {
-            MessageStrategyBase<T> strategy = getStrategy(messageType);
-            if (Objects.isNull(strategy)) {
-                throw new RuntimeException("获取消息策略异常,策略加载失败");
-            }
-            strategy.messageStrategy(message);
-        } catch (Exception e) {
-            throw new RuntimeException("获取消息策略异常" + e);
+    public <T extends MQBaseMessage> void getAwardResult(T message, MessagePushMethodEnum messageType) throws Exception{
+        MessageStrategyBase<T> strategy = getStrategy(messageType);
+        if (Objects.isNull(strategy)) {
+            throw new RuntimeException("获取消息策略异常,策略加载失败");
         }
+        strategy.messageStrategy(message);
     }
 
     /**

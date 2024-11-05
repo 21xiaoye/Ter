@@ -10,22 +10,10 @@ package com.cabin.ter.constants;
  */
 public interface TopicConstant {
     /**
-     * redis 用户订阅主题
+     * redis 用户订阅主题 : 主要用于通知用户上下线通知
      */
-    String REDIS_USER_MESSAGE_PUSH = "redis_user_message_push";
+    String REDIS_GLOBAL_USER_LINE_STATUS = "redis_global_user_line_status";
 
-    /**
-     *  广播推送主题
-     */
-    String ROCKETMQ_BROADCASTING_PUSH_MESSAGE_TOPIC = "rocketmq_broadcasting_push_message_topic";
-    /**
-     * 消息广播推送组
-     */
-    String SOURCE_BROADCASTING_GROUP = "rocketmq_broadcasting_message_group";
-    /**
-     * 广播推送，所有用户接受消息
-     */
-    String SOURCE_BROADCASTING_WIND_TAG = "rocketmq_broadcasting_wind_tag";
     /**
      * 单点推送主题
      */
@@ -38,6 +26,8 @@ public interface TopicConstant {
      * 单点推送，指定用户接受消息
      */
     String SOURCE_SINGLE_PUSH_TAG = "rocket_single_push_message_tag";
+
+    String WEB_USER_MESSAGE_NOTIFICATION_group= "web_user_message_notification_group";
     /**
      * (授权完成后)登录信息mq
      */
@@ -49,6 +39,14 @@ public interface TopicConstant {
      */
     String SCAN_MSG_TOPIC = "user_scan_send_msg";
     String SCAN_MSG_GROUP = "user_scan_send_msg_group";
+    /**
+     * 用户上线通知
+     */
+    String GLOBAL_USER_ONLINE_TOPIC = "redis_global_user_online";
+    /**
+     * 用户下线通知
+     */
+    String GLOBAL_USER_OFFLINE_TOPIC = "redis_global_user_offline";
     /**
      * 邮箱绑定mq
      */
