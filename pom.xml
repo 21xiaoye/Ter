@@ -12,7 +12,7 @@
     <artifactId>Ter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ter</name>E
+    <name>ter</name>
     <description>ter</description>
     <modules>
         <module>Ter-tools</module>
@@ -27,6 +27,7 @@
         <module>Ter-tools/Ter-mq</module>
         <module>Ter-test</module>
         <module>Ter-server/Ter-server-sys</module>
+        <module>Ter-client</module>
     </modules>
     <properties>
         <java.version>17</java.version>
@@ -220,6 +221,10 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>${caffeine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <dependency>
