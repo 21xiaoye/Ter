@@ -43,14 +43,20 @@ public interface UserService {
     /**
      * 获取前端展示信息
      *
-     * @param uid
+     * @param userId
      * @return
      */
-    UserInfoResp getUserInfo(Long uid);
+    UserInfoResp getUserInfo(Long userId);
 
     /**
      * 保存用户
      * @param userDomain 需要保存的用户
      */
     void saveUser(UserDomain userDomain);
+
+    /**
+     * 用户退出登录
+     * @param userId    退出用户userId
+     */
+    void userLogOut(Long userId);
 }

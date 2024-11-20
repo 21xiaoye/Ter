@@ -39,4 +39,9 @@ public class UserController {
         log.info("收到用户id{}的请求", RequestHolderUtil.get().getUid());
         return ApiResponse.ofSuccess(userService.getUserInfo(RequestHolderUtil.get().getUid()));
     }
+    @PostMapping("/logOut")
+    @Operation(summary = "退出登录")
+    public void logOut(){
+        userService.userLogOut(RequestHolderUtil.get().getUid());
+    }
 }

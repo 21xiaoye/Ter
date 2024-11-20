@@ -3,8 +3,11 @@ package com.cabin.ter.util;
 
 import cn.hutool.core.date.DateUtil;
 
+import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.config.JwtConfig;
+import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.exception.SecurityException;
 import com.cabin.ter.vo.JwtPrincipal;
 import com.cabin.ter.vo.UserPrincipal;
@@ -43,20 +46,22 @@ public class JwtUtil {
 
     @Autowired
     private JwtConfig jwtConfig;
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 创建JWT
      *
      * @param rememberMe    记住我
-     * @param id            用户id
+     * @param userId        用户userId
      * @param subject       用户名
      * @param roleId        用户角色
      * @param authorities   用户权限
      * @return  JWT
      */
-    public String createJWT(Boolean rememberMe, Long id, String subject, Integer roleId, Collection<? extends GrantedAuthority> authorities){
+    public String createJWT(Boolean rememberMe, Long userId, String subject, Integer roleId, Collection<? extends GrantedAuthority> authorities){
         Date nowTime = new Date();
-        JwtBuilder jwtBuilder = Jwts.builder().setId(id.toString()).setSubject(subject).setIssuedAt(nowTime)
+        JwtBuilder jwtBuilder = Jwts.builder().setId(userId.toString()).setSubject(subject).setIssuedAt(nowTime)
                 .signWith(SignatureAlgorithm.HS256, jwtConfig.getKey())
                 .claim("role", roleId)
                 .claim("authorities", authorities);
@@ -67,8 +72,7 @@ public class JwtUtil {
         }
 
         String jwt = jwtBuilder.compact();
-
-        stringRedisTemplate.opsForValue().set(ConstantPool.REDIS_JWT_KEY_PREFIX+subject, jwt, ttl, TimeUnit.MINUTES);
+        redisCache.set(RedisKey.getKey(RedisKey.REDIS_JWT_KEY_PREFIX, userId), jwt, ttl, TimeUnit.MINUTES);
         return jwt;
     }
 
@@ -93,9 +97,7 @@ public class JwtUtil {
     public Claims parseJWT(String jwt) {
         try {
             Claims claims = Jwts.parser().setSigningKey(jwtConfig.getKey()).parseClaimsJws(jwt).getBody();
-
-            String username = claims.getSubject();
-            String redisKey = ConstantPool.REDIS_JWT_KEY_PREFIX + username;
+            String redisKey = RedisKey.getKey(RedisKey.REDIS_JWT_KEY_PREFIX, claims.getId());
 
             // 校验redis中的JWT是否存在
             Long expire = stringRedisTemplate.getExpire(redisKey, TimeUnit.MILLISECONDS);
@@ -135,9 +137,7 @@ public class JwtUtil {
     public boolean verityToken(String jwt){
         Claims claims = Jwts.parser().setSigningKey(jwtConfig.getKey()).parseClaimsJws(jwt).getBody();
 
-        String username = claims.getSubject();
-        String redisKey = ConstantPool.REDIS_JWT_KEY_PREFIX + username;
-
+        String redisKey = RedisKey.getKey(RedisKey.REDIS_JWT_KEY_PREFIX, claims.getId());
         // 校验redis中的JWT是否存在
         Long expire = stringRedisTemplate.getExpire(redisKey, TimeUnit.MILLISECONDS);
         if (Objects.isNull(expire) || expire <= 0) {
@@ -157,45 +157,24 @@ public class JwtUtil {
      */
     public void invalidateJWT(HttpServletRequest request) {
         String jwt = getJwtFromRequest(request);
-        String username = getUsernameFromJWT(jwt);
+        JwtPrincipal jwtInfo = getJwtInfo(jwt);
         // 从redis中清除JWT
-        stringRedisTemplate.delete(ConstantPool.REDIS_JWT_KEY_PREFIX + username);
+        redisCache.del(RedisKey.getKey(RedisKey.REDIS_JWT_KEY_PREFIX, jwtInfo.getId()));
     }
-
-    /**
-     * 根据 jwt 获取用户名
-     *
-     * @param jwt JWT
-     * @return 用户名
-     */
-    public String getUsernameFromJWT(String jwt) {
-        Claims claims = parseJWT(jwt);
-        return claims.getSubject();
+    public void invalidateJWT(Long userId){
+        redisCache.del(RedisKey.getKey(RedisKey.REDIS_JWT_KEY_PREFIX, userId));
     }
-
-    /**
-     * 根据token 获取用户 UID
-     *
-     * @param jwt
-     * @return
-     */
-    public Long getUIDFromJWT(String jwt){
-        Claims claims = parseJWT(jwt);
-        return Long.parseLong(claims.getId());
-    }
-
     /**
      * 获取jwt中的用户信息
      * @param jwt   用户Jwt
      * @return  用户jwt信息
      */
-    public JwtPrincipal  getJwtInfo(String jwt){
+    public JwtPrincipal getJwtInfo(String jwt){
         Claims claims = parseJWT(jwt);
-        JwtPrincipal jwtPrincipal = JwtPrincipal.builder()
+        return  JwtPrincipal.builder()
                 .Id(Long.parseLong(claims.getId()))
                 .subject(claims.getSubject())
                 .build();
-        return jwtPrincipal;
     }
     /**
      * 从 request 的 header 中获取 JWT

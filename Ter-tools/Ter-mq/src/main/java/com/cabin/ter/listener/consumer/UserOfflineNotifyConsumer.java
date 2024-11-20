@@ -44,7 +44,7 @@ public class UserOfflineNotifyConsumer extends BaseMqMessageListener<UserOffline
         log.info("对用户进行下线通知......");
         List<Long> userFriendId = roomFriendCache.getUserFriendId(message.getUserId());
         userFriendId.forEach(userId->{
-            webSocketPublicService.sendToUid(WebSocketMessageBuilderAdapter.buildUserOnlineResp(userId), userId);
+            webSocketPublicService.sendToUid(WebSocketMessageBuilderAdapter.buildUserOfflineResp(userId), userId);
         });
     }
 

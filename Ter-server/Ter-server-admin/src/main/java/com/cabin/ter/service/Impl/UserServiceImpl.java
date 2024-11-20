@@ -17,7 +17,10 @@ import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.enums.*;
 import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
+import com.cabin.ter.listener.event.UserLogOutEvent;
+import com.cabin.ter.listener.event.UserOfflineEvent;
 import com.cabin.ter.listener.event.UserOnlineEvent;
+import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.vo.enums.OperateEnum;
@@ -130,6 +133,14 @@ public class UserServiceImpl implements UserService {
         userDomainMapper.insertTerUser(userDomain);
         redisCache.mset(RedisKey.getKey(RedisKey.USER_ONLINE_INFO, userDomain.getUserId()), userDomain,5*60);
         sendMail(userDomain.getUserEmail(), userDomain.getUserName(), OperateEnum.WEL_COME, EmailTypeEnum.SYSTEM_WEL_COME, SourceEnum.TEST_SOURCE);
+    }
+
+    @Override
+    public void userLogOut(Long userId) {
+        // 发布用户下线通知
+        applicationEventPublisher.publishEvent(new UserOfflineEvent(this, userId, System.currentTimeMillis()));
+        // 发布用户退出登录通知
+        applicationEventPublisher.publishEvent(new UserLogOutEvent(this, userId));
     }
 
     @Async

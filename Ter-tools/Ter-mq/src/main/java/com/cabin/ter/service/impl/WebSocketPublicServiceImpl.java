@@ -17,6 +17,7 @@ import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.constants.vo.response.JwtResponse;
+import com.cabin.ter.vo.JwtPrincipal;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.netty.channel.Channel;
@@ -160,7 +161,8 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         if(!b){
             sendMsg(channel, WebSocketMessageBuilderAdapter.buildInvalidateTokenResp());
         }else{
-            this.online(channel,jwtUtil.getUIDFromJWT(wsAuthorize.getToken()));
+            JwtPrincipal jwtInfo = jwtUtil.getJwtInfo(wsAuthorize.getToken());
+            this.online(channel,jwtInfo.getId());
         }
     }
 
@@ -196,10 +198,10 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         return Boolean.FALSE;
     }
     @Override
-    public void sendToUid(WSBaseResp<?> wsBaseResp, Long uid) {
-        CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uid);
+    public void sendToUid(WSBaseResp<?> wsBaseResp, Long userId) {
+        CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(userId);
         if(CollectionUtil.isEmpty(channels)){
-            log.info("用户：{}不在线",uid);
+            log.info("用户：{}不在线",userId);
             return;
         }
         channels.forEach(channel -> {

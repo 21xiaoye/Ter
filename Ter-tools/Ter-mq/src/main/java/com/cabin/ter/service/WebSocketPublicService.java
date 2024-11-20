@@ -70,5 +70,11 @@ public interface WebSocketPublicService {
      */
     void sendToAllOnline(WSBaseResp<?> wsBaseResp);
 
-    void sendToUid(WSBaseResp<?> wsBaseResp, Long uid);
+    /**
+     * 推送给自定用户
+     *
+     * @param wsBaseResp    发送的消息体
+     * @param userId    接收用户userId
+     */
+    void sendToUid(WSBaseResp<?> wsBaseResp, Long userId);
 }

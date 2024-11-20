@@ -30,8 +30,8 @@ public class PushUserConsumer extends BaseMqMessageListener<PushMessageDTO> impl
         WSPushTypeEnum wsPushTypeEnum = WSPushTypeEnum.of(message.getPushType());
         switch (wsPushTypeEnum) {
             case USER:
-                message.getUidList().forEach(uid -> {
-                    webSocketService.sendToUid(message.getWsBaseMsg(), uid);
+                message.getUidList().forEach(userId -> {
+                    webSocketService.sendToUid(message.getWsBaseMsg(), userId);
                 });
                 break;
             case ALL:

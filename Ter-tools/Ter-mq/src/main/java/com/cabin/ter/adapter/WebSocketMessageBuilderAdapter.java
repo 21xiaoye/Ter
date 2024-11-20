@@ -58,8 +58,8 @@ public class WebSocketMessageBuilderAdapter {
         return wsBaseResp;
     }
 
-    public static WSBaseResp<WSLoginSuccess> buildInvalidateTokenResp() {
-        WSBaseResp<WSLoginSuccess> wsBaseResp = new WSBaseResp<>();
+    public static WSBaseResp<Void> buildInvalidateTokenResp() {
+        WSBaseResp<Void> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.INVALIDATE_TOKEN.getType());
         return wsBaseResp;
     }

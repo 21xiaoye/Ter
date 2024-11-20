@@ -58,6 +58,10 @@ public class RedisKey {
      * 用户好友信息，保存用户好友的id
      */
     public static final String USER_FRIEND = "user_friend:%s";
+    /**
+     * 保存用户token
+     */
+    public static final String REDIS_JWT_KEY_PREFIX = "security:jwt:%s";
     public static String getKey(String key, Object... objects) {
         return BASE_KEY + String.format(key, objects);
     }
