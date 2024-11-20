@@ -34,6 +34,11 @@ public class RedisCache {
                     "else \n" +
                     "  return tonumber(redis.call('INCR',key)) \n" +
                     "end ";
+
+    public static String getLuaIncrExpire() {
+        return LUA_INCR_EXPIRE;
+    }
+
     public Long inc(String key, int time, TimeUnit unit){
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR_EXPIRE, Long.class);
         return redisTemplate.execute(redisScript, Collections.singletonList(key), String.valueOf(unit.toSeconds(time)));
@@ -170,7 +175,7 @@ public class RedisCache {
     public static String objToStr(Object o) {
         return JsonUtils.toStr(o);
     }
-    private  String get(String key) {
+    private String get(String key) {
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
 
@@ -201,9 +206,36 @@ public class RedisCache {
 
 
     public  Boolean zAdd(String key, Object value, Long score) {
-        return zAdd(key, value.toString(), score);
+        return zAdd(key, objToStr(value), score);
+    }
+    public void zAdd(String key, List<Object> values, Long score){
+        values.forEach(value->{
+            zAdd(key, value, score);
+        });
     }
 
+    public <T> void setAdd(String key, List<T> values){
+        values.forEach(value->{
+            setAdd(key, value);
+        });
+    }
+    public void setAdd(String key, Object value){
+        setAdd(key, objToStr(value));
+    }
+
+    public void setAdd(String key, String value){
+         redisTemplate.opsForSet().add(key, value);
+    }
+
+    public <T> Set<T> getSetValue(String key, Class<T> tClass){
+        Set<String> members = redisTemplate.opsForSet().members(key);
+        HashSet<T> ts = new HashSet<>();
+        assert members != null;
+        members.forEach(value->{
+            ts.add(toBeanOrNull(value, tClass));
+        });
+        return ts;
+    }
     public Boolean zIsMember(String key, Object value) {
         return Objects.nonNull(redisTemplate.opsForZSet().score(key, value.toString()));
     }
@@ -219,5 +251,14 @@ public class RedisCache {
 
     public  Long zRemove(String key, String value) {
         return redisTemplate.opsForZSet().remove(key, value);
+    }
+
+    /**
+     * 将消息发送到指定主题
+     * @param topicConstant 主题
+     * @param message   消息
+     */
+    public void publishMessage(String topicConstant, String message) {
+        redisTemplate.convertAndSend(topicConstant, message);
     }
 }

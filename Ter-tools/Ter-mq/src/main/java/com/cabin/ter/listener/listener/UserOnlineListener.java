@@ -1,8 +1,11 @@
 package com.cabin.ter.listener.listener;
 
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
+import com.cabin.ter.constants.TopicConstant;
+import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.listener.event.UserOnlineEvent;
 import com.cabin.ter.cache.UserInfoCache;
-import com.cabin.ter.vo.UserPrincipal;
+import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -22,17 +25,15 @@ import org.springframework.stereotype.Component;
 public class UserOnlineListener {
     @Autowired
     private UserInfoCache userCache;
-
-
-    /**
-     * 用户上线监听
-     *
-     * @param event
-     */
+    @Autowired
+    private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
     @Async(value = "terExecutor")
     @EventListener(classes = UserOnlineEvent.class)
     public void saveRedisAndPush(UserOnlineEvent event) {
-        UserPrincipal user = event.getUserPrincipal();
-        userCache.online(user.getUserId(), user.getLastOptTime());
+        Long userId = event.getUserId();
+        Long onlineTime = event.getOnlineTime();
+        userCache.online(userId, onlineTime);
+        // 发送上线通知
+        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_ONLINE_TOPIC, MQMessageBuilderAdapter.buildUserOnlineNotifyDTO(userId, onlineTime, SourceEnum.USER_ONLINE_SOURCE));
     }
 }

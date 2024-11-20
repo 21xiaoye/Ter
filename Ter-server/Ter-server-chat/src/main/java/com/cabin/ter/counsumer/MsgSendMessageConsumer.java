@@ -4,6 +4,8 @@ import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.cache.GroupMemberCache;
 import com.cabin.ter.cache.MessageCache;
 import com.cabin.ter.cache.RoomCache;
+import com.cabin.ter.cache.RoomFriendCache;
+import com.cabin.ter.chat.domain.FriendRoomDomain;
 import com.cabin.ter.chat.domain.MessageDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
 import com.cabin.ter.chat.enums.RoomTypeEnum;
@@ -20,8 +22,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author xiaouye
@@ -35,6 +36,8 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
     private MessageCache messageCache;
     @Autowired
     private RoomCache roomCache;
+    @Autowired
+    private RoomFriendCache roomFriendCache;
     @Autowired
     private ChatService chatService;
     @Autowired
@@ -63,6 +66,10 @@ public class MsgSendMessageConsumer extends BaseMqMessageListener<MsgSendMessage
             // 单聊，对好友进行推送
             if(Objects.equals(roomDomain.getRoomType(), RoomTypeEnum.FRIEND.getType())){
                 log.info("单聊信息，对好友进行推送");
+                Map<Long, FriendRoomDomain> friendRoomDomainMap = roomFriendCache.getBatch(Collections.singletonList(roomDomain.getRoomId()));
+                friendRoomDomainMap.forEach((aLong, friendRoomDomain) -> {
+                    pushService.sendPushMsg(MessageAdapter.buildMsgSend(msgResp),friendRoomDomain.getFriendId());
+                });
             }
         }
     }

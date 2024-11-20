@@ -1,6 +1,5 @@
 package com.cabin.ter.sys.domain;
 
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

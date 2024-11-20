@@ -17,6 +17,7 @@ import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.enums.*;
 import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
+import com.cabin.ter.listener.event.UserOnlineEvent;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.vo.enums.OperateEnum;
@@ -33,6 +34,7 @@ import com.cabin.ter.util.AsserUtil;
 import com.cabin.ter.vo.response.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -69,6 +71,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TxObjectStorageAdapter txObjectStorageAdapter;
     @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired
     private UserInfoCache userInfoCache;
     @Override
     public ApiResponse userLogin(LoginAndRegisterReq request) {
@@ -91,7 +95,8 @@ public class UserServiceImpl implements UserService {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String jwt = jwtUtil.createJWT(authenticate, request.getRememberMe());
-
+        // 推送上线通知
+        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userDomain.getUserId(), System.currentTimeMillis()));
         return ApiResponse.ofSuccess(new JwtResponse(jwt));
     }
 

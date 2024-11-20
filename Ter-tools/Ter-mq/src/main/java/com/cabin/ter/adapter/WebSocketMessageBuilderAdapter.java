@@ -3,10 +3,8 @@ package com.cabin.ter.adapter;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
-import com.cabin.ter.constants.vo.response.WSApplyUserInfoResp;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
-import com.cabin.ter.constants.vo.response.WSLoginSuccess;
-import com.cabin.ter.constants.vo.response.WsLoginUrlResp;
+import com.cabin.ter.constants.vo.response.*;
+import com.cabin.ter.listener.listener.UserOnlineListener;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.stereotype.Component;
 
@@ -43,18 +41,18 @@ public class WebSocketMessageBuilderAdapter {
     }
     /**
      * 用户登录成功
-     * @param userPrincipal
+     * @param userDomain
      * @param token
      * @return
      */
-    public static WSBaseResp<WSLoginSuccess> buildLoginSuccessResp(UserDomain userPrincipal, String token){
+    public static WSBaseResp<WSLoginSuccess> buildLoginSuccessResp(UserDomain userDomain, String token){
         WSBaseResp<WSLoginSuccess> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SUCCESS.getType());
         WSLoginSuccess wsLoginSuccess = WSLoginSuccess.builder()
-                .avatar(userPrincipal.getUserAvatar())
-                .name(userPrincipal.getUserAvatar())
+                .avatar(userDomain.getUserAvatar())
+                .name(userDomain.getUserName())
                 .token(token)
-                .uId(userPrincipal.getUserId())
+                .uId(userDomain.getUserId())
                 .build();
         wsBaseResp.setData(wsLoginSuccess);
         return wsBaseResp;
@@ -69,6 +67,18 @@ public class WebSocketMessageBuilderAdapter {
         WSBaseResp<WSApplyUserInfoResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.APPLY.getType());
         wsBaseResp.setData(applyUserInfoResp);
+        return wsBaseResp;
+    }
+    public static WSBaseResp<UserOfflineResp> buildUserOfflineResp(Long userId){
+        WSBaseResp<UserOfflineResp> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.USER_OFFLINE.getType());
+        wsBaseResp.setData(UserOfflineResp.builder().userId(userId).build());
+        return wsBaseResp;
+    }
+    public static WSBaseResp<UserOnlineResp> buildUserOnlineResp(Long userId){
+        WSBaseResp<UserOnlineResp> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.USER_ONLINE.getType());
+        wsBaseResp.setData(UserOnlineResp.builder().userId(userId).build());
         return wsBaseResp;
     }
 }

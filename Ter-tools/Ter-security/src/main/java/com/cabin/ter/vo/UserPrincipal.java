@@ -49,7 +49,7 @@ public class UserPrincipal implements UserDetails, Serializable {
     /**
      * 最后上下线时间
      */
-    private Date lastOptTime;
+    private Long lastOptTime;
     /**
      * 邮箱
      */

@@ -7,7 +7,7 @@
         SELECT id, userId, friendId, roomId, roomKey, isTop,status
         FROM ter_room_friend
         WHERE roomId IN
-        <foreach item="aUid" index="index" collection="roomIdsList" open="(" separator="," close=")">
+        <foreach item="roomId" index="index" collection="roomIdsList" open="(" separator="," close=")">
             #{roomId}
         </foreach>
     </select>

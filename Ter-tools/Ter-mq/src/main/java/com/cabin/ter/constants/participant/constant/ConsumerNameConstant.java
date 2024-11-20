@@ -13,4 +13,6 @@ public interface ConsumerNameConstant {
      String MSG_SEND_MESSAGE_CONSUMER = "msg_send_message_consumer";
      String PUSH_USER_CONSUMER = "push_consumer";
      String WX_SCAN_CODE_MESSAGE_CONSUMER = "wx_scan_code_message_consumer";
+     String USER_ONLINE_NOTIFY_CONSUMER = "user_online_notify_consumer";
+     String USER_OFFLINE_NOTIFY_CONSUMER = "user_offline_notify_consumer";
 }

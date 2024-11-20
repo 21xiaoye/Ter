@@ -23,12 +23,6 @@ public interface TopicConstant {
      */
     String SINGLE_SINGLE_PUSH_MESSAGE_GROUP = "rocketmq_single_push_message_group";
     /**
-     * 单点推送，指定用户接受消息
-     */
-    String SOURCE_SINGLE_PUSH_TAG = "rocket_single_push_message_tag";
-
-    String WEB_USER_MESSAGE_NOTIFICATION_group= "web_user_message_notification_group";
-    /**
      * (授权完成后)登录信息mq
      */
     String LOGIN_MSG_TOPIC = "user_login_send_msg";
@@ -43,16 +37,12 @@ public interface TopicConstant {
      * 用户上线通知
      */
     String GLOBAL_USER_ONLINE_TOPIC = "redis_global_user_online";
+    String GLOBAL_USER_ONLINE_GROUP = "redis_global_user_online_group";
     /**
      * 用户下线通知
      */
     String GLOBAL_USER_OFFLINE_TOPIC = "redis_global_user_offline";
-    /**
-     * 邮箱绑定mq
-     */
-    String EMAIL_BINDING_TOPIC = "email_binding_msg";
-    String EMAIL_BIDING_GROUP = "email_binding_send_msg_group";
-
+    String GLOBAL_USER_OFFLINE_GROUP = "redis_global_user_offline_group";
     /**
      * 消息发送 mq
      */

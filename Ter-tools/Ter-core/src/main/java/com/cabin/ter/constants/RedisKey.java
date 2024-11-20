@@ -54,6 +54,10 @@ public class RedisKey {
      * 微信扫码登录，绑定邮箱成功之后，等待用户授权之前保存用户信息
      */
     public static final String AUTHORIZE_WX = "authorize_wx:%s";
+    /**
+     * 用户好友信息，保存用户好友的id
+     */
+    public static final String USER_FRIEND = "user_friend:%s";
     public static String getKey(String key, Object... objects) {
         return BASE_KEY + String.format(key, objects);
     }

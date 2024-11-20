@@ -27,29 +27,4 @@ public class MsgHandlerFactory {
         AsserUtil.isEmpty(abstractMsgHandler, CommonErrorEnum.PARAM_VALID.getMessage());
         return abstractMsgHandler;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

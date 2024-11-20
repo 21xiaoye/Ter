@@ -13,9 +13,7 @@ import com.cabin.ter.strategy.AbstractMsgHandler;
 import com.cabin.ter.strategy.MsgHandlerFactory;
 import com.cabin.ter.vo.request.ChatMessageReq;
 import com.cabin.ter.vo.request.TextMsgReq;
-import com.cabin.ter.vo.response.ChatMessageResp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.cabin.ter.vo.response.ChatMessageResp;;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,17 +1,15 @@
 package com.cabin.ter.config;
 
 import com.cabin.ter.constants.TopicConstant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
@@ -25,7 +23,7 @@ import java.util.Objects;
  * @date Created in 2024-05-02 22:04
  */
 @Configuration
-public class RedisConfig {
+public class RedisConfig{
     /**
      * redis 序列化配置
      * @param redisConnectionFactory
@@ -50,7 +48,7 @@ public class RedisConfig {
     }
     @Bean
     ChannelTopic channelTopic() {
-        return new ChannelTopic(TopicConstant.REDIS_USER_MESSAGE_PUSH);
+        return new ChannelTopic(TopicConstant.REDIS_GLOBAL_USER_LINE_STATUS);
     }
     /**
      * 序列化工具
@@ -79,13 +77,15 @@ public class RedisConfig {
          * @param <T>
          * @throws SerializationException
          */
+        @SuppressWarnings("unchecked")
         @Override
-        public <T> T deserialize(byte[] source, Class<T> type) throws SerializationException {
+        public <T> T deserialize(byte[] source,@NonNull Class<T> type) throws SerializationException {
             Assert.notNull(type,
                     "Deserialization type must not be null! Please provide Object.class to make use of Jackson2 default typing.");
             if (source == null || source.length == 0) {
                 return null;
             }
+
             if (type.isAssignableFrom(String.class) || type.isAssignableFrom(Character.class)) {
                 return (T) new String(source);
             }

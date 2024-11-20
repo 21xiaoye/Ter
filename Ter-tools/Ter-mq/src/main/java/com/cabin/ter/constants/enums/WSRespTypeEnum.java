@@ -1,8 +1,6 @@
 package com.cabin.ter.constants.enums;
 
-import com.cabin.ter.constants.vo.response.WSApplyUserInfoResp;
-import com.cabin.ter.constants.vo.response.WSLoginSuccess;
-import com.cabin.ter.constants.vo.response.WsLoginUrlResp;
+import com.cabin.ter.constants.vo.response.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -28,6 +26,8 @@ public enum WSRespTypeEnum {
     LOGIN_SUCCESS(4, "用户登录成功返回用户信息", WSLoginSuccess.class),
     INVALIDATE_TOKEN(5, "使前端的token失效，意味着前端需要重新登录", null),
     MESSAGE(6, "新消息", null),
+    USER_ONLINE(7, "用户上线", UserOnlineResp.class),
+    USER_OFFLINE(8, "用户下线", UserOfflineResp.class),
     APPLY(10, "好友申请", WSApplyUserInfoResp.class),
     MEMBER_CHANGE(11, "成员变动", null);
     private final Integer type;

@@ -1,5 +1,6 @@
 package com.cabin.ter.config;
 
+import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.sys.domain.SysDomain;
 import com.cabin.ter.sys.mapper.SysDomainMapper;
 import jakarta.annotation.PostConstruct;
@@ -24,14 +25,12 @@ import java.util.Arrays;
 @Component
 public class SysInfoConfig {
     @Component
-    public class ServerInfo {
-
+    public static class ServerInfo {
+        private static final Snowflake snowflake = new Snowflake();
         @Value("${server.port}")
         private int serverPort;
         @Value("${netty.port}")
         private int nettyPort;
-        @Autowired
-        private IdConfig idConfig;
         @Autowired
         private SysDomainMapper sysDomainMapper;
         @PostConstruct
@@ -39,20 +38,20 @@ public class SysInfoConfig {
             try {
                 InetAddress localhost = InetAddress.getLocalHost();
                 SysDomain http = SysDomain.builder()
-                        .sysId(idConfig.snowflake().nextId())
+                        .sysId(snowflake.nextId())
                         .sysPort(serverPort)
                         .sysHost(localhost.getHostAddress())
                         .sysType("http")
                         .build();
                 SysDomain ws = SysDomain.builder()
-                        .sysId(idConfig.snowflake().nextId())
+                        .sysId(snowflake.nextId())
                         .sysPort(nettyPort)
                         .sysHost(localhost.getHostAddress())
                         .sysType("ws")
                         .build();
                 sysDomainMapper.insertSysWsList(Arrays.asList(http,ws));
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                log.info("记录系统运行信息错误{}",e.getMessage());
             }
         }
     }

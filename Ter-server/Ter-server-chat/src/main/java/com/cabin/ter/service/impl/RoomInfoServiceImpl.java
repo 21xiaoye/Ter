@@ -84,7 +84,6 @@ public class RoomInfoServiceImpl implements RoomInfoService {
             contactPage = contactDomainMapper.getUserContactList(uid);
         }
         List<ChatRoomResp> chatRoomResp = this.buildContactResp(uid, contactPage);
-
         return CursorPageBaseResp.init(chatRoomResp);
     }
 
@@ -97,10 +96,12 @@ public class RoomInfoServiceImpl implements RoomInfoService {
 
     @NonNull
     private List<ChatRoomResp> buildContactResp(Long uid, List<ContactDomain> contactPage){
+        if(contactPage.isEmpty()){
+            return new ArrayList<>();
+        }
         List<Long> roomIds = contactPage.stream().map(ContactDomain::getRoomId).collect(Collectors.toList());
         // 查询每个房间的基本信息
         Map<Long, RoomBaseInfo> roomBaseInfoMap = this.getRoomBaseInfoMap(uid, roomIds);
-        //TODO: 这里其实有个 bug ,没有遵循 ACID 原则
         // 每个房间的最后一条消息
         List<Long> msgIds = roomBaseInfoMap.values().stream().map(RoomBaseInfo::getLastMsgId).collect(Collectors.toList());
         //TODO: 这里我直接从数据库中查询了，未来设计从先从缓存中查询并保证数据同步，实在没时间了 ~_~ ~_~

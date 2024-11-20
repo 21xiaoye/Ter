@@ -4,6 +4,7 @@ import com.cabin.ter.adapter.ChatAdapter;
 import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.adapter.RoomAdapter;
 import com.cabin.ter.cache.RedisCache;
+import com.cabin.ter.cache.RoomFriendCache;
 import com.cabin.ter.chat.domain.FriendApplyDomain;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.chat.domain.FriendRoomDomain;
@@ -54,6 +55,8 @@ public class FriendServiceImpl implements FriendService {
     private ChatService chatService;
     @Autowired
     private RedisCache redisCache;
+    @Autowired
+    private RoomFriendCache roomFriendCache;
     @Override
     public void apply(Long uId, FriendApplyReq request) {
         FriendRoomDomain friendship = friendRoomDomainMapper.getFriendship(uId, request.getTargetId());
@@ -115,13 +118,12 @@ public class FriendServiceImpl implements FriendService {
     }
     @Override
     public List<FriendResp> getFriendPage(Long userId){
-        // 获取所有好友
-        List<FriendRoomDomain> friendPage = friendRoomDomainMapper.getFriendPage(userId, FriendRoomDomain.FRIENDSHIP_RECOVER);
+
+        List<FriendRoomDomain> friendPage = roomFriendCache.getUserFriendInfoSet(userId);
         // 获取好友信息
         Map<Long, UserDomain> friendInfo = getFriendInfo(friendPage);
 
         return friendPage.stream().map(friendRoomDomain -> {
-            redisCache.setHashMap(String.valueOf(userId), String.valueOf(friendRoomDomain.getFriendId()),friendRoomDomain);
             UserDomain userDomain = friendInfo.get(friendRoomDomain.getFriendId());
             FriendResp friendResp = ChatAdapter.buildFriendResp(userDomain, friendRoomDomain.getRoomName());
             if(userInfoCache.isOnline(friendResp.getUserId())){
@@ -138,7 +140,6 @@ public class FriendServiceImpl implements FriendService {
         // 获取所有好友
         List<FriendRoomDomain> friendPage = friendRoomDomainMapper.getFriendPage(userId, FriendRoomDomain.FRIENDSHIP_BLOCK);
         Map<Long, UserDomain> friendInfo = getFriendInfo(friendPage);
-
         return friendPage.stream().map(friendRoomDomain -> {
             UserDomain userDomain = friendInfo.get(friendRoomDomain.getFriendId());
             return ChatAdapter.buildFriendResp(userDomain, friendRoomDomain.getRoomName());

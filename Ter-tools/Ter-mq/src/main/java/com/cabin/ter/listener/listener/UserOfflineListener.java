@@ -1,8 +1,11 @@
 package com.cabin.ter.listener.listener;
 
-import com.cabin.ter.admin.domain.UserDomain;
+import com.cabin.ter.adapter.MQMessageBuilderAdapter;
+import com.cabin.ter.constants.TopicConstant;
+import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.listener.event.UserOfflineEvent;
 import com.cabin.ter.cache.UserInfoCache;
+import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,12 +23,16 @@ import org.springframework.stereotype.Component;
 public class UserOfflineListener {
     @Autowired
     private UserInfoCache userCache;
+    @Autowired
+    private RocketMQEnhanceTemplate rocketMQEnhanceTemplate;
     @Async(value = "terExecutor")
     @EventListener(classes = UserOfflineEvent.class)
-    public void saveRedisAndPush(UserOfflineEvent userOfflineEvent){
-        UserDomain userDomain = userOfflineEvent.getUserDomain();
-        log.info("用户下线监听执行{}",userDomain);
-        userCache.offline(userDomain.getUserId(), userDomain.getLastOptTime());
+    public void saveRedisAndPush(UserOfflineEvent event){
+        Long userId = event.getUserId();
+        Long offlineTime = event.getOfflineTime();
+        log.info("用户下线监听执行{}",userId);
+        userCache.offline(userId, offlineTime);
+        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_OFFLINE_TOPIC, MQMessageBuilderAdapter.buildUserOfflineNotifyDTO(userId, offlineTime, SourceEnum.USER_OFFLINE_SOURCE));
     }
 
     @Async(value = "terExecutor")

@@ -49,7 +49,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
      *
      * @param ctx
      * @param frame
-     * @throws Exception
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -68,6 +67,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         }
 
         try {
+            assert frame instanceof TextWebSocketFrame;
             String request = ((TextWebSocketFrame) frame).text();
             log.info("服务端收到新信息：" + request);
             WsReqMsg reqMsg = JSONUtil.toBean(request, WsReqMsg.class);
