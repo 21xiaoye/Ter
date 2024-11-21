@@ -2,7 +2,7 @@ package com.cabin.ter.websocket;
 
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.StrUtil;
-import com.cabin.ter.constants.vo.request.WSAuthorize;
+import com.cabin.ter.constants.request.WSAuthorize;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.NettyUtil;
 import io.netty.buffer.ByteBuf;

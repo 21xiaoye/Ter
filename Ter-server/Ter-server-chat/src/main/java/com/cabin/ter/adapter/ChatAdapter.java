@@ -2,14 +2,9 @@ package com.cabin.ter.adapter;
 
 import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
-import com.cabin.ter.cache.RoomFriendCache;
 import com.cabin.ter.chat.domain.*;
-import com.cabin.ter.chat.enums.GroupRoleEnum;
-import com.cabin.ter.chat.enums.HotFlagEnum;
-import com.cabin.ter.chat.enums.RoomTypeEnum;
-import com.cabin.ter.vo.response.FriendResp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.cabin.ter.constants.enums.GroupRoleEnum;
+import com.cabin.ter.constants.response.FriendResp;
 
 import java.util.Collection;
 import java.util.List;

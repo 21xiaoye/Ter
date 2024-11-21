@@ -1,16 +1,14 @@
 package com.cabin.ter.adapter;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.chat.domain.FriendApplyDomain;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.chat.domain.FriendRoomDomain;
 import com.cabin.ter.chat.domain.GroupRoomDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
-import com.cabin.ter.chat.enums.HotFlagEnum;
-import com.cabin.ter.chat.enums.RoomTypeEnum;
-import com.cabin.ter.vo.request.FriendApplyReq;
-import com.cabin.ter.vo.response.FriendApplyResp;
+import com.cabin.ter.constants.enums.HotFlagEnum;
+import com.cabin.ter.constants.enums.RoomTypeEnum;
+import com.cabin.ter.constants.request.FriendApplyReq;
 
 public class RoomAdapter {
     private static final Snowflake snowflake = new Snowflake();
@@ -63,26 +61,6 @@ public class RoomAdapter {
                 .targetId(friendApplyReq.getTargetId())
                 .build();
     }
-
-    /**
-     * 构建好友申请响应实体对象
-     *
-     * @param userInfoResp  好友申请被申请者信息
-     * @param applyId       申请记录Id
-     * @param applyStatus   好友申请状态
-     * @param applyMessage  好友申请信息
-     * @return  返回一个好友申请响应实体
-     */
-    public static FriendApplyResp buildFriendApplyResp(UserDomain userInfoResp, Long applyId, Integer applyStatus, String applyMessage, Integer applyType){
-        FriendApplyResp friendApplyResp = new FriendApplyResp();
-        BeanUtil.copyProperties(userInfoResp, friendApplyResp);
-        friendApplyResp.setApplyStatus(applyStatus);
-        friendApplyResp.setApplyId(applyId);
-        friendApplyResp.setApplyMessage(applyMessage);
-        friendApplyResp.setApplyType(applyType);
-        return friendApplyResp;
-    }
-
     /**
      * 构建好友关系持久化实体对象
      *

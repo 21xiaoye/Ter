@@ -30,7 +30,7 @@ public class RoomFriendCache extends AbstractRedisStringCache<Long, FriendRoomDo
     @Override
     protected Map<Long, FriendRoomDomain> load(List<Long> req) {
         List<FriendRoomDomain> listedByRoomIds = friendRoomDomainMapper.listByIds(req);
-        return listedByRoomIds.stream().collect(Collectors.toMap(FriendRoomDomain::getRoomId, Function.identity()));
+        return listedByRoomIds.stream().collect(Collectors.toMap(FriendRoomDomain::getFriendId, Function.identity()));
     }
 
     /**

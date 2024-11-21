@@ -1,9 +1,6 @@
 package com.cabin.ter.chat.domain;
 
-import com.cabin.ter.chat.domain.msg.BaseFileDTO;
-import com.cabin.ter.chat.domain.msg.MessageExtra;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
+import com.cabin.ter.constants.dto.MessageExtra;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;

@@ -2,10 +2,9 @@ package com.cabin.ter.exception.handler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.constants.enums.Status;
 import com.cabin.ter.exception.BaseException;
-import com.qcloud.cos.exception.CosClientException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;

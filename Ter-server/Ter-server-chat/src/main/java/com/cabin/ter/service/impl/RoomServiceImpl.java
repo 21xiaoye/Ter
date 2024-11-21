@@ -6,7 +6,7 @@ import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.chat.domain.FriendRoomDomain;
 import com.cabin.ter.chat.domain.GroupRoomDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
-import com.cabin.ter.chat.enums.RoomTypeEnum;
+import com.cabin.ter.constants.enums.RoomTypeEnum;
 import com.cabin.ter.chat.mapper.FriendRoomDomainMapper;
 import com.cabin.ter.chat.mapper.GroupRoomDomainMapper;
 import com.cabin.ter.chat.mapper.RoomDomainMapper;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 

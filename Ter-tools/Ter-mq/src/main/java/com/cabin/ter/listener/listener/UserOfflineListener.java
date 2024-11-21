@@ -32,7 +32,7 @@ public class UserOfflineListener {
         Long offlineTime = event.getOfflineTime();
         log.info("用户下线监听执行{}",userId);
         userCache.offline(userId, offlineTime);
-        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_OFFLINE_TOPIC, MQMessageBuilderAdapter.buildUserOfflineNotifyDTO(userId, offlineTime, SourceEnum.USER_OFFLINE_SOURCE));
+        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_OFFLINE_TOPIC, MQMessageBuilderAdapter.buildUserOfflineNotifyDTO(userId, offlineTime));
     }
 
     @Async(value = "terExecutor")

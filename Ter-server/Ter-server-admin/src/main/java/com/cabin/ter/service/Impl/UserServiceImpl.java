@@ -3,7 +3,6 @@ package com.cabin.ter.service.Impl;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.adapter.TxObjectStorageAdapter;
 import com.cabin.ter.adapter.UserAdapter;
@@ -17,24 +16,23 @@ import com.cabin.ter.constants.domain.OssReq;
 import com.cabin.ter.constants.enums.*;
 import com.cabin.ter.constants.TopicConstant;
 import com.cabin.ter.constants.dto.EmailMessageDTO;
+import com.cabin.ter.constants.response.LoginSuccessResp;
 import com.cabin.ter.listener.event.UserLogOutEvent;
 import com.cabin.ter.listener.event.UserOfflineEvent;
 import com.cabin.ter.listener.event.UserOnlineEvent;
-import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.template.RocketMQEnhanceTemplate;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;
-import com.cabin.ter.vo.enums.OperateEnum;
-import com.cabin.ter.vo.request.LoginAndRegisterReq;
+import com.cabin.ter.constants.enums.OperateEnum;
+import com.cabin.ter.constants.request.LoginAndRegisterReq;
 import com.cabin.ter.security.MyPasswordEncoder;
 import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.factory.MyPasswordEncoderFactory;
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.util.JwtUtil;
 import com.cabin.ter.util.VerifyUtil;
-import com.cabin.ter.constants.vo.response.JwtResponse;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.util.AsserUtil;
-import com.cabin.ter.vo.response.UserInfoResp;
+import com.cabin.ter.constants.response.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -78,7 +76,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserInfoCache userInfoCache;
     @Override
-    public ApiResponse userLogin(LoginAndRegisterReq request) {
+    public LoginSuccessResp userLogin(LoginAndRegisterReq request) {
         String userEmail = request.getUserEmail();
         UserDomain userDomain = userInfoCache.getUserInfoBatch(userEmail);
         AsserUtil.isEmpty(userDomain, Status.USER_NO_OCCUPY);
@@ -100,7 +98,7 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtil.createJWT(authenticate, request.getRememberMe());
         // 推送上线通知
         applicationEventPublisher.publishEvent(new UserOnlineEvent(this, userDomain.getUserId(), System.currentTimeMillis()));
-        return ApiResponse.ofSuccess(new JwtResponse(jwt));
+        return UserAdapter.buildLoginSuccessResp(jwt);
     }
 
     @Override
@@ -146,7 +144,7 @@ public class UserServiceImpl implements UserService {
     @Async
     public void sendMail(String email, String content, OperateEnum operateEnum,EmailTypeEnum emailType, SourceEnum source){
         EmailMessageDTO emailMessageParticipant = MQMessageBuilderAdapter.buildEmailMessageDTO(operateEnum.getMessage(), email, content, emailType,source);
-        rocketMQEnhanceTemplate.send(TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,  emailMessageParticipant);
+        rocketMQEnhanceTemplate.send(TopicConstant.SYSTEM_EMAIL_SEND_TOPIC,  emailMessageParticipant);
     }
 
     public ApiResponse uploadAvatar(OssReq ossReq){

@@ -161,7 +161,7 @@ public class RedisCache {
         redisTemplate.opsForValue().set(key, toStr);
         this.expire(key, time);
     }
-    public  Boolean expire(String key, long time) {
+    public Boolean expire(String key, long time) {
         try {
             if (time > 0) {
                 redisTemplate.expire(key, time, TimeUnit.SECONDS);
@@ -171,6 +171,9 @@ public class RedisCache {
             return false;
         }
         return true;
+    }
+    public Long expire(String key, TimeUnit timeUnit){
+        return redisTemplate.getExpire(key, timeUnit);
     }
     public static String objToStr(Object o) {
         return JsonUtils.toStr(o);

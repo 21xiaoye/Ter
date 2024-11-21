@@ -4,8 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.enums.RoleEnum;
-import com.cabin.ter.vo.request.LoginAndRegisterReq;
-import com.cabin.ter.vo.response.UserInfoResp;
+import com.cabin.ter.constants.request.LoginAndRegisterReq;
+import com.cabin.ter.constants.response.LoginSuccessResp;
+import com.cabin.ter.constants.response.UserInfoResp;
 
 import java.util.Objects;
 
@@ -39,5 +40,10 @@ public class UserAdapter {
             userDomain.setRoleId(request.getRoleId());
         }
         return userDomain;
+    }
+    public static LoginSuccessResp buildLoginSuccessResp(String token){
+        return LoginSuccessResp.builder()
+                .token(token)
+                .build();
     }
 }

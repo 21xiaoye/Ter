@@ -6,14 +6,13 @@ import com.cabin.ter.chat.domain.MessageDomain;
 import com.cabin.ter.chat.mapper.MessageDomainMapper;
 import com.cabin.ter.constants.enums.MessageTypeEnum;
 import com.cabin.ter.util.AsserUtil;
-import com.cabin.ter.vo.request.ChatMessageReq;
+import com.cabin.ter.constants.request.ChatMessageReq;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.Objects;
 
 /**
  *  <p>

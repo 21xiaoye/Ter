@@ -1,7 +1,7 @@
 package com.cabin.ter.controller;
 import com.cabin.ter.constants.enums.Status;
-import com.cabin.ter.constants.req.UserEmailBindingReq;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.request.UserEmailBindingReq;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.exception.BaseException;
 import com.cabin.ter.service.WxMsgService;
 import com.cabin.ter.util.AsserUtil;
@@ -15,7 +15,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * <p>

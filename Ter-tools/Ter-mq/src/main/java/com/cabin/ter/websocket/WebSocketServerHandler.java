@@ -3,13 +3,12 @@ package com.cabin.ter.websocket;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.cabin.ter.constants.enums.WSReqTypeEnum;
-import com.cabin.ter.constants.vo.request.WSAuthorize;
-import com.cabin.ter.constants.vo.request.WsReqMsg;
+import com.cabin.ter.constants.request.WSAuthorize;
+import com.cabin.ter.constants.request.WsReqMsg;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.util.CacheUtil;
 import com.cabin.ter.adapter.MQMessageBuilderAdapter;
 import com.cabin.ter.util.NettyUtil;
-import com.cabin.ter.util.RedisUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,10 +35,6 @@ import java.util.Date;
 @Service
 @ChannelHandler.Sharable
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
-
-    @Autowired
-    private RedisUtil redisUtil;
-
     @Autowired
     private WebSocketPublicService webSocketPublicService;
 
@@ -120,8 +115,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)  {
         ctx.close();
-        //  清除 redis
-        redisUtil.remove(ctx.channel().id().toString());
         //  清除缓存
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
         log.error("异常信息：\r\n" + cause.getMessage());
@@ -164,7 +157,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     public void channelInactive(ChannelHandlerContext ctx){
         userOffLine(ctx);
         log.info("客户端断开链接" + ctx.channel().localAddress().toString());
-        redisUtil.remove(ctx.channel().id().toString());
         CacheUtil.cacheChannel.remove(ctx.channel().id().toString(), ctx.channel());
     }
 

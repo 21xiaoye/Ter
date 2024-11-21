@@ -1,9 +1,9 @@
 package com.cabin.ter.controller;
 
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.service.ChatService;
 import com.cabin.ter.util.RequestHolderUtil;
-import com.cabin.ter.vo.request.ChatMessageReq;
+import com.cabin.ter.constants.request.ChatMessageReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +28,9 @@ public class ChatController {
     @Operation(description = "发送消息接口")
     @PostMapping("/sendMsg")
     public ApiResponse senMsg(@Valid @RequestBody ChatMessageReq chatMessageReq){
-        Long uId = RequestHolderUtil.get().getUid();
-        log.info("收到用户{}信息{}",uId, chatMessageReq);
-        Long msgId = chatService.sendMsg(chatMessageReq, uId);
+        Long userId = RequestHolderUtil.get().getUid();
+        log.info("收到用户{}信息{}",userId, chatMessageReq);
+        Long msgId = chatService.sendMsg(chatMessageReq, userId);
         return ApiResponse.ofSuccess(chatService.getMsgResp(msgId));
     }
 }

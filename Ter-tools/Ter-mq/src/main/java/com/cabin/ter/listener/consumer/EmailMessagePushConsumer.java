@@ -23,8 +23,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RocketMQMessageListener(
-        topic = TopicConstant.ROCKET_SINGLE_PUSH_MESSAGE_TOPIC,
-        consumerGroup = TopicConstant.SINGLE_SINGLE_PUSH_MESSAGE_GROUP,
+        topic = TopicConstant.SYSTEM_EMAIL_SEND_TOPIC,
+        consumerGroup = TopicConstant.SYSTEM_EMAIL_SEND_GROUP,
         messageModel = MessageModel.BROADCASTING,
         consumeMode = ConsumeMode.CONCURRENTLY,
         consumeThreadNumber = 5

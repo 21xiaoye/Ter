@@ -2,10 +2,10 @@ package com.cabin.ter.adapter;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
-import com.cabin.ter.vo.response.WSMemberChange;
+import com.cabin.ter.constants.response.WSBaseResp;
+import com.cabin.ter.constants.response.WSMemberChange;
 
-import static com.cabin.ter.vo.response.WSMemberChange.CHANGE_TYPE_ADD;
+import static com.cabin.ter.constants.response.WSMemberChange.CHANGE_TYPE_ADD;
 
 /**
  * @author xiaoye

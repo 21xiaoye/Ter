@@ -1,13 +1,9 @@
 package com.cabin.ter.chat.domain;
 
-import com.cabin.ter.chat.enums.HotFlagEnum;
-import com.cabin.ter.chat.enums.RoomTypeEnum;
+import com.cabin.ter.constants.enums.HotFlagEnum;
+import com.cabin.ter.constants.enums.RoomTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author xiaoye

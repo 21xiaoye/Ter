@@ -1,5 +1,6 @@
 package com.cabin.ter.listener.event;
 
+import com.cabin.ter.constants.response.ChatMessageResp;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -9,9 +10,9 @@ import org.springframework.context.ApplicationEvent;
  */
 @Getter
 public class MessageSendEvent extends ApplicationEvent {
-    private final Long msgId;
-    public MessageSendEvent(Object source, Long msgId) {
+    private final ChatMessageResp chatMessageResp;
+    public MessageSendEvent(Object source, ChatMessageResp chatMessageResp) {
         super(source);
-        this.msgId = msgId;
+        this.chatMessageResp = chatMessageResp;
     }
 }

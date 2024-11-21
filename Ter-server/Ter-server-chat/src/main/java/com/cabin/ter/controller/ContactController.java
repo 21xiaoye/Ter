@@ -1,6 +1,6 @@
 package com.cabin.ter.controller;
 
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.service.RoomInfoService;
 import com.cabin.ter.util.RequestHolderUtil;
 import io.swagger.v3.oas.annotations.Operation;

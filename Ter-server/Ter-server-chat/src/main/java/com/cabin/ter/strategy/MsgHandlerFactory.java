@@ -1,6 +1,6 @@
 package com.cabin.ter.strategy;
 
-import com.cabin.ter.constants.enums.exception.CommonErrorEnum;
+import com.cabin.ter.constants.enums.CommonErrorEnum;
 import com.cabin.ter.util.AsserUtil;
 
 import java.util.HashMap;

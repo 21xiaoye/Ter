@@ -3,9 +3,9 @@ package com.cabin.ter.controller;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.enums.Status;
-import com.cabin.ter.vo.request.LoginAndRegisterReq;
+import com.cabin.ter.constants.request.LoginAndRegisterReq;
 import com.cabin.ter.service.UserService;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 
 import com.cabin.ter.util.AsserUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +47,7 @@ public class CommonController {
     @PostMapping("/login")
     public ApiResponse userLogin(@Valid @RequestBody LoginAndRegisterReq loginRequest){
         AsserUtil.fastFailValidate(loginRequest);
-        return userService.userLogin(loginRequest);
+        return ApiResponse.ofSuccess(userService.userLogin(loginRequest));
     }
     @Operation(summary = "用户注册接口")
     @PostMapping("/register")

@@ -1,11 +1,12 @@
 package com.cabin.ter.service;
 
 
-import com.cabin.ter.vo.request.ApprovalFriendReq;
-import com.cabin.ter.vo.request.FriendApplyReq;
-import com.cabin.ter.vo.request.WhiteReq;
-import com.cabin.ter.vo.response.FriendApplyResp;
-import com.cabin.ter.vo.response.FriendResp;
+import com.cabin.ter.constants.request.ApprovalFriendReq;
+import com.cabin.ter.constants.request.FriendApplyReq;
+import com.cabin.ter.constants.request.WhiteReq;
+import com.cabin.ter.constants.response.FriendApplyRecordInfoResp;
+import com.cabin.ter.constants.response.FriendApplyResp;
+import com.cabin.ter.constants.response.FriendResp;
 
 import java.util.List;
 
@@ -16,19 +17,18 @@ import java.util.List;
 public interface FriendService {
 
     /**
-     * 应用
      * 申请好友
      *
      * @param request 请求
-     * @param uid     uid
+     * @param userId  申请者userId
      */
-    void apply(Long uid, FriendApplyReq request);
+    FriendApplyResp apply(Long userId, FriendApplyReq request);
     /**
      * 获取好友申请列表
      * @param userId    用户Id
      * @return  返回好哟申请列表
      */
-    List<FriendApplyResp> getFriendApplyRecord(Long userId);
+    List<FriendApplyRecordInfoResp> getFriendApplyRecord(Long userId);
     /**
      * 同意好友申请
      * @param approvalFriendReq 审批好友请求参数

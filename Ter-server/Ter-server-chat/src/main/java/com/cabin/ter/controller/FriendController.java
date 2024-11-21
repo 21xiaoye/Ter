@@ -1,12 +1,12 @@
 package com.cabin.ter.controller;
 
 import com.cabin.ter.chat.domain.FriendRoomDomain;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.service.FriendService;
 import com.cabin.ter.util.RequestHolderUtil;
-import com.cabin.ter.vo.request.ApprovalFriendReq;
-import com.cabin.ter.vo.request.FriendApplyReq;
-import com.cabin.ter.vo.request.WhiteReq;
+import com.cabin.ter.constants.request.ApprovalFriendReq;
+import com.cabin.ter.constants.request.FriendApplyReq;
+import com.cabin.ter.constants.request.WhiteReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,7 @@ public class FriendController {
     @PostMapping("/apply")
     public ApiResponse friendApply(@Valid @RequestBody FriendApplyReq friendApplyReq){
         Long uid = RequestHolderUtil.get().getUid();
-        friendService.apply(uid,friendApplyReq);
-        return ApiResponse.ofSuccess();
+        return ApiResponse.ofSuccess(friendService.apply(uid,friendApplyReq));
     }
 
     @GetMapping("/apply/page")

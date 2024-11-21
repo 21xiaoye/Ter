@@ -1,7 +1,7 @@
 package com.cabin.ter.service;
 
 
-import com.cabin.ter.constants.req.UserEmailBindingReq;
+import com.cabin.ter.constants.request.UserEmailBindingReq;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;

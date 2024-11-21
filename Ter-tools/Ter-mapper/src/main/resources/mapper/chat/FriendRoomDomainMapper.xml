@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.chat.mapper.FriendRoomDomainMapper">
     <select id="listByIds" resultType="com.cabin.ter.chat.domain.FriendRoomDomain" parameterType="java.util.List">
-        SELECT id, userId, friendId, roomId, roomKey, isTop,status
+        SELECT roomId, userId, friendId, roomName, isTop,roomStatus
         FROM ter_room_friend
         WHERE roomId IN
         <foreach item="roomId" index="index" collection="roomIdsList" open="(" separator="," close=")">

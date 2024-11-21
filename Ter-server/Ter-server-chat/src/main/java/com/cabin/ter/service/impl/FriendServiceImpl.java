@@ -3,7 +3,6 @@ package com.cabin.ter.service.impl;
 import com.cabin.ter.adapter.ChatAdapter;
 import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.adapter.RoomAdapter;
-import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.cache.RoomFriendCache;
 import com.cabin.ter.chat.domain.FriendApplyDomain;
 import com.cabin.ter.admin.domain.UserDomain;
@@ -11,16 +10,17 @@ import com.cabin.ter.chat.domain.FriendRoomDomain;
 import com.cabin.ter.chat.mapper.FriendApplyDomainMapper;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.chat.mapper.FriendRoomDomainMapper;
+import com.cabin.ter.constants.response.FriendApplyRecordInfoResp;
+import com.cabin.ter.constants.response.FriendApplyResp;
 import com.cabin.ter.listener.event.FriendApplyEvent;
 import com.cabin.ter.service.ChatService;
 import com.cabin.ter.service.FriendService;
 import com.cabin.ter.service.RoomService;
 import com.cabin.ter.util.AsserUtil;
-import com.cabin.ter.vo.request.ApprovalFriendReq;
-import com.cabin.ter.vo.request.FriendApplyReq;
-import com.cabin.ter.vo.request.WhiteReq;
-import com.cabin.ter.vo.response.FriendApplyResp;
-import com.cabin.ter.vo.response.FriendResp;
+import com.cabin.ter.constants.request.ApprovalFriendReq;
+import com.cabin.ter.constants.request.FriendApplyReq;
+import com.cabin.ter.constants.request.WhiteReq;
+import com.cabin.ter.constants.response.FriendResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -54,25 +54,41 @@ public class FriendServiceImpl implements FriendService {
     @Autowired
     private ChatService chatService;
     @Autowired
-    private RedisCache redisCache;
-    @Autowired
     private RoomFriendCache roomFriendCache;
     @Override
-    public void apply(Long uId, FriendApplyReq request) {
-        FriendRoomDomain friendship = friendRoomDomainMapper.getFriendship(uId, request.getTargetId());
+    public FriendApplyResp apply(Long userId, FriendApplyReq request) {
+        FriendRoomDomain friendship = friendRoomDomainMapper.getFriendship(userId, request.getTargetId());
+        // 创建好友申请记录
+        FriendApplyDomain friendApplyDomain = RoomAdapter.buildFriendApplyDomain(userId, request);;
         // 在此之前已经添加过好友，但被删除,这里恢复房间状态就行
-        if(Objects.nonNull(friendship) && Objects.equals(FriendRoomDomain.FRIENDSHIP_DELETE, friendship.getRoomStatus())){
-            operateFriendStatus(uId, request.getTargetId(), FriendRoomDomain.FRIENDSHIP_RECOVER);
+        if(Objects.nonNull(friendship)){
+            if( Objects.equals(FriendRoomDomain.FRIENDSHIP_DELETE, friendship.getRoomStatus())){
+                operateFriendStatus(userId, request.getTargetId(), FriendRoomDomain.FRIENDSHIP_RECOVER);
+            }
+            if(Objects.equals(FriendRoomDomain.FRIENDSHIP_BLOCK, friendship.getRoomStatus())) {
+                return MessageAdapter.buildFriendApplyResp("你已被拉黑");
+            }
+            if(Objects.equals(FriendRoomDomain.FRIENDSHIP_RECOVER, friendship.getRoomStatus())){
+                return MessageAdapter.buildFriendApplyResp("你们已经是好友了");
+            }
         }else{
-            FriendApplyDomain friendApplyDomain = RoomAdapter.buildFriendApplyDomain(uId, request);
             friendApplyDomainMapper.saveFriendApplyRecord(friendApplyDomain);
-            roomService.createFriend(uId, request.getTargetId(), request.getRemark());
+            roomService.createFriend(userId, request.getTargetId(), request.getRemark());
         }
-        applicationEventPublisher.publishEvent(new FriendApplyEvent(this,uId, request.getTargetId()));
+        UserDomain userInfo = userInfoCache.getUserInfo(userId);
+        FriendApplyRecordInfoResp friendApplyResp = MessageAdapter.buildFriendApplyResp(
+                userInfo,
+                friendApplyDomain.getApplyId(),
+                friendApplyDomain.getApplyStatus(),
+                friendApplyDomain.getApplyMessage(),
+                FriendApplyRecordInfoResp.TARGET_APPLY
+        );
+        applicationEventPublisher.publishEvent(new FriendApplyEvent(this,friendApplyResp, request.getTargetId()));
+        return MessageAdapter.buildFriendApplyResp("好友申请发送成功");
     }
 
     @Override
-    public List<FriendApplyResp> getFriendApplyRecord(Long userId) {
+    public List<FriendApplyRecordInfoResp> getFriendApplyRecord(Long userId) {
         List<FriendApplyDomain> friendApplyDomainList = friendApplyDomainMapper.getFriendApplyRecord(userId);
         return friendApplyDomainList.stream()
                 .map(friendApply -> {
@@ -80,12 +96,12 @@ public class FriendServiceImpl implements FriendService {
                     boolean equals = Objects.equals(friendApply.getTargetId(), userId);
                     Long friendId =  equals ? friendApply.getUserId() : friendApply.getTargetId();
                     UserDomain userInfo = userInfoCache.getUserInfo(friendId);
-                    return RoomAdapter.buildFriendApplyResp(
+                    return MessageAdapter.buildFriendApplyResp(
                             userInfo,
                             friendApply.getApplyId(),
                             friendApply.getApplyStatus(),
                             friendApply.getApplyMessage(),
-                            equals ? FriendApplyResp.TARGET_APPLY : FriendApplyResp.USER_APPLY
+                            equals ? FriendApplyRecordInfoResp.TARGET_APPLY : FriendApplyRecordInfoResp.USER_APPLY
                     );
                 })
                 .collect(Collectors.toList());

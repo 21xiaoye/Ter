@@ -34,6 +34,6 @@ public class UserOnlineListener {
         Long onlineTime = event.getOnlineTime();
         userCache.online(userId, onlineTime);
         // 发送上线通知
-        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_ONLINE_TOPIC, MQMessageBuilderAdapter.buildUserOnlineNotifyDTO(userId, onlineTime, SourceEnum.USER_ONLINE_SOURCE));
+        rocketMQEnhanceTemplate.send(TopicConstant.GLOBAL_USER_ONLINE_TOPIC, MQMessageBuilderAdapter.buildUserOnlineNotifyDTO(userId, onlineTime));
     }
 }

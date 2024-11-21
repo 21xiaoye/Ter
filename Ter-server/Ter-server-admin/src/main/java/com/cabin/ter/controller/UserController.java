@@ -2,7 +2,7 @@ package com.cabin.ter.controller;
 
 
 import com.cabin.ter.constants.domain.OssReq;
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 
 import com.cabin.ter.service.UserService;
 import com.cabin.ter.util.RequestHolderUtil;

@@ -1,11 +1,9 @@
 package com.cabin.ter.adapter;
-
-import com.alibaba.fastjson.JSON;
 import com.cabin.ter.constants.dto.*;
 import com.cabin.ter.constants.enums.EmailTypeEnum;
 import com.cabin.ter.constants.enums.SourceEnum;
 import com.cabin.ter.constants.participant.msg.WebSocketSingleParticipant;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
+import com.cabin.ter.constants.response.WSBaseResp;
 
 import java.util.List;
 
@@ -40,18 +38,6 @@ public class MQMessageBuilderAdapter {
         scanSuccessMessageDTO.setLoginCode(loginCode);
         return scanSuccessMessageDTO;
     }
-    public static PushMessageDTO buildPushMessage(WSBaseResp<?> wsBaseMsg,List<Long> uidList,Integer pushType){
-        PushMessageDTO pushMessageDTO = new PushMessageDTO();
-        pushMessageDTO.setWsBaseMsg(wsBaseMsg);
-        pushMessageDTO.setUidList(uidList);
-        pushMessageDTO.setPushType(pushType);
-        return pushMessageDTO;
-    }
-    public static MsgSendMessageDTO buildMsgSendMessage(Long msgId){
-        MsgSendMessageDTO msgSendMessageDTO = new MsgSendMessageDTO();
-        msgSendMessageDTO.setMsgId(msgId);
-        return msgSendMessageDTO;
-    }
     public static EmailMessageDTO buildEmailMessageDTO(String subject, String address, String content, EmailTypeEnum emailType, SourceEnum source){
         EmailMessageDTO emailMessageParticipant = new EmailMessageDTO();
         emailMessageParticipant.setSubject(subject);
@@ -61,26 +47,25 @@ public class MQMessageBuilderAdapter {
         emailMessageParticipant.setSource(source);
         return emailMessageParticipant;
     }
-    public static UserOfflineNotifyDTO buildUserOfflineNotifyDTO(Long userId, Long offlineTime, SourceEnum source){
+    public static UserOfflineNotifyDTO buildUserOfflineNotifyDTO(Long userId, Long offlineTime){
         UserOfflineNotifyDTO userOfflineNotifyDTO = new UserOfflineNotifyDTO();
         userOfflineNotifyDTO.setUserId(userId);
         userOfflineNotifyDTO.setOfflineTime(offlineTime);
-        userOfflineNotifyDTO.setSource(source);
+        userOfflineNotifyDTO.setSource(SourceEnum.USER_OFFLINE_SOURCE);
         return userOfflineNotifyDTO;
     }
-    public static UserOnlineNotifyDTO buildUserOnlineNotifyDTO(Long userId, Long onlineTime, SourceEnum source){
+    public static UserOnlineNotifyDTO buildUserOnlineNotifyDTO(Long userId, Long onlineTime){
         UserOnlineNotifyDTO userOnlineNotifyDTO = new UserOnlineNotifyDTO();
         userOnlineNotifyDTO.setUserId(userId);
         userOnlineNotifyDTO.setOnlineTime(onlineTime);
-        userOnlineNotifyDTO.setSource(source);
+        userOnlineNotifyDTO.setSource(SourceEnum.USER_ONLINE_SOURCE);
         return userOnlineNotifyDTO;
     }
-    public static WebSocketSingleParticipant json2Obj(String objJsonStr) {
-        return JSON.parseObject(objJsonStr, WebSocketSingleParticipant.class);
+    public static ChatMessageDTO buildChatMessageDTO(WSBaseResp<?> wsBaseResp, List<Long> userIdList){
+        ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
+        chatMessageDTO.setWsBaseResp(wsBaseResp);
+        chatMessageDTO.setUserIdList(userIdList);
+        chatMessageDTO.setSource(SourceEnum.CHAT_MESSAGE_SOURCE);
+        return chatMessageDTO;
     }
-
-    public static String obj2Json(WebSocketSingleParticipant msgAgreement) {
-        return JSON.toJSONString(msgAgreement);
-    }
-
 }

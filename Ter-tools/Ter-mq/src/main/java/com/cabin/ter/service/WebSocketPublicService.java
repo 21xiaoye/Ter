@@ -1,7 +1,7 @@
 package com.cabin.ter.service;
 
-import com.cabin.ter.constants.vo.request.WSAuthorize;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
+import com.cabin.ter.constants.request.WSAuthorize;
+import com.cabin.ter.constants.response.WSBaseResp;
 import io.netty.channel.Channel;
 import me.chanjar.weixin.common.error.WxErrorException;
 

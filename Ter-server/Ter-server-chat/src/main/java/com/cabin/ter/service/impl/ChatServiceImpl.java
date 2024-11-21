@@ -6,8 +6,6 @@ import com.cabin.ter.adapter.MessageAdapter;
 import com.cabin.ter.cache.GroupMemberCache;
 import com.cabin.ter.cache.MessageCache;
 import com.cabin.ter.cache.RoomCache;
-import com.cabin.ter.cache.RoomGroupCache;
-import com.cabin.ter.chat.domain.GroupRoomDomain;
 import com.cabin.ter.chat.domain.MessageDomain;
 import com.cabin.ter.chat.domain.RoomDomain;
 import com.cabin.ter.listener.event.MessageSendEvent;
@@ -15,9 +13,8 @@ import com.cabin.ter.service.ChatService;
 import com.cabin.ter.strategy.AbstractMsgHandler;
 import com.cabin.ter.strategy.MsgHandlerFactory;
 import com.cabin.ter.util.AsserUtil;
-import com.cabin.ter.vo.request.ChatMessageReq;
-import com.cabin.ter.vo.response.ChatMessageResp;
-import org.checkerframework.checker.fenum.qual.AwtFlowLayout;
+import com.cabin.ter.constants.request.ChatMessageReq;
+import com.cabin.ter.constants.response.ChatMessageResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -50,11 +45,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public Long sendMsg(ChatMessageReq chatMessageReq, Long uid) {
-        this.roomCheck(chatMessageReq, uid);
+    public Long sendMsg(ChatMessageReq chatMessageReq, Long userId) {
+        this.roomCheck(chatMessageReq, userId);
         AbstractMsgHandler abstractMsgHandler = MsgHandlerFactory.getStrategyNoNull(chatMessageReq.getMessageType());
-        Long msgId = abstractMsgHandler.checkAndSaveMsg(chatMessageReq, uid);
-        applicationEventPublisher.publishEvent(new MessageSendEvent(this, msgId));
+        Long msgId = abstractMsgHandler.checkAndSaveMsg(chatMessageReq, userId);
+        applicationEventPublisher.publishEvent(new MessageSendEvent(this, getMsgResp(msgId)));
         return msgId;
     }
 

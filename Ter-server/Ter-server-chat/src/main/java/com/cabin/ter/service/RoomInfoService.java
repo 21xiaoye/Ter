@@ -1,8 +1,8 @@
 package com.cabin.ter.service;
 
-import com.cabin.ter.vo.request.GroupAddReq;
-import com.cabin.ter.vo.response.ChatRoomResp;
-import com.cabin.ter.constants.vo.response.CursorPageBaseResp;
+import com.cabin.ter.constants.request.GroupAddReq;
+import com.cabin.ter.constants.response.ChatRoomResp;
+import com.cabin.ter.constants.response.CursorPageBaseResp;
 
 /**
  * @author xiaoye

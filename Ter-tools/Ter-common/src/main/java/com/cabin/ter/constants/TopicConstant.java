@@ -10,18 +10,10 @@ package com.cabin.ter.constants;
  */
 public interface TopicConstant {
     /**
-     * redis 用户订阅主题 : 主要用于通知用户上下线通知
+     * 邮箱发送mq
      */
-    String REDIS_GLOBAL_USER_LINE_STATUS = "redis_global_user_line_status";
-
-    /**
-     * 单点推送主题
-     */
-    String ROCKET_SINGLE_PUSH_MESSAGE_TOPIC = "rocketmq_single_push_message_topic";
-    /**
-     * 单点推送组
-     */
-    String SINGLE_SINGLE_PUSH_MESSAGE_GROUP = "rocketmq_single_push_message_group";
+    String SYSTEM_EMAIL_SEND_TOPIC = "system_email_send_topic";
+    String SYSTEM_EMAIL_SEND_GROUP ="system_email_send_group";
     /**
      * (授权完成后)登录信息mq
      */
@@ -44,10 +36,10 @@ public interface TopicConstant {
     String GLOBAL_USER_OFFLINE_TOPIC = "redis_global_user_offline";
     String GLOBAL_USER_OFFLINE_GROUP = "redis_global_user_offline_group";
     /**
-     * 消息发送 mq
+     * 聊天消息发送 mq
      */
-    String SEND_MSG_TOPIC = "send_msg_topic";
-    String SEND_MSG_GROUP = "chat_send_msg_group";
+    String CHAT_MESSAGE_SEND_TOPIC = "chat_message_send_topic";
+    String CHAT_MESSAGE_SEND_GROUP = "chat_message_send_group";
     /**
      * push用户
      */

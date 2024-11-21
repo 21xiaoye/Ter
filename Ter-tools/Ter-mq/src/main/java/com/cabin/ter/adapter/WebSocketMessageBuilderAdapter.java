@@ -1,10 +1,8 @@
 package com.cabin.ter.adapter;
 
-import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.dto.ScanSuccessMessageDTO;
 import com.cabin.ter.constants.enums.WSRespTypeEnum;
-import com.cabin.ter.constants.vo.response.*;
-import com.cabin.ter.listener.listener.UserOnlineListener;
+import com.cabin.ter.constants.response.*;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.stereotype.Component;
 
@@ -41,18 +39,14 @@ public class WebSocketMessageBuilderAdapter {
     }
     /**
      * 用户登录成功
-     * @param userDomain
      * @param token
      * @return
      */
-    public static WSBaseResp<WSLoginSuccess> buildLoginSuccessResp(UserDomain userDomain, String token){
-        WSBaseResp<WSLoginSuccess> wsBaseResp = new WSBaseResp<>();
+    public static WSBaseResp<LoginSuccessResp> buildLoginSuccessResp(String token){
+        WSBaseResp<LoginSuccessResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SUCCESS.getType());
-        WSLoginSuccess wsLoginSuccess = WSLoginSuccess.builder()
-                .avatar(userDomain.getUserAvatar())
-                .name(userDomain.getUserName())
+        LoginSuccessResp wsLoginSuccess = LoginSuccessResp.builder()
                 .token(token)
-                .uId(userDomain.getUserId())
                 .build();
         wsBaseResp.setData(wsLoginSuccess);
         return wsBaseResp;
@@ -63,8 +57,8 @@ public class WebSocketMessageBuilderAdapter {
         wsBaseResp.setType(WSRespTypeEnum.INVALIDATE_TOKEN.getType());
         return wsBaseResp;
     }
-    public static WSBaseResp<WSApplyUserInfoResp> buildApplyUserInfoResp(WSApplyUserInfoResp applyUserInfoResp){
-        WSBaseResp<WSApplyUserInfoResp> wsBaseResp = new WSBaseResp<>();
+    public static WSBaseResp<FriendApplyRecordInfoResp> buildApplyUserInfoResp(FriendApplyRecordInfoResp applyUserInfoResp){
+        WSBaseResp<FriendApplyRecordInfoResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.APPLY.getType());
         wsBaseResp.setData(applyUserInfoResp);
         return wsBaseResp;
@@ -79,6 +73,19 @@ public class WebSocketMessageBuilderAdapter {
         WSBaseResp<UserOnlineResp> wsBaseResp = new WSBaseResp<>();
         wsBaseResp.setType(WSRespTypeEnum.USER_ONLINE.getType());
         wsBaseResp.setData(UserOnlineResp.builder().userId(userId).build());
+        return wsBaseResp;
+    }
+
+    /**
+     * 构建WebSocket推送给前端的响应对象
+     *
+     * @param msgResp   需要推送给前端的消息数据
+     * @return  返回WebSocket推送响应对象
+     */
+    public static WSBaseResp<ChatMessageResp> buildChatMessage(ChatMessageResp msgResp) {
+        WSBaseResp<ChatMessageResp> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.MESSAGE.getType());
+        wsBaseResp.setData(msgResp);
         return wsBaseResp;
     }
 }

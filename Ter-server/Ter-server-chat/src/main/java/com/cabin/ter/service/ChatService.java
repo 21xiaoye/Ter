@@ -1,9 +1,8 @@
 package com.cabin.ter.service;
 
 import com.cabin.ter.chat.domain.MessageDomain;
-import com.cabin.ter.vo.request.ChatMessageReq;
-import com.cabin.ter.vo.response.ChatMessageResp;
-import org.springframework.stereotype.Service;
+import com.cabin.ter.constants.request.ChatMessageReq;
+import com.cabin.ter.constants.response.ChatMessageResp;
 
 /**
  * @author xiaoye
@@ -14,10 +13,10 @@ public interface ChatService {
      * 发送消息
      *
      * @param chatMessageReq    消息请求体
-     * @param uid               用户uid
+     * @param userId            用户userId
      * @return  消息id
      */
-    Long sendMsg(ChatMessageReq chatMessageReq, Long uid);
+    Long sendMsg(ChatMessageReq chatMessageReq, Long userId);
 
     /**
      * 获取消息响应

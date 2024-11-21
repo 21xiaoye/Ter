@@ -1,10 +1,10 @@
 package com.cabin.ter.controller;
 
-import com.cabin.ter.constants.vo.response.ApiResponse;
+import com.cabin.ter.constants.response.ApiResponse;
 import com.cabin.ter.service.RoomInfoService;
 import com.cabin.ter.util.RequestHolderUtil;
-import com.cabin.ter.vo.request.GroupAddReq;
-import com.cabin.ter.vo.response.IdRespVO;
+import com.cabin.ter.constants.request.GroupAddReq;
+import com.cabin.ter.constants.response.IdRespVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 
 /**
  * @author xiaoye

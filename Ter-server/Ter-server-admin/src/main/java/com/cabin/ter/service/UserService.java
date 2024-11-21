@@ -2,9 +2,10 @@ package com.cabin.ter.service;
 
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.constants.domain.OssReq;
-import com.cabin.ter.vo.request.LoginAndRegisterReq;
-import com.cabin.ter.constants.vo.response.ApiResponse;
-import com.cabin.ter.vo.response.UserInfoResp;
+import com.cabin.ter.constants.request.LoginAndRegisterReq;
+import com.cabin.ter.constants.response.ApiResponse;
+import com.cabin.ter.constants.response.LoginSuccessResp;
+import com.cabin.ter.constants.response.UserInfoResp;
 
 /**
  * @author xiaoye
@@ -17,7 +18,7 @@ public interface UserService {
      * @param loginRequest
      * @return
      */
-    ApiResponse userLogin(LoginAndRegisterReq loginRequest);
+    LoginSuccessResp userLogin(LoginAndRegisterReq loginRequest);
 
     /**
      * 用户注册

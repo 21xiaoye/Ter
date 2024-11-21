@@ -9,14 +9,13 @@ import com.cabin.ter.cache.RedisCache;
 import com.cabin.ter.config.ThreadPoolConfig;
 import com.cabin.ter.constants.RedisKey;
 import com.cabin.ter.constants.dto.WSChannelExtraDTO;
-import com.cabin.ter.constants.vo.request.WSAuthorize;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
+import com.cabin.ter.constants.request.WSAuthorize;
+import com.cabin.ter.constants.response.WSBaseResp;
 import com.cabin.ter.listener.event.UserOfflineEvent;
 import com.cabin.ter.listener.event.UserOnlineEvent;
 import com.cabin.ter.service.WebSocketPublicService;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.util.JwtUtil;
-import com.cabin.ter.constants.vo.response.JwtResponse;
 import com.cabin.ter.vo.JwtPrincipal;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -183,8 +182,7 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDomain, null, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String jwt = jwtUtil.createJWT(authenticate, true);
-        JwtResponse jwtResponse = new JwtResponse(jwt);
-        this.loginSuccess(channel,userDomain, jwtResponse);
+        this.loginSuccess(channel, userDomain.getUserId(),jwt);
         return Boolean.TRUE;
     }
 
@@ -227,9 +225,9 @@ public class WebSocketPublicServiceImpl implements WebSocketPublicService {
     /**
      * (channel必在本地)登录成功，并更新状态
      */
-    private void loginSuccess(Channel channel, UserDomain user, JwtResponse token) {
-        sendMsg(channel, WebSocketMessageBuilderAdapter.buildLoginSuccessResp(user, token.getToken()));
-        this.online(channel, user.getUserId());
+    private void loginSuccess(Channel channel,Long userId,String token) {
+        sendMsg(channel, WebSocketMessageBuilderAdapter.buildLoginSuccessResp(token));
+        this.online(channel, userId);
     }
 
     /**

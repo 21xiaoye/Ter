@@ -1,11 +1,9 @@
 package com.cabin.ter.config;
 
-import com.cabin.ter.constants.TopicConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
@@ -45,10 +43,6 @@ public class RedisConfig{
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
-    }
-    @Bean
-    ChannelTopic channelTopic() {
-        return new ChannelTopic(TopicConstant.REDIS_GLOBAL_USER_LINE_STATUS);
     }
     /**
      * 序列化工具

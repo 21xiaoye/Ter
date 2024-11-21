@@ -5,15 +5,16 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.chat.domain.GroupRoomDomain;
 import com.cabin.ter.chat.domain.MessageDomain;
-import com.cabin.ter.chat.enums.MessageStatusEnum;
+import com.cabin.ter.constants.enums.MessageStatusEnum;
 import com.cabin.ter.constants.enums.MessageTypeEnum;
-import com.cabin.ter.constants.enums.WSRespTypeEnum;
-import com.cabin.ter.constants.vo.response.WSBaseResp;
+import com.cabin.ter.constants.response.FriendApplyRecordInfoResp;
+import com.cabin.ter.constants.response.FriendApplyResp;
 import com.cabin.ter.strategy.AbstractMsgHandler;
 import com.cabin.ter.strategy.MsgHandlerFactory;
-import com.cabin.ter.vo.request.ChatMessageReq;
-import com.cabin.ter.vo.request.TextMsgReq;
-import com.cabin.ter.vo.response.ChatMessageResp;;
+import com.cabin.ter.constants.request.ChatMessageReq;
+import com.cabin.ter.constants.request.TextMsgReq;
+import com.cabin.ter.constants.response.ChatMessageResp;
+;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class MessageAdapter {
     /**
      * 构建消息响应对象中消息对象信息
      *
-     * @param message   需要响应的消息实体对象
+     * @param message  需要响应的消息实体对象
      * @return  返回构建消息响应对象中消息对象信息
      */
     private static ChatMessageResp.Message buildMessage(MessageDomain message) {
@@ -83,7 +84,7 @@ public class MessageAdapter {
      */
     private static ChatMessageResp.UserInfo buildFromUser(Long fromUid) {
         ChatMessageResp.UserInfo userInfo = new ChatMessageResp.UserInfo();
-        userInfo.setUid(fromUid);
+        userInfo.setUserId(fromUid);
         return userInfo;
     }
 
@@ -109,20 +110,6 @@ public class MessageAdapter {
         chatMessageReq.setBody(sb.toString());
         return chatMessageReq;
     }
-
-    /**
-     * 构建WebSocket推送给前端的响应对象
-     *
-     * @param msgResp   需要推送给前端的消息数据
-     * @return  返回WebSocket推送响应对象
-     */
-    public static WSBaseResp<ChatMessageResp> buildMsgSend(ChatMessageResp msgResp) {
-        WSBaseResp<ChatMessageResp> wsBaseResp = new WSBaseResp<>();
-        wsBaseResp.setType(WSRespTypeEnum.MESSAGE.getType());
-        wsBaseResp.setData(msgResp);
-        return wsBaseResp;
-    }
-
     public static ChatMessageReq buildAgreeMsg(Long roomId) {
         ChatMessageReq chatMessageReq = new ChatMessageReq();
         chatMessageReq.setRoomId(roomId);
@@ -131,5 +118,28 @@ public class MessageAdapter {
         textMsgReq.setContent("我们已经成为好友了，开始聊天吧");
         chatMessageReq.setBody(textMsgReq);
         return chatMessageReq;
+    }
+    /**
+     * 构建好友申请响应实体对象
+     *
+     * @param userInfoResp  好友申请被申请者信息
+     * @param applyId       申请记录Id
+     * @param applyStatus   好友申请状态
+     * @param applyMessage  好友申请信息
+     * @return  返回一个好友申请响应实体
+     */
+    public static FriendApplyRecordInfoResp buildFriendApplyResp(UserDomain userInfoResp, Long applyId, Integer applyStatus, String applyMessage, Integer applyType){
+        FriendApplyRecordInfoResp friendApplyResp = new FriendApplyRecordInfoResp();
+        BeanUtil.copyProperties(userInfoResp, friendApplyResp);
+        friendApplyResp.setApplyStatus(applyStatus);
+        friendApplyResp.setApplyId(applyId);
+        friendApplyResp.setApplyMessage(applyMessage);
+        friendApplyResp.setApplyType(applyType);
+        return friendApplyResp;
+    }
+    public static FriendApplyResp buildFriendApplyResp(String applyResults){
+        FriendApplyResp friendApplyResp = new FriendApplyResp();
+        friendApplyResp.setApplyResults(applyResults);
+        return friendApplyResp;
     }
 }

@@ -1,5 +1,6 @@
 package com.cabin.ter.chat.domain.contact;
 
+import com.cabin.ter.constants.enums.HotFlagEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,7 +22,7 @@ public class RoomBaseInfo {
     /**
      * 是否全员展示 0否 1是
      *
-     * @see com.cabin.ter.chat.enums.HotFlagEnum
+     * @see HotFlagEnum
      */
     @Schema(name = "hotFlag", description = "是否全员展示")
     private Integer hotFlag;
