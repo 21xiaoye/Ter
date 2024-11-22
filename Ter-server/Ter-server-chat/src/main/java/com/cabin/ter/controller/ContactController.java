@@ -16,13 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "会话接口")
 @Slf4j
 public class ContactController {
-//    @Autowired
-//    private RoomCache roomCache;
     @Autowired
     private RoomInfoService roomInfoService;
     @GetMapping("/page")
     @Operation(description = "获取会话列表接口")
     public ApiResponse getRoomPage(){
-        return ApiResponse.ofSuccess(roomInfoService.getUserContactPage(RequestHolderUtil.get().getUid()));
+        return ApiResponse.ofSuccess(roomInfoService.getUserContactPage(RequestHolderUtil.get().getUserId()));
     }
 }

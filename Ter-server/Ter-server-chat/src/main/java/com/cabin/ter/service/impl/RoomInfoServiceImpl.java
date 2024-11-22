@@ -11,6 +11,7 @@ import com.cabin.ter.constants.enums.RoomTypeEnum;
 import com.cabin.ter.chat.mapper.ContactDomainMapper;
 import com.cabin.ter.chat.mapper.GroupMemberDomainMapper;
 import com.cabin.ter.chat.mapper.MessageDomainMapper;
+import com.cabin.ter.constants.response.GroupInfoResp;
 import com.cabin.ter.listener.event.GroupMemberAddEvent;
 import com.cabin.ter.service.RoomInfoService;
 import com.cabin.ter.service.RoomService;
@@ -57,51 +58,77 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     /**
      * 新建群组
      *
-     * @param uId       用户uid
+     * @param userId    用户userId
      * @param request   群组如愿uid列表
      * @return
      */
     @Override
-    public Long addGroup(Long uId, GroupAddReq request) {
-        if(!request.getUidList().contains(uId)){
-            request.getUidList().add(uId);
-        }
+    public Long addGroup(Long userId, GroupAddReq request) {
+        List<GroupAddReq.MemberInfo> memberInfoList = request.getMemberInfoList();
         // 创建群组
-        GroupRoomDomain group = roomService.createGroup(uId);
+        GroupRoomDomain group = roomService.createGroup(userId);
         // 构建群组要求人员基本信息
-        List<GroupMemberDomain> groupMemberDomains = ChatAdapter.buildGroupMemberBatch(request.getUidList(), group.getRoomId(),uId);
+        List<GroupMemberDomain> groupMemberDomains = ChatAdapter.buildGroupMemberBatch(memberInfoList, group.getRoomId(),userId);
         // 保存群成员
         groupMemberDomainMapper.saveGroupMemberList(groupMemberDomains);
         // 发送群通知
-        applicationEventPublisher.publishEvent(new GroupMemberAddEvent(this, group, groupMemberDomains, uId));
+        applicationEventPublisher.publishEvent(new GroupMemberAddEvent(this, group, groupMemberDomains, userId));
         return group.getRoomId();
     }
 
     @Override
-    public CursorPageBaseResp<ChatRoomResp> getUserContactPage(Long uid) {
+    public GroupInfoResp getGroupInfo(Long roomId) {
+        return null;
+    }
+
+    @Override
+    public void quitGroup(Long roomId, Long userId) {
+
+    }
+
+    @Override
+    public void inviteMember(Long roomId, Long userId, GroupAddReq groupAddReq) {
+
+    }
+
+    @Override
+    public void kickMember(Long roomId, List<Long> memberList) {
+
+    }
+
+    @Override
+    public void modifyMemberRole(Long roomId, Long userId, Long modifyUserId, Long roleId) {
+
+    }
+
+    @Override
+    public void modifyMemberRemark(Long userId, Long roomId, String memberRemark) {
+
+    }
+
+    @Override
+    public CursorPageBaseResp<ChatRoomResp> getUserContactPage(Long userId) {
         List<ContactDomain> contactPage = null;
-        if(Objects.nonNull(uid)){
-            contactPage = contactDomainMapper.getUserContactList(uid);
+        if(Objects.nonNull(userId)){
+            contactPage = contactDomainMapper.getUserContactList(userId);
         }
-        List<ChatRoomResp> chatRoomResp = this.buildContactResp(uid, contactPage);
+        List<ChatRoomResp> chatRoomResp = this.buildContactResp(userId, contactPage);
         return CursorPageBaseResp.init(chatRoomResp);
     }
 
     /**
      *
-     * @param uid       用户 uId
+     * @param userId   用户 userId
      * @param contactPage   用户会话列表
      * @return
      */
-
-    @NonNull
-    private List<ChatRoomResp> buildContactResp(Long uid, List<ContactDomain> contactPage){
+    private List<ChatRoomResp> buildContactResp(Long userId, List<ContactDomain> contactPage){
         if(contactPage.isEmpty()){
             return new ArrayList<>();
         }
         List<Long> roomIds = contactPage.stream().map(ContactDomain::getRoomId).collect(Collectors.toList());
         // 查询每个房间的基本信息
-        Map<Long, RoomBaseInfo> roomBaseInfoMap = this.getRoomBaseInfoMap(uid, roomIds);
+        Map<Long, RoomBaseInfo> roomBaseInfoMap = this.getRoomBaseInfoMap(userId, roomIds);
         // 每个房间的最后一条消息
         List<Long> msgIds = roomBaseInfoMap.values().stream().map(RoomBaseInfo::getLastMsgId).collect(Collectors.toList());
         //TODO: 这里我直接从数据库中查询了，未来设计从先从缓存中查询并保证数据同步，实在没时间了 ~_~ ~_~
@@ -111,7 +138,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(messageDomainList.stream().map(MessageDomain::getFromUid).collect(Collectors.toList()));
 
         // 消息未读数
-        Map<Long, Integer> unReadCountMap = this.getUnReadCountMap(uid, contactPage);
+        Map<Long, Integer> unReadCountMap = this.getUnReadCountMap(userId, contactPage);
         return roomBaseInfoMap.values().stream()
                 .map(room ->{
                     ChatRoomResp chatRoomResp = new ChatRoomResp();

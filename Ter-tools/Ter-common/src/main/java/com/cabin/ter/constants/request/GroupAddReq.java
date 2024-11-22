@@ -21,6 +21,19 @@ import java.util.List;
 public class GroupAddReq {
     @NotNull
     @Size(min = 1, max = 50)
-    @Schema(name = "uidList",description = "邀请的uid")
-    private List<Long> uidList;
+    @Schema(name = "memberInfoList",description = "邀请的群成员信息列表")
+    private List<MemberInfo> memberInfoList;
+    @Data
+    public static class MemberInfo{
+        /**
+         * 群成员userId
+         */
+        @Schema(name = "userId", description = "邀请成员userId")
+        private Long userId;
+        /**
+         * 群成员名称
+         */
+        @Schema(name = "userName", description = "邀请成员名称")
+        private String userName;
+    }
 }

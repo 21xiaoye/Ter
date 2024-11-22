@@ -18,7 +18,7 @@ public interface GroupMemberDomainMapper {
      * @param groupMemberDomain
      * @return
      */
-    @Insert("INSERT INTO ter_group_member (id, groupId, uid, role,createTime) values (#{groupMemberDomain.id},#{groupMemberDomain.groupId},#{groupMemberDomain.uid},#{groupMemberDomain.role},#{groupMemberDomain.createTime})")
+    @Insert("INSERT INTO ter_group_member (id, groupId, userId, role,createTime) values (#{groupMemberDomain.id},#{groupMemberDomain.groupId},#{groupMemberDomain.userId},#{groupMemberDomain.role},#{groupMemberDomain.createTime})")
     Integer saveGroupMember(@Param("groupMemberDomain") GroupMemberDomain groupMemberDomain);
 
     /**
@@ -27,7 +27,7 @@ public interface GroupMemberDomainMapper {
      * @param roomId    群id
      * @return
      */
-    @Select("SELECT uid FROM ter_group_member WHERE groupId = #{roomId}")
+    @Select("SELECT userId FROM ter_group_member WHERE groupId = #{roomId}")
     List<Long> getMemberUidList(Long roomId);
 
     /**
@@ -38,5 +38,9 @@ public interface GroupMemberDomainMapper {
      */
     List<GroupMemberDomain> listByIds(@Param("roomIdsList") List<Long> roomIdsList);
 
-    Integer saveGroupMemberList(@Param("groupMemberDomainList") List<GroupMemberDomain> groupMemberDomainList);
+    /**
+     * 批量保存群成员
+     * @param groupMemberDomainList 需要保存的群成员列表
+     */
+    void saveGroupMemberList(@Param("groupMemberDomainList") List<GroupMemberDomain> groupMemberDomainList);
 }

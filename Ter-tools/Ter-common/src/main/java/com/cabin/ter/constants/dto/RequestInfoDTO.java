@@ -10,6 +10,6 @@ import lombok.Data;
 @Data
 @Builder
 public class RequestInfoDTO {
-    private Long uid;
+    private Long userId;
     private String ip;
 }

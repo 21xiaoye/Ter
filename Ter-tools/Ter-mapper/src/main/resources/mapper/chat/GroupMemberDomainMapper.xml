@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cabin.ter.chat.mapper.GroupMemberDomainMapper">
     <select id="listByIds" resultType="com.cabin.ter.chat.domain.GroupMemberDomain" parameterType="java.util.List">
-        SELECT groupId, uid, role
+        SELECT groupId, userId, role, groupRemark, memberStatus
         FROM ter_group_member
         WHERE groupId IN
         <foreach item="roomId" index="index" collection="roomIdsList" open="(" separator="," close=")">
@@ -13,7 +13,7 @@
     </select>
 
     <insert id="saveGroupMemberList" parameterType="java.util.List">
-        INSERT INTO ter_group_member (id, groupId, uid, role, createTime)
+        INSERT INTO ter_group_member (id, groupId, userId, groupRemark ,role, createTime)
         VALUES
         <foreach collection="groupMemberDomainList" item="item" separator=",">
             (
@@ -23,8 +23,11 @@
             <if test="item.groupId != null">
                 #{item.groupId},
             </if>
-            <if test="item.uid != null">
-                #{item.uid},
+            <if test="item.userId != null">
+                #{item.userId},
+            </if>
+            <if test="item.groupRemark != null">
+                #{item.groupRemark},
             </if>
             <if test="item.role != null">
                 #{item.role},

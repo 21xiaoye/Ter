@@ -28,7 +28,7 @@ public class ChatController {
     @Operation(description = "发送消息接口")
     @PostMapping("/sendMsg")
     public ApiResponse senMsg(@Valid @RequestBody ChatMessageReq chatMessageReq){
-        Long userId = RequestHolderUtil.get().getUid();
+        Long userId = RequestHolderUtil.get().getUserId();
         log.info("收到用户{}信息{}",userId, chatMessageReq);
         Long msgId = chatService.sendMsg(chatMessageReq, userId);
         return ApiResponse.ofSuccess(chatService.getMsgResp(msgId));

@@ -36,12 +36,12 @@ public class UserController {
     @GetMapping("/userInfo")
     @Operation(summary = "用户详情")
     public ApiResponse getUserInfo() {
-        log.info("收到用户id{}的请求", RequestHolderUtil.get().getUid());
-        return ApiResponse.ofSuccess(userService.getUserInfo(RequestHolderUtil.get().getUid()));
+        log.info("收到用户id{}的请求", RequestHolderUtil.get().getUserId());
+        return ApiResponse.ofSuccess(userService.getUserInfo(RequestHolderUtil.get().getUserId()));
     }
     @PostMapping("/logOut")
     @Operation(summary = "退出登录")
     public void logOut(){
-        userService.userLogOut(RequestHolderUtil.get().getUid());
+        userService.userLogOut(RequestHolderUtil.get().getUserId());
     }
 }

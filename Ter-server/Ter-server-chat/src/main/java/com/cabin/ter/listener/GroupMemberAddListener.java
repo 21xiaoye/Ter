@@ -47,12 +47,12 @@ public class GroupMemberAddListener {
         List<GroupMemberDomain> memberDomainList = event.getMemberDomainList();
         // 获取群组信息
         GroupRoomDomain groupRoomDomain = event.getGroupRoomDomain();
-        // 获取用户UID
+        // 获取用户userId
         Long inviteUid = event.getInviteUid();
         // 查询用户信息
         UserDomain userDomain = userInfoCache.get(inviteUid);
         // 拿到群组成员uid列表
-        List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
+        List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUserId).collect(Collectors.toList());
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(uidList);
         ChatMessageReq chatMessageReq = MessageAdapter.buildGroupAddMessage(groupRoomDomain, userDomain, userDomainMap);
         chatService.sendMsg(chatMessageReq, inviteUid);
@@ -64,7 +64,7 @@ public class GroupMemberAddListener {
         List<GroupMemberDomain> memberDomainList = event.getMemberDomainList();
         GroupRoomDomain groupRoomDomain = event.getGroupRoomDomain();
 
-        List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUid).collect(Collectors.toList());
+        List<Long> uidList = memberDomainList.stream().map(GroupMemberDomain::getUserId).collect(Collectors.toList());
         Map<Long, UserDomain> userDomainMap = userInfoCache.getBatch(uidList);
 
         List<UserDomain> userDomainList = userDomainMap.values().stream().toList();

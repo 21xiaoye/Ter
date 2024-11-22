@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Snowflake;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.chat.domain.*;
 import com.cabin.ter.constants.enums.GroupRoleEnum;
+import com.cabin.ter.constants.request.GroupAddReq;
 import com.cabin.ter.constants.response.FriendResp;
 
 import java.util.Collection;
@@ -22,22 +23,23 @@ public class ChatAdapter {
     /**
      * 创建群成员列表
      *
-     * @param uidList   成员列表
+     * @param memberInfoList   成员信息列表
      * @param groupId   群组id
-     * @param uid       创建者id
+     * @param userId       创建者id
      * @return
      */
-    public static List<GroupMemberDomain> buildGroupMemberBatch(List<Long> uidList, Long groupId, Long uid) {
-        return uidList.stream()
+    public static List<GroupMemberDomain> buildGroupMemberBatch(List<GroupAddReq.MemberInfo> memberInfoList, Long groupId, Long userId) {
+        return memberInfoList.stream()
                 .distinct()
-                .map(id -> {
+                .map(memberInfo -> {
                     GroupMemberDomain member = new GroupMemberDomain();
                     member.setId(snowflake.nextId());
                     // 如果是创建者则分配权限未群主
-                    member.setRole(uid.equals(id) ? GroupRoleEnum.LEADER.getType() : GroupRoleEnum.MEMBER.getType());
-                    member.setUid(id);
+                    member.setRole(userId.equals(memberInfo.getUserId()) ? GroupRoleEnum.LEADER.getType() : GroupRoleEnum.MEMBER.getType());
+                    member.setUserId(memberInfo.getUserId());
                     member.setGroupId(groupId);
                     member.setCreateTime(System.currentTimeMillis());
+                    member.setGroupRemark(memberInfo.getUserName());
                     return member;
                 }).collect(Collectors.toList());
     }

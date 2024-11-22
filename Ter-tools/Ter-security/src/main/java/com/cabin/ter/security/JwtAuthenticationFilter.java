@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.cabin.ter.admin.domain.PermissionDomain;
 import com.cabin.ter.admin.domain.UserDomain;
 import com.cabin.ter.admin.mapper.PermissionDomainMapper;
-import com.cabin.ter.admin.mapper.UserDomainMapper;
 import com.cabin.ter.cache.UserInfoCache;
 import com.cabin.ter.constants.dto.RequestInfoDTO;
 import com.cabin.ter.exception.SecurityException;
@@ -23,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserCache;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -67,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 RequestInfoDTO requestInfoDTO = RequestInfoDTO.builder()
                         .ip(request.getRemoteAddr())
-                        .uid(jwtInfo.getId()).build();
+                        .userId(jwtInfo.getId()).build();
 
                 RequestHolderUtil.set(requestInfoDTO);
                 UserDomain userDomain = userInfoCache.getUserInfoBatch(jwtInfo.getSubject());

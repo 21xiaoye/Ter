@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdRespVO {
+public class IdResp {
     @Schema(name = "id",description = "群聊id")
     private long id;
 
-    public static IdRespVO id(Long id) {
-        IdRespVO idRespVO = new IdRespVO();
+    public static IdResp id(Long id) {
+        IdResp idRespVO = new IdResp();
         idRespVO.setId(id);
         return idRespVO;
     }
